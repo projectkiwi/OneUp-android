@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/newsfeed_item_height"
     android:layout_margin="@dimen/newsfeed_item_margin"
+    android:layout_marginBottom="0dp"
     android:background="@color/newsfeedItemGray">
 
     <ImageView
@@ -19,21 +20,47 @@
         android:layout_toRightOf="@id/imageView">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/text_margin_small"
+            android:gravity="center"
+            android:drawableLeft="@drawable/timer"
+            android:drawablePadding="@dimen/text_margin_small"
+            style="@style/TinyText"
+            android:text="1 hr"/>
+
+        <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin_small"
+            android:layout_marginTop="@dimen/text_margin_small"
+            android:layout_marginLeft="@dimen/text_margin_small"
+            android:layout_marginRight="@dimen/text_margin_small"
             android:layout_alignParentTop="true"
             android:textAlignment="center"
             style="@style/MediumText"
             android:text="Placeholder"/>
 
         <TextView
+            android:id="@+id/winner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/text_margin_small"
+            android:layout_marginLeft="@dimen/text_margin_small"
+            android:layout_marginRight="@dimen/text_margin_small"
+            android:layout_below="@id/title"
+            android:textAlignment="center"
+            style="@style/SmallText"
+            android:text="By: Per50nW1thN4m3"/>
+
+        <TextView
             android:id="@+id/desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin_small"
-            android:layout_below="@id/title"
+            android:layout_below="@id/winner"
             style="@style/SmallText"
             android:text="lots of placeholder text yo so this looks like a pretty high quality description"/>
 
@@ -55,7 +82,7 @@
             android:layout_marginRight="@dimen/divider_margin"
             android:background="@color/dividerGray"/>
 
-        <Button
+        <com.purduecs.kiwi.oneup.views.CenterIconButton
             android:id="@+id/likeButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -64,13 +91,12 @@
             android:layout_below="@id/horzDiv"
             style="@style/MediumSmallText"
             android:textColor="@drawable/like_button_text"
-            android:gravity="center_vertical"
-            android:textAlignment="gravity"
+            android:gravity="center"
             android:drawableLeft="@drawable/like_button"
             android:drawablePadding="@dimen/text_margin_small"
-            android:paddingLeft="@dimen/text_margin"
             android:background="@android:color/transparent"
-            android:text="156"/>
+            android:textOn="156"
+            android:textOff="156"/>
 
         <TextView
             android:id="@+id/categories"
