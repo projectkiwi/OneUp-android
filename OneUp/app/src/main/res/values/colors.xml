@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="newsfeedItemGray">#EBEBEB</color>
+    <color name="dividerGray">#969696</color>
+
+    <color name="heartColor">#EA1546</color>
+    <color name="newsFeedItemText">#616161</color>
 </resources>

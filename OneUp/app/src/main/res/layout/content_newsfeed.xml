@@ -23,6 +23,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="some sample text"/>
+
+        <include layout="@layout/newsfeed_item"/>
+        <include layout="@layout/newsfeed_item"/>
+        <include layout="@layout/newsfeed_item"/>
+        <include layout="@layout/newsfeed_item"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
