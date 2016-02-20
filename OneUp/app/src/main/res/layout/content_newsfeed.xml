@@ -8,10 +8,21 @@
     tools:context="com.purduecs.kiwi.oneup.NewsfeedActivity"
     tools:showIn="@layout/activity_newsfeed">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/makeRequestButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="testing"/>
+
+        <TextView
+            android:id="@+id/tempTextYo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="some sample text"/>
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
