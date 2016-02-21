@@ -30,6 +30,10 @@ proguard/
 # Log Files
 *.log
 
+#API Store
+app/src/debug/res/values/*.xml
+
+
 #### joe made this: https://goel.io/joe
 
 #####=== OSX ===#####

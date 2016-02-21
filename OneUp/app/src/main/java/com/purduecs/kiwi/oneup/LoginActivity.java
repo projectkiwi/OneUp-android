@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin() {
         /* For now, always log in*/
-        Intent intent = new Intent(this, OneUpActivity.class);
+        Intent intent = new Intent(this, NewsfeedActivity.class);
         startActivity(intent);
 
         /*
