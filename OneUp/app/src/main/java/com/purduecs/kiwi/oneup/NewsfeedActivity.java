@@ -5,14 +5,12 @@ package com.purduecs.kiwi.oneup;
  */
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,8 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
-import com.purduecs.kiwi.oneup.web.TestWebRequest;
 
 public class NewsfeedActivity extends OneUpActivity {
 
@@ -48,10 +46,14 @@ public class NewsfeedActivity extends OneUpActivity {
         makeRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TestWebRequest(new RequestHandler<TestWebRequest.Test>() {
+                new ChallengesWebRequest(new RequestHandler<ChallengesWebRequest.Challenge[]>() {
                     @Override
-                    public void onSuccess(TestWebRequest.Test response) {
-                        mTextView.setText("got:\none: "+response.one +"\ntwo: "+response.two);
+                    public void onSuccess(ChallengesWebRequest.Challenge[] response) {
+                        String s = "got from api:\n";
+                        for (int i = 0; i < response.length; i++) {
+                            s += "challenge: " + response[i].title + "\n";
+                        }
+                        mTextView.setText(s);
                     }
 
                     @Override
