@@ -4,7 +4,7 @@
     android:layout_height="@dimen/newsfeed_item_height"
     android:layout_margin="@dimen/newsfeed_item_margin"
     android:layout_marginBottom="0dp"
-    android:background="@color/newsfeedItemGray">
+    android:background="@drawable/newsfeed_item_background">
 
     <ImageView
         android:id="@+id/imageView"
@@ -27,7 +27,7 @@
             android:layout_alignParentRight="true"
             android:layout_margin="@dimen/text_margin_small"
             android:gravity="center"
-            android:drawableLeft="@drawable/timer"
+            android:drawableLeft="@drawable/timer_grey"
             android:drawablePadding="@dimen/text_margin_small"
             style="@style/TinyText"
             android:textColor="@color/lightGreyText"
@@ -94,7 +94,7 @@
             android:layout_toLeftOf="@id/vertDiv"
             android:layout_below="@id/horzDiv"
             style="@style/MediumSmallText"
-            android:textColor="@color/lightGreyText"
+            android:textColor="@drawable/like_button_text"
             android:gravity="center"
             android:drawableLeft="@drawable/like_button"
             android:drawablePadding="@dimen/text_margin_small"

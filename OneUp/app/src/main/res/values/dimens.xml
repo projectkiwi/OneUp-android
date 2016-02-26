@@ -11,6 +11,6 @@
 
     <dimen name="newsfeed_item_margin">5dp</dimen>
     <dimen name="newsfeed_item_height">175dp</dimen>
-    <dimen name="divider_margin">3dp</dimen>
+    <dimen name="divider_margin">0dp</dimen>
     <dimen name="text_margin_small">4dp</dimen>
 </resources>

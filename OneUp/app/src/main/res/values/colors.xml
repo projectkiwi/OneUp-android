@@ -7,9 +7,11 @@
     <color name="darkGreyText">#757575</color>
     <color name="lightGreyText">#9F9F9F</color>
 
-    <color name="newsfeedItemGray">#EEEEEE</color>
-    <color name="newsfeedBackground">#CCCCCC</color>
-    <color name="dividerGray">#BBC9D3</color>
+    <color name="newsfeedItemGray">#FFFFFF</color>
+    <color name="newsfeedBackground">#F5F5F5</color>
+    <color name="dividerGray">#D8D8D8</color>
 
+    <color name="timerColor">@color/lightGreyText</color>
+    <color name="heartColorUnpressed">@color/lightGreyText</color>
     <color name="heartColor">#f96060</color>
 </resources>
