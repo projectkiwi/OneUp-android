@@ -4,10 +4,12 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="darkGreyText">#757575</color>
+    <color name="lightGreyText">#9F9F9F</color>
+
     <color name="newsfeedItemGray">#EEEEEE</color>
     <color name="newsfeedBackground">#CCCCCC</color>
     <color name="dividerGray">#BBC9D3</color>
 
     <color name="heartColor">#f96060</color>
-    <color name="newsFeedItemText">#aab8c2</color>
 </resources>

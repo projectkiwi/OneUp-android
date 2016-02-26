@@ -20,6 +20,7 @@
         android:layout_toRightOf="@id/imageView">
 
         <TextView
+            android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -29,6 +30,7 @@
             android:drawableLeft="@drawable/timer"
             android:drawablePadding="@dimen/text_margin_small"
             style="@style/TinyText"
+            android:textColor="@color/lightGreyText"
             android:text="1 hr"/>
 
         <TextView
@@ -39,7 +41,9 @@
             android:layout_marginLeft="@dimen/text_margin_small"
             android:layout_marginRight="@dimen/text_margin_small"
             android:layout_alignParentTop="true"
-            android:textAlignment="center"
+            android:layout_toLeftOf="@id/timer"
+            android:ellipsize="end"
+            android:lines="1"
             style="@style/MediumText"
             android:text="Placeholder"/>
 
@@ -51,7 +55,6 @@
             android:layout_marginLeft="@dimen/text_margin_small"
             android:layout_marginRight="@dimen/text_margin_small"
             android:layout_below="@id/title"
-            android:textAlignment="center"
             style="@style/SmallText"
             android:text="By: Per50nW1thN4m3"/>
 
@@ -62,6 +65,7 @@
             android:layout_margin="@dimen/text_margin_small"
             android:layout_below="@id/winner"
             style="@style/SmallText"
+            android:textColor="@color/lightGreyText"
             android:text="lots of placeholder text yo so this looks like a pretty high quality description"/>
 
         <View
@@ -90,7 +94,7 @@
             android:layout_toLeftOf="@id/vertDiv"
             android:layout_below="@id/horzDiv"
             style="@style/MediumSmallText"
-            android:textColor="@drawable/like_button_text"
+            android:textColor="@color/lightGreyText"
             android:gravity="center"
             android:drawableLeft="@drawable/like_button"
             android:drawablePadding="@dimen/text_margin_small"
@@ -106,6 +110,7 @@
             android:layout_toRightOf="@id/vertDiv"
             android:layout_below="@id/horzDiv"
             style="@style/MediumSmallText"
+            android:textColor="@color/lightGreyText"
             android:textAlignment="center"
             android:gravity="center"
             android:layout_centerVertical="true"
