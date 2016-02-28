@@ -20,7 +20,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_view, parent, false);
+                .inflate(R.layout.newsfeed_item, parent, false);
         return new ViewHolder(itemView);
     }
     @Override
@@ -46,8 +46,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         Challenge challenge;
         public ViewHolder(View itemView) {
             super(itemView);
-            cardimage = (ImageView) itemView.findViewById(R.id.cardimage);
-            cardtitle = (TextView) itemView.findViewById(R.id.cardtitle);
+            cardimage = (ImageView) itemView.findViewById(R.id.card_image);
+            cardtitle = (TextView) itemView.findViewById(R.id.card_title);
         }
     }
 }
