@@ -86,4 +86,5 @@
         completions."
     </string>
     <string name="title_activity_maps">Map</string>
+    <string name="card_image_descriptor">Image goes here</string>
 </resources>

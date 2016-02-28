@@ -5,12 +5,15 @@ package com.purduecs.kiwi.oneup;
  */
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,12 +21,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
+import com.purduecs.kiwi.oneup.cardViewModels.Challenge;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewsfeedActivity extends OneUpActivity {
 
     TextView mTextView;
+    RecyclerView recyclerView;
+    CardAdapter adapter;
+    List<Challenge> challenges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +52,7 @@ public class NewsfeedActivity extends OneUpActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view2);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mTextView = (TextView) findViewById(R.id.tempTextYo);
+        /* mTextView = (TextView) findViewById(R.id.tempTextYo);
         Button makeRequest = (Button) findViewById(R.id.makeRequestButton);
         makeRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +73,40 @@ public class NewsfeedActivity extends OneUpActivity {
                     }
                 });
             }
-        });
+        }); */
+
+        recyclerView = (RecyclerView) findViewById(R.id.newsfeed_recycler);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setHasFixedSize(true);
+        initializeData();
+        adapter = new CardAdapter(challenges);
+        recyclerView.setAdapter(adapter);
     }
+
+    private void initializeData() {
+        challenges = new ArrayList<>();
+        challenges.add(new Challenge("Challenge 1", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 2", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 4", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 5", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 6", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 7", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 8", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 9", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 10", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 11", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 12", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 13", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 14", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 15", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 16", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 17", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Challenge 18", R.drawable.doge_with_sunglasses));
+
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
@@ -72,6 +115,11 @@ public class NewsfeedActivity extends OneUpActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void goToMap() {
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
     }
 
     @Override

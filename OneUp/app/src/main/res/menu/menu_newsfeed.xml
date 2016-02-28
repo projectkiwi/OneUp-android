@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.purduecs.kiwi.oneup.NewsfeedActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/map_view"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Map View"
+        android:icon="@drawable/ic_explore_black_24dp"
+        android:onClick="goToMap"
         app:showAsAction="never" />
 </menu>
