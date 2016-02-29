@@ -8,6 +8,7 @@ package com.purduecs.kiwi.oneup;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -92,24 +93,15 @@ public class NewsfeedActivity extends OneUpActivity {
 
     private void initializeData() {
 
-        challenges = new ArrayList<>();
-        adapter = new CardAdapter(challenges);
-        recyclerView.setAdapter(adapter);
-
-        new ChallengesWebRequest(new RequestHandler<ChallengesWebRequest.Challenge[]>() {
+        challenges = new ArrayList<Challenge>();
+        adapter = new CardAdapter(recyclerView, challenges, new CardAdapter.OnLoadMoreListener() {
             @Override
-            public void onSuccess(ChallengesWebRequest.Challenge[] response) {
-                for (int i = 0; i < response.length; i++) {
-                    challenges.add(new Challenge(response[i].title, R.drawable.doge_with_sunglasses));
-                }
-                adapter.notifyItemRangeInserted(challenges.size() - response.length, response.length);
-            }
-
-            @Override
-            public void onFailure() {
-                Log.e("HEY", "Our challenge webrequest in newsfeed failed");
+            public void onLoadMore(CardAdapter.FinishedLoadingListener listener) {
+                loadMoreContent(listener);
             }
         });
+        recyclerView.setAdapter(adapter);
+
         challenges.add(new Challenge("Challenge 1", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Challenge 2", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Challenge 4", R.drawable.doge_with_sunglasses));
@@ -134,13 +126,31 @@ public class NewsfeedActivity extends OneUpActivity {
         new ChallengesWebRequest(new RequestHandler<ChallengesWebRequest.Challenge[]>() {
             @Override
             public void onSuccess(ChallengesWebRequest.Challenge[] response) {
-                challenges = new ArrayList<>();
+                challenges = new ArrayList<Challenge>();
                 for (int i = 0; i < response.length; i++) {
                     challenges.add(new Challenge(response[i].title, R.drawable.doge_with_sunglasses));
                 }
-                adapter = new CardAdapter(challenges);
-                recyclerView.setAdapter(adapter);
+                adapter.resetItems(challenges);
                 swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure() {
+                Log.e("HEY", "Our challenge webrequest in newsfeed failed");
+            }
+        });
+    }
+
+    private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
+        new ChallengesWebRequest(new RequestHandler<ChallengesWebRequest.Challenge[]>() {
+            @Override
+            public void onSuccess(ChallengesWebRequest.Challenge[] response) {
+                challenges = new ArrayList<Challenge>();
+                for (int i = 0; i < response.length; i++) {
+                    challenges.add(new Challenge(response[i].title, R.drawable.doge_with_sunglasses));
+                }
+                adapter.addItems(challenges);
+                listener.finishedLoading();
             }
 
             @Override
