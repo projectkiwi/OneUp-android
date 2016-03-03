@@ -4,6 +4,7 @@ package com.purduecs.kiwi.oneup;
 
  */
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -18,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
@@ -36,6 +39,9 @@ public class NewsfeedActivity extends OneUpActivity {
     List<Challenge> challenges;
 
     private String newsFeedType;
+    private int lastTab;
+
+    Animation rightTabAnimation, leftTabAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +59,12 @@ public class NewsfeedActivity extends OneUpActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Global"));
 
         newsFeedType = "local";
+        lastTab = 0;
+
+        leftTabAnimation = AnimationUtils.loadAnimation(this, R.anim.tab_animation_left);
+        leftTabAnimation.setAnimationListener(tabAnimationListener);
+        rightTabAnimation = AnimationUtils.loadAnimation(this, R.anim.tab_animation_right);
+        rightTabAnimation.setAnimationListener(tabAnimationListener);
 
         //TODO: Actually add functionality
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -61,19 +73,23 @@ public class NewsfeedActivity extends OneUpActivity {
                 if (tabLayout.getSelectedTabPosition() == 0) {
                     //Toast.makeText(NewsfeedActivity.this, "Local", Toast.LENGTH_LONG).show();
                     newsFeedType = "local";
-                    adapter.resetItems(new ArrayList<Challenge>());
-                    refreshContent();
                 } else if (tabLayout.getSelectedTabPosition() == 1) {
                     //Toast.makeText(NewsfeedActivity.this, "Popular", Toast.LENGTH_LONG).show();
                     newsFeedType = "popular";
-                    adapter.resetItems(new ArrayList<Challenge>());
-                    refreshContent();
+
+
                 } else if (tabLayout.getSelectedTabPosition() == 2) {
                     //Toast.makeText(NewsfeedActivity.this, "Global", Toast.LENGTH_LONG).show();
                     newsFeedType = "global";
-                    adapter.resetItems(new ArrayList<Challenge>());
-                    refreshContent();
                 }
+
+                if (lastTab > tabLayout.getSelectedTabPosition()) {
+                    recyclerView.startAnimation(rightTabAnimation);
+                } else {
+                    recyclerView.startAnimation(leftTabAnimation);
+                }
+
+                lastTab = tabLayout.getSelectedTabPosition();
             }
 
             @Override
@@ -240,5 +256,20 @@ public class NewsfeedActivity extends OneUpActivity {
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    private Animation.AnimationListener tabAnimationListener = new Animation.AnimationListener() {
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            adapter.resetItems(new ArrayList<Challenge>());
+            refreshContent();
+        }
+
+        @Override
+        public void onAnimationStart(Animation animation) {}
+        @Override
+        public void onAnimationRepeat(Animation animation) {}
+    };
 }
 

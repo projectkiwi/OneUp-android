@@ -129,7 +129,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void resetItems(@NonNull List<Challenge> list) {
-        loading = true;
+        loading = false;
         firstVisibleItem = 0;
         visibleItemCount = 0;
         totalItemCount = 0;
