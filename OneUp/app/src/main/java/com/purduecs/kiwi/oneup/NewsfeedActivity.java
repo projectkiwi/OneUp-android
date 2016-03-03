@@ -4,13 +4,12 @@ package com.purduecs.kiwi.oneup;
 
  */
 
-
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
 import com.purduecs.kiwi.oneup.cardViewModels.Challenge;
@@ -40,41 +41,53 @@ public class NewsfeedActivity extends OneUpActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
+
+        ////////////////////////SETUP TOOLBAR/////////////////////////////////
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
+        ////////////////////////SETUP TABS/////////////////////////////////
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Local"));
+        tabLayout.addTab(tabLayout.newTab().setText("Popular"));
+        tabLayout.addTab(tabLayout.newTab().setText("Global"));
+
+        //TODO: Actually add functionality
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tabLayout.getSelectedTabPosition() == 0) {
+                    Toast.makeText(NewsfeedActivity.this, "Local", Toast.LENGTH_LONG).show();
+                } else if (tabLayout.getSelectedTabPosition() == 1) {
+                    Toast.makeText(NewsfeedActivity.this, "Popular", Toast.LENGTH_LONG).show();
+                } else if (tabLayout.getSelectedTabPosition() == 2) {
+                    Toast.makeText(NewsfeedActivity.this, "Global", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        ////////////////////////SETUP NAV DRAWER///////////////////////////////
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        ////////////////////////SETUP NAV VIEW/////////////////////////////////
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view2);
         navigationView.setNavigationItemSelectedListener(this);
 
-        /* mTextView = (TextView) findViewById(R.id.tempTextYo);
-        Button makeRequest = (Button) findViewById(R.id.makeRequestButton);
-        makeRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new ChallengesWebRequest(new RequestHandler<ChallengesWebRequest.Challenge[]>() {
-                    @Override
-                    public void onSuccess(ChallengesWebRequest.Challenge[] response) {
-                        String s = "got from api:\n";
-                        for (int i = 0; i < response.length; i++) {
-                            s += "challenge: " + response[i].title + "\n";
-                        }
-                        mTextView.setText(s);
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        mTextView.setText("failed");
-                    }
-                });
-            }
-        }); */
-
+        ////////////////////////SETUP RECYCLER VIEW////////////////////////////
         recyclerView = (RecyclerView) findViewById(R.id.newsfeed_recycler);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -82,6 +95,7 @@ public class NewsfeedActivity extends OneUpActivity {
         recyclerView.setHasFixedSize(true);
         initializeData();
 
+        ////////////////////////REFRESH VIEW///////////////////////////////////
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -89,6 +103,7 @@ public class NewsfeedActivity extends OneUpActivity {
                 refreshContent();
             }
         });
+
     }
 
     private void initializeData() {
@@ -109,16 +124,6 @@ public class NewsfeedActivity extends OneUpActivity {
         challenges.add(new Challenge("Challenge 6", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Challenge 7", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Challenge 8", R.drawable.doge_with_sunglasses));
-        /*challenges.add(new Challenge("Challenge 9", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 10", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 11", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 12", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 13", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 14", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 15", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 16", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 17", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 18", R.drawable.doge_with_sunglasses));*/
 
     }
 
@@ -159,6 +164,7 @@ public class NewsfeedActivity extends OneUpActivity {
             }
         });
     }
+
 
     @Override
     public void onBackPressed() {
@@ -224,3 +230,4 @@ public class NewsfeedActivity extends OneUpActivity {
         return true;
     }
 }
+
