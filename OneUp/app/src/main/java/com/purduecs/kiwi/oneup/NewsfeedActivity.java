@@ -35,6 +35,8 @@ public class NewsfeedActivity extends OneUpActivity {
     CardAdapter adapter;
     List<Challenge> challenges;
 
+    private String newsFeedType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,16 +52,27 @@ public class NewsfeedActivity extends OneUpActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Popular"));
         tabLayout.addTab(tabLayout.newTab().setText("Global"));
 
+        newsFeedType = "local";
+
         //TODO: Actually add functionality
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tabLayout.getSelectedTabPosition() == 0) {
-                    Toast.makeText(NewsfeedActivity.this, "Local", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(NewsfeedActivity.this, "Local", Toast.LENGTH_LONG).show();
+                    newsFeedType = "local";
+                    adapter.resetItems(new ArrayList<Challenge>());
+                    refreshContent();
                 } else if (tabLayout.getSelectedTabPosition() == 1) {
-                    Toast.makeText(NewsfeedActivity.this, "Popular", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(NewsfeedActivity.this, "Popular", Toast.LENGTH_LONG).show();
+                    newsFeedType = "popular";
+                    adapter.resetItems(new ArrayList<Challenge>());
+                    refreshContent();
                 } else if (tabLayout.getSelectedTabPosition() == 2) {
-                    Toast.makeText(NewsfeedActivity.this, "Global", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(NewsfeedActivity.this, "Global", Toast.LENGTH_LONG).show();
+                    newsFeedType = "global";
+                    adapter.resetItems(new ArrayList<Challenge>());
+                    refreshContent();
                 }
             }
 
@@ -126,7 +139,7 @@ public class NewsfeedActivity extends OneUpActivity {
     }
 
     private void refreshContent(){
-        new ChallengesWebRequest(new RequestHandler<ChallengesWebRequest.Challenge[]>() {
+        new ChallengesWebRequest(newsFeedType, new RequestHandler<ChallengesWebRequest.Challenge[]>() {
             @Override
             public void onSuccess(ChallengesWebRequest.Challenge[] response) {
                 challenges = new ArrayList<Challenge>();
@@ -145,7 +158,7 @@ public class NewsfeedActivity extends OneUpActivity {
     }
 
     private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
-        new ChallengesWebRequest(new RequestHandler<ChallengesWebRequest.Challenge[]>() {
+        new ChallengesWebRequest(newsFeedType, new RequestHandler<ChallengesWebRequest.Challenge[]>() {
             @Override
             public void onSuccess(ChallengesWebRequest.Challenge[] response) {
                 challenges = new ArrayList<Challenge>();

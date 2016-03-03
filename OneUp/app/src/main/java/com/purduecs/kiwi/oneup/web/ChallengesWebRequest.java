@@ -17,7 +17,7 @@ import java.util.Iterator;
  */
 public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ChallengesWebRequest.Challenge[]> {
 
-    public ChallengesWebRequest(final RequestHandler<Challenge[]> handler) {
+    public ChallengesWebRequest(String type, final RequestHandler<Challenge[]> handler) {
         Request request = new JsonArrayRequest(OneUpWebRequest.BASE_URL + "/challenges",
                 new Response.Listener<JSONArray>() {
                     @Override
