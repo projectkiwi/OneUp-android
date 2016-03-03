@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,7 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
@@ -176,7 +174,7 @@ public class NewsfeedActivity extends OneUpActivity {
         }
     }
 
-    public void goToMap() {
+    public void goToMap(MenuItem menuItem) {
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
@@ -184,7 +182,7 @@ public class NewsfeedActivity extends OneUpActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.one_up, menu);
+        getMenuInflater().inflate(R.menu.menu_newsfeed, menu);
         return true;
     }
 
