@@ -48,7 +48,7 @@
             android:text="Placeholder"/>
 
         <TextView
-            android:id="@+id/winner"
+            android:id="@+id/card_winner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_small"
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin_small"
-            android:layout_below="@id/winner"
+            android:layout_below="@id/card_winner"
             style="@style/SmallText"
             android:textColor="@color/lightGreyText"
             android:text="lots of placeholder text yo so this looks like a pretty high quality description"/>
@@ -103,7 +103,7 @@
             android:textOff="156"/>
 
         <TextView
-            android:id="@+id/categories"
+            android:id="@+id/card_categories"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/text_margin_small"
