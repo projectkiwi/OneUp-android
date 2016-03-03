@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.purduecs.kiwi.oneup.R;
-import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
+import com.purduecs.kiwi.oneup.web.ChallengesWebRequest.Challenge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +97,14 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             h.challenge=getItem(position);
             h.cardtitle.setText(list.get(position).name);
             h.cardimage.setImageResource(list.get(position).id);
+            h.cardowner.setText("by " + list.get(position).owner);
+            String categories = "";
+            for (int i = 0; i < list.get(position).categories.length; i++) {
+                categories += list.get(position).categories[i];
+                categories += ", ";
+            }
+            categories = categories.substring(0, categories.length()-2);
+            h.cardcategories.setText(categories);
         } else {
             onBindFooterView(holder, position);
         }
@@ -157,11 +165,15 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView cardimage;
         TextView cardtitle;
+        TextView cardowner;
+        TextView cardcategories;
         Challenge challenge;
         public ViewHolder(View itemView) {
             super(itemView);
             cardimage = (ImageView) itemView.findViewById(R.id.card_image);
             cardtitle = (TextView) itemView.findViewById(R.id.card_title);
+            cardowner = (TextView) itemView.findViewById(R.id.card_winner);
+            cardcategories = (TextView) itemView.findViewById(R.id.card_categories);
         }
     }
 

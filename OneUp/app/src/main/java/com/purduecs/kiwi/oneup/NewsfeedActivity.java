@@ -24,8 +24,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
-import com.purduecs.kiwi.oneup.cardViewModels.Challenge;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
+import com.purduecs.kiwi.oneup.web.ChallengesWebRequest.Challenge;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import java.util.ArrayList;
@@ -157,26 +157,16 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
                 loadMoreContent(listener);
             }
         });
+        refreshContent();
         recyclerView.setAdapter(adapter);
-
-        challenges.add(new Challenge("Challenge 1", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 2", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 4", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 5", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 6", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 7", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Challenge 8", R.drawable.doge_with_sunglasses));
 
     }
 
     private void refreshContent(){
-        new ChallengesWebRequest(newsFeedType, new RequestHandler<ChallengesWebRequest.Challenge[]>() {
+        new ChallengesWebRequest(newsFeedType, new RequestHandler<ArrayList<Challenge>>() {
             @Override
-            public void onSuccess(ChallengesWebRequest.Challenge[] response) {
-                challenges = new ArrayList<Challenge>();
-                for (int i = 0; i < response.length; i++) {
-                    challenges.add(new Challenge(response[i].title, R.drawable.doge_with_sunglasses));
-                }
+            public void onSuccess(ArrayList<Challenge> response) {
+                challenges = response;
                 adapter.resetItems(challenges);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -189,13 +179,10 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
-        new ChallengesWebRequest(newsFeedType, new RequestHandler<ChallengesWebRequest.Challenge[]>() {
+        new ChallengesWebRequest(newsFeedType, new RequestHandler<ArrayList<Challenge>>() {
             @Override
-            public void onSuccess(ChallengesWebRequest.Challenge[] response) {
-                challenges = new ArrayList<Challenge>();
-                for (int i = 0; i < response.length; i++) {
-                    challenges.add(new Challenge(response[i].title, R.drawable.doge_with_sunglasses));
-                }
+            public void onSuccess(ArrayList<Challenge> response) {
+                challenges = response;
                 adapter.addItems(challenges);
                 listener.finishedLoading();
             }
