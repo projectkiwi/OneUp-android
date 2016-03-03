@@ -20,7 +20,7 @@
         android:layout_toRightOf="@id/card_image">
 
         <TextView
-            android:id="@+id/timer"
+            android:id="@+id/card_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -41,7 +41,7 @@
             android:layout_marginLeft="@dimen/text_margin_small"
             android:layout_marginRight="@dimen/text_margin_small"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@id/timer"
+            android:layout_toLeftOf="@id/card_time"
             android:ellipsize="end"
             android:lines="1"
             style="@style/MediumText"
@@ -59,11 +59,12 @@
             android:text="By: Per50nW1thN4m3"/>
 
         <TextView
-            android:id="@+id/desc"
+            android:id="@+id/card_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin_small"
             android:layout_below="@id/card_winner"
+            android:layout_above="@+id/horzDiv"
             style="@style/SmallText"
             android:textColor="@color/lightGreyText"
             android:text="lots of placeholder text yo so this looks like a pretty high quality description"/>
@@ -78,7 +79,7 @@
             android:background="@color/dividerGray"/>
 
         <View
-            android:id="@+id/horzDiv"
+            android:id="@id/horzDiv"
             android:layout_height="1dp"
             android:layout_width="match_parent"
             android:layout_above="@id/vertDiv"
@@ -87,7 +88,7 @@
             android:background="@color/dividerGray"/>
 
         <com.purduecs.kiwi.oneup.views.CenterIconButton
-            android:id="@+id/likeButton"
+            android:id="@+id/card_like_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="0dp"

@@ -22,8 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
-import com.purduecs.kiwi.oneup.cardViewModels.Challenge;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
+import com.purduecs.kiwi.oneup.web.ChallengesWebRequest.Challenge;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import java.util.ArrayList;
@@ -105,16 +105,16 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
         });
         recyclerView.setAdapter(adapter);
 
-        challenges.add(new Challenge("Notification 1", R.drawable.doge_with_sunglasses));
+        /*challenges.add(new Challenge("Notification 1", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Notification 2", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Notification 4", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Notification 5", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Notification 6", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Notification 7", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Notification 8", R.drawable.doge_with_sunglasses));
+        challenges.add(new Challenge("Notification 8", R.drawable.doge_with_sunglasses));*/
     }
 
-    //TODO: Request Notifications by category
+    /*//TODO: Request Notifications by category
     private void getContent(int category){
         new ChallengesWebRequest("", new RequestHandler<ChallengesWebRequest.Challenge[]>() {
             @Override
@@ -151,7 +151,7 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
                 Log.e("HEY", "Our challenge webrequest in newsfeed failed");
             }
         });
-    }
+    }*/
 
 
     @Override

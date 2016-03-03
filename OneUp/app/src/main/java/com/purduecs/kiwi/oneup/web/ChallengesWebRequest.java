@@ -53,6 +53,9 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayLis
                 challe.categories = chall.getJSONArray("categories").toString()
                         .replace("\"", "").replace("[", "").replace("]", "").split(",");
                 challe.owner = winners[r.nextInt(winners.length)];
+                challe.score = r.nextInt(1000);
+                challe.time = r.nextInt(10);
+                challe.desc = "lots of placeholder text yo so this looks like a pretty high quality description";
                 c.add(challe);
             }
         } catch (Exception e) {
@@ -78,6 +81,9 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayLis
         public int id;
         public String owner;
         public String[] categories;
+        public int score;
+        public float time;
+        public String desc;
 
         /*public String getName() { return name; }
         public void setName(String name) { this.name = name; }

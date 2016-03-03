@@ -22,8 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
-import com.purduecs.kiwi.oneup.cardViewModels.Challenge;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
+import com.purduecs.kiwi.oneup.web.ChallengesWebRequest.Challenge;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import java.util.ArrayList;
@@ -104,16 +104,16 @@ public class BookmarksActivity extends AppCompatActivity implements NavigationVi
         });
         recyclerView.setAdapter(adapter);
 
-        challenges.add(new Challenge("Bookmark 1", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Bookmark 2", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Bookmark 4", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Bookmark 5", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Bookmark 6", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Bookmark 7", R.drawable.doge_with_sunglasses));
-        challenges.add(new Challenge("Bookmark 8", R.drawable.doge_with_sunglasses));
+        //challenges.add(new Challenge("Bookmark 1", R.drawable.doge_with_sunglasses));
+        //challenges.add(new Challenge("Bookmark 2", R.drawable.doge_with_sunglasses));
+        //challenges.add(new Challenge("Bookmark 4", R.drawable.doge_with_sunglasses));
+        //challenges.add(new Challenge("Bookmark 5", R.drawable.doge_with_sunglasses));
+        //challenges.add(new Challenge("Bookmark 6", R.drawable.doge_with_sunglasses));
+        //challenges.add(new Challenge("Bookmark 7", R.drawable.doge_with_sunglasses));
+        //challenges.add(new Challenge("Bookmark 8", R.drawable.doge_with_sunglasses));
     }
 
-    //TODO: Request Bookmarks by category
+    /*//TODO: Request Bookmarks by category
     private void getContent(int category){
         new ChallengesWebRequest("", new RequestHandler<ChallengesWebRequest.Challenge[]>() {
             @Override
@@ -150,7 +150,7 @@ public class BookmarksActivity extends AppCompatActivity implements NavigationVi
                 Log.e("HEY", "Our challenge webrequest in newsfeed failed");
             }
         });
-    }
+    }*/
 
 
     @Override

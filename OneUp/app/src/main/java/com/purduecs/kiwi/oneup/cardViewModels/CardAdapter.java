@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.purduecs.kiwi.oneup.R;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest.Challenge;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +108,9 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             categories = categories.substring(0, categories.length()-2);
             h.cardcategories.setText(categories);
+            h.cardlikes.setText(Integer.toString(list.get(position).score));
+            h.cardtime.setText(Float.toString(list.get(position).time));
+            h.carddesc.setText(list.get(position).desc);
         } else {
             onBindFooterView(holder, position);
         }
@@ -167,6 +173,9 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView cardtitle;
         TextView cardowner;
         TextView cardcategories;
+        ToggleButton cardlikes;
+        TextView cardtime;
+        TextView carddesc;
         Challenge challenge;
         public ViewHolder(View itemView) {
             super(itemView);
@@ -174,6 +183,9 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             cardtitle = (TextView) itemView.findViewById(R.id.card_title);
             cardowner = (TextView) itemView.findViewById(R.id.card_winner);
             cardcategories = (TextView) itemView.findViewById(R.id.card_categories);
+            cardlikes = (ToggleButton) itemView.findViewById(R.id.card_like_button);
+            cardtime = (TextView) itemView.findViewById(R.id.card_time);
+            carddesc = (TextView) itemView.findViewById(R.id.card_desc);
         }
     }
 
