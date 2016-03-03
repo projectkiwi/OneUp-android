@@ -4,7 +4,6 @@ package com.purduecs.kiwi.oneup;
 
  */
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,15 +12,16 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
 import com.purduecs.kiwi.oneup.cardViewModels.Challenge;
@@ -31,7 +31,7 @@ import com.purduecs.kiwi.oneup.web.RequestHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsfeedActivity extends OneUpActivity {
+public class NewsfeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -49,7 +49,7 @@ public class NewsfeedActivity extends OneUpActivity {
         setContentView(R.layout.activity_newsfeed);
 
         ////////////////////////SETUP TOOLBAR/////////////////////////////////
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
         ////////////////////////SETUP TABS/////////////////////////////////
@@ -71,15 +71,12 @@ public class NewsfeedActivity extends OneUpActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tabLayout.getSelectedTabPosition() == 0) {
-                    //Toast.makeText(NewsfeedActivity.this, "Local", Toast.LENGTH_LONG).show();
                     newsFeedType = "local";
+
                 } else if (tabLayout.getSelectedTabPosition() == 1) {
-                    //Toast.makeText(NewsfeedActivity.this, "Popular", Toast.LENGTH_LONG).show();
                     newsFeedType = "popular";
 
-
                 } else if (tabLayout.getSelectedTabPosition() == 2) {
-                    //Toast.makeText(NewsfeedActivity.this, "Global", Toast.LENGTH_LONG).show();
                     newsFeedType = "global";
                 }
 
@@ -128,6 +125,24 @@ public class NewsfeedActivity extends OneUpActivity {
             @Override
             public void onRefresh() {
                 refreshContent();
+            }
+        });
+
+        ////////////////////////CLEAN TOOLBAR SCROLL/////////////////////////////
+        final View toolbarContainer = findViewById(R.id.toolbar_container);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (dy > 0) {
+                    if ( toolbarContainer.getTranslationY() == 0) {
+                        tabLayout.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else {
+                    tabLayout.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -205,6 +220,11 @@ public class NewsfeedActivity extends OneUpActivity {
 
     public void goToMap(MenuItem menuItem) {
         Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
+
+    public void newChallenge(MenuItem menuItem) {
+        Intent intent = new Intent(this, ChallengeCreationActivity.class);
         startActivity(intent);
     }
 

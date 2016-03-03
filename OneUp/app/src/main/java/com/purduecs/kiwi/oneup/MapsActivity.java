@@ -1,5 +1,7 @@
 package com.purduecs.kiwi.oneup;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +11,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -41,8 +45,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng west_lafayette = new LatLng(40.4419, -86.9125);
-        mMap.addMarker(new MarkerOptions().position(west_lafayette).title("Marker in West Lafayette"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(west_lafayette));
+        LatLng west_lafayette = new LatLng(40.427536, -86.916966);
+
+        ///////////////////INITIALIZE MARKERS HERE///////////////////////////
+        mMap.addMarker(new MarkerOptions()
+                .position(west_lafayette)
+                .title("Challenge 0"));
+
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(west_lafayette, 15));
     }
 }

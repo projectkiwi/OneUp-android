@@ -22,10 +22,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".OneUpActivity"
             android:label="@string/title_activity_one_up"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity
             android:name=".NewsfeedActivity"
             android:label="The Newsfeed"
@@ -35,8 +37,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -45,46 +47,44 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
+
         <activity
             android:name=".NotificationsActivity"
-            android:label="@string/title_activity_notifications"
+            android:label="Notifications"
             android:parentActivityName=".NewsfeedActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
+
         <activity
             android:name=".BookmarksActivity"
-            android:label="@string/title_activity_bookmarks"
+            android:label="Bookmarks"
             android:parentActivityName=".NewsfeedActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
+
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login"/>
+
         <activity
             android:name=".ProfileActivity"
-            android:label="ProfileActivity"
+            android:label="Your Profile"
             android:parentActivityName=".NewsfeedActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
+
         <activity android:name=".ChallengeDetailActivity" />
         <activity android:name=".ChallengeCreationActivity" />
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
-        -->
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -96,6 +96,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
-    </application>
 
+    </application>
 </manifest>
