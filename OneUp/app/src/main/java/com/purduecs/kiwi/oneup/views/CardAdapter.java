@@ -106,6 +106,8 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             categories = categories.substring(0, categories.length()-2);
             h.cardcategories.setText(categories);
             h.cardlikes.setText(Integer.toString(list.get(position).score));
+            h.cardlikes.setTextOn(Integer.toString(list.get(position).score+1));
+            h.cardlikes.setTextOff(Integer.toString(list.get(position).score));
             h.cardtime.setText(Float.toString(list.get(position).time));
             h.carddesc.setText(list.get(position).desc);
         } else {
