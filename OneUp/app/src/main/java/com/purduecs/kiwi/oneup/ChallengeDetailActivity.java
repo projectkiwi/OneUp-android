@@ -2,6 +2,7 @@ package com.purduecs.kiwi.oneup;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge_detail);
+        setUpActionBar();
 
         mMedia = (ImageView) findViewById(R.id.challenge_media);
         mTitle = (TextView) findViewById(R.id.challenge_name);
@@ -66,5 +68,13 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                 .asGif()
                 .error(R.drawable.doge_with_sunglasses)
                 .into(mMedia);
+    }
+
+    private void setUpActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 }

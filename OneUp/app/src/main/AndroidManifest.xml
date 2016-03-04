@@ -82,8 +82,10 @@
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
 
-        <activity android:name=".ChallengeDetailActivity" />
-        <activity android:name=".ChallengeCreationActivity" />
+        <activity android:name=".ChallengeDetailActivity"
+            android:parentActivityName=".NewsfeedActivity"/>
+        <activity android:name=".ChallengeCreationActivity"
+            android:parentActivityName=".NewsfeedActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
