@@ -1,9 +1,5 @@
 package com.purduecs.kiwi.oneup;
 
-/* Challenge Detail Activity : Empty Activity
-
- */
-
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +7,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.web.ChallengeWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
@@ -63,5 +60,11 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             public void onFailure() {
             }
         });
+
+        Glide.with(this)
+                .load("http://i.imgur.com/Pmbjzw4.gif")
+                .asGif()
+                .error(R.drawable.doge_with_sunglasses)
+                .into(mMedia);
     }
 }

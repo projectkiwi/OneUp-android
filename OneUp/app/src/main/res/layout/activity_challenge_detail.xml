@@ -11,31 +11,38 @@
 
     <ImageView
         android:id="@+id/challenge_media"
-        android:layout_width="150dp"
-        android:layout_height="150dp" />
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/challenge_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_media"/>
+        android:layout_below="@id/challenge_media"
+        style="@style/MediumText"/>
 
     <TextView
         android:id="@+id/challenge_winner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_name"/>
+        android:layout_below="@id/challenge_name"
+        style="@style/SmallText"/>
 
     <TextView
         android:id="@+id/challenge_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_winner"/>
+        android:layout_below="@id/challenge_winner"
+        style="@style/SmallText"
+        android:textColor="@color/lightGreyText"/>
 
     <TextView
         android:id="@+id/challenge_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_desc"/>
+        android:layout_below="@id/challenge_desc"
+        style="@style/SmallText"
+        android:textColor="@color/lightGreyText"/>
 
 </RelativeLayout>
