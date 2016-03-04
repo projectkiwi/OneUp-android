@@ -23,9 +23,9 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.purduecs.kiwi.oneup.cardViewModels.CardAdapter;
+import com.purduecs.kiwi.oneup.views.CardAdapter;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
-import com.purduecs.kiwi.oneup.web.ChallengesWebRequest.Challenge;
+import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import java.util.ArrayList;

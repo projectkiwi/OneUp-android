@@ -9,4 +9,33 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.purduecs.kiwi.oneup.ChallengeCreationActivity">
 
+    <EditText
+        android:id="@+id/challenge_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="Title"/>
+
+    <EditText
+        android:id="@+id/challenge_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/challenge_name"
+        android:inputType="textMultiLine"
+        android:hint="Description"/>
+
+    <EditText
+        android:id="@+id/challenge_categories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/challenge_desc"
+        android:hint="Categories"/>
+
+    <Button
+        android:id="@+id/challenge_media_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/challenge_categories"
+        android:text="Add media"/>
+
 </RelativeLayout>

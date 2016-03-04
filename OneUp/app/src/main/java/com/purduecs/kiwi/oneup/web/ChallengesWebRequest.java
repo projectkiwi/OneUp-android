@@ -6,6 +6,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.purduecs.kiwi.oneup.OneUpApplication;
 import com.purduecs.kiwi.oneup.R;
+import com.purduecs.kiwi.oneup.models.Challenge;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,9 +17,9 @@ import java.util.Iterator;
 /**
  * Created by Adam on 2/25/16.
  */
-public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayList<ChallengesWebRequest.Challenge>> {
+public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayList<Challenge>> {
 
-    public ChallengesWebRequest(String type, final RequestHandler<ArrayList<ChallengesWebRequest.Challenge>> handler) {
+    public ChallengesWebRequest(String type, final RequestHandler<ArrayList<Challenge>> handler) {
         Request request = new JsonArrayRequest(OneUpWebRequest.BASE_URL + "/challenges",
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -39,7 +40,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayLis
     java.util.Random r = new java.util.Random();
 
     @Override
-    public ArrayList<ChallengesWebRequest.Challenge> parseResponse(JSONArray response) {
+    public ArrayList<Challenge> parseResponse(JSONArray response) {
         ArrayList<Challenge> c = new ArrayList<Challenge>();
         try {
             int ind = 0;
@@ -73,34 +74,5 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayLis
             ret[i] = iterator.next();
         }
         return ret;
-    }
-
-
-    public class Challenge {
-        public String name;
-        public int id;
-        public String owner;
-        public String[] categories;
-        public int score;
-        public float time;
-        public String desc;
-
-        /*public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-        public int getId() { return id; }
-        public void setId(int id) { this.id = id; }
-        public String getOwner() { return  owner; }
-        public void setOwner(String owner) { this.owner = owner;}
-        public String[] getCategories() { return  categories; }
-        public void setCategories(String[] owner) { this.categories = categories;}*/
-
-        public Challenge() {
-
-        }
-
-        public Challenge(String name, int id) {
-            this.name = name;
-            this.id = id;
-        }
     }
 }
