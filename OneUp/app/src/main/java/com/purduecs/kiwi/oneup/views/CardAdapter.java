@@ -32,9 +32,12 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private int firstVisibleItem, visibleItemCount, totalItemCount, previousTotal = 0;
     private boolean loading = true;
 
-    public CardAdapter(RecyclerView recyclerView, List<Challenge> list, final OnLoadMoreListener onLoadMoreListener) {
+    private View.OnClickListener clickListener;
+
+    public CardAdapter(RecyclerView recyclerView, List<Challenge> list, View.OnClickListener cardListener, final OnLoadMoreListener onLoadMoreListener) {
         this.list = list;
         this.mLoadListener = onLoadMoreListener;
+        this.clickListener = cardListener;
 
         if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
             mLayout = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -94,9 +97,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == ITEM_VIEW_TYPE_BASIC) {
             ViewHolder h = (ViewHolder) holder;
+            h.cardid.setText(getItem(position).id);
             h.challenge=getItem(position);
             h.cardtitle.setText(list.get(position).name);
-            h.cardimage.setImageResource(list.get(position).id);
+            h.cardimage.setImageResource(list.get(position).image);
             h.cardowner.setText("by " + list.get(position).owner);
             String categories = "";
             for (int i = 0; i < list.get(position).categories.length; i++) {
@@ -106,14 +110,15 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             categories = categories.substring(0, categories.length()-2);
             h.cardcategories.setText(categories);
             h.cardlikes.setText(Integer.toString(list.get(position).score));
-            h.cardlikes.setTextOn(Integer.toString(list.get(position).score+1));
+            h.cardlikes.setTextOn(Integer.toString(list.get(position).score + 1));
             h.cardlikes.setTextOff(Integer.toString(list.get(position).score));
             h.cardtime.setText(Float.toString(list.get(position).time));
             h.carddesc.setText(list.get(position).desc);
+
+            h.cardview.setOnClickListener(clickListener);
         } else {
             onBindFooterView(holder, position);
         }
-
     }
 
     @Override
@@ -168,6 +173,9 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        View cardview;
+
+        TextView cardid;
         ImageView cardimage;
         TextView cardtitle;
         TextView cardowner;
@@ -178,6 +186,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Challenge challenge;
         public ViewHolder(View itemView) {
             super(itemView);
+
+            cardview = itemView;
+
+            cardid = (TextView) itemView.findViewById(R.id.card_id);
             cardimage = (ImageView) itemView.findViewById(R.id.card_image);
             cardtitle = (TextView) itemView.findViewById(R.id.card_title);
             cardowner = (TextView) itemView.findViewById(R.id.card_winner);

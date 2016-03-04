@@ -4,8 +4,9 @@ package com.purduecs.kiwi.oneup.models;
  * Created by Adam on 3/3/16.
  */
 public class Challenge {
+    public String id;
     public String name;
-    public int id;
+    public int image;
     public String owner;
     public String[] categories;
     public int score;
@@ -14,8 +15,8 @@ public class Challenge {
 
         /*public String getName() { return name; }
         public void setName(String name) { this.name = name; }
-        public int getId() { return id; }
-        public void setId(int id) { this.id = id; }
+        public int getId() { return image; }
+        public void setId(int image) { this.image = image; }
         public String getOwner() { return  owner; }
         public void setOwner(String owner) { this.owner = owner;}
         public String[] getCategories() { return  categories; }
@@ -25,8 +26,8 @@ public class Challenge {
 
     }
 
-    public Challenge(String name, int id) {
+    public Challenge(String name, int image) {
         this.name = name;
-        this.id = id;
+        this.image = image;
     }
 }

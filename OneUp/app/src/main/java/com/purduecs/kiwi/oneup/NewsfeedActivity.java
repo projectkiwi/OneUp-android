@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import com.purduecs.kiwi.oneup.views.CardAdapter;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
@@ -151,7 +152,14 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     private void initializeData() {
 
         challenges = new ArrayList<Challenge>();
-        adapter = new CardAdapter(recyclerView, challenges, new CardAdapter.OnLoadMoreListener() {
+        adapter = new CardAdapter(recyclerView, challenges, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView view = (TextView) v.findViewById(R.id.card_id);
+                startActivity(ChallengeDetailActivity.intentFor(NewsfeedActivity.this,
+                        (String) view.getText()));
+            }
+        }, new CardAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore(CardAdapter.FinishedLoadingListener listener) {
                 loadMoreContent(listener);

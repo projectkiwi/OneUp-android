@@ -49,8 +49,9 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayLis
             while (!response.isNull(ind)) {
                 chall = response.getJSONObject(ind++);
                 challe = new Challenge();
+                challe.id = chall.getString("_id");
                 challe.name = chall.getString("name");
-                challe.id = R.drawable.doge_with_sunglasses;
+                challe.image = R.drawable.doge_with_sunglasses;
                 challe.categories = chall.getJSONArray("categories").toString()
                         .replace("\"", "").replace("[", "").replace("]", "").split(",");
                 challe.owner = winners[r.nextInt(winners.length)];

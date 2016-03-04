@@ -94,7 +94,12 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
 
         challenges = new ArrayList<Challenge>();
 
-        adapter = new CardAdapter(recyclerView, challenges, new CardAdapter.OnLoadMoreListener() {
+        adapter = new CardAdapter(recyclerView, challenges, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        }, new CardAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore(CardAdapter.FinishedLoadingListener listener) {
                 //loadMoreContent(listener);
