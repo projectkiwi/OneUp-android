@@ -15,4 +15,6 @@
     <dimen name="text_margin_small">4dp</dimen>
 
     <dimen name="newsfeed_loading_bar_padding">10dp</dimen>
+
+    <dimen name="add_media_border_size">1dp</dimen>
 </resources>

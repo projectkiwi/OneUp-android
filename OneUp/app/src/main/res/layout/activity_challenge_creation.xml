@@ -9,10 +9,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.purduecs.kiwi.oneup.ChallengeCreationActivity">
 
+    <ImageButton
+        android:id="@+id/challenge_media_button"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/add_media_button"
+        android:background="@drawable/add_media_border"
+        android:scaleType="center"/>
+
     <EditText
         android:id="@+id/challenge_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/challenge_media_button"
         android:inputType="text"
         android:hint="Title"/>
 
@@ -30,12 +40,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/challenge_desc"
         android:hint="Categories"/>
-
-    <Button
-        android:id="@+id/challenge_media_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_categories"
-        android:text="Add media"/>
 
 </RelativeLayout>
