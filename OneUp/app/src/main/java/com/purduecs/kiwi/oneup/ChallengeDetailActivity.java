@@ -64,8 +64,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
         });
 
         Glide.with(this)
-                .load("http://i.imgur.com/Pmbjzw4.gif")
-                .asGif()
+                .load(R.drawable.unsplash_1)
                 .error(R.drawable.doge_with_sunglasses)
                 .into(mMedia);
     }

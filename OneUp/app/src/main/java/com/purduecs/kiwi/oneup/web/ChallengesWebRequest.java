@@ -4,6 +4,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.purduecs.kiwi.oneup.OneUpApplication;
 import com.purduecs.kiwi.oneup.R;
 import com.purduecs.kiwi.oneup.models.Challenge;
@@ -17,13 +18,14 @@ import java.util.Iterator;
 /**
  * Created by Adam on 2/25/16.
  */
-public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayList<Challenge>> {
+public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayList<Challenge>> {
 
     public ChallengesWebRequest(String type, final RequestHandler<ArrayList<Challenge>> handler) {
-        Request request = new JsonArrayRequest(OneUpWebRequest.BASE_URL + "/challenges",
-                new Response.Listener<JSONArray>() {
+
+        Request request = new JsonObjectRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges", null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         handler.onSuccess(parseResponse(response));
                     }
                 }, new Response.ErrorListener() {
@@ -40,7 +42,15 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONArray, ArrayLis
     java.util.Random r = new java.util.Random();
 
     @Override
-    public ArrayList<Challenge> parseResponse(JSONArray response) {
+    public ArrayList<Challenge> parseResponse(JSONObject response2) {
+
+        JSONArray response = null;
+        try {
+            response = response2.getJSONArray("docs");
+        } catch (Exception e) {
+            ;
+        }
+
         ArrayList<Challenge> c = new ArrayList<Challenge>();
         try {
             int ind = 0;

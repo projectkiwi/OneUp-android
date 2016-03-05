@@ -10,6 +10,7 @@ import com.purduecs.kiwi.oneup.OneUpApplication;
 import com.purduecs.kiwi.oneup.R;
 import com.purduecs.kiwi.oneup.models.Challenge;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -41,6 +42,11 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
     @Override
     public Challenge parseResponse(JSONObject response) {
         Challenge c = new Challenge();
+        try {
+            response = response.getJSONObject("docs");
+        } catch (Exception e) {
+            ;
+        }
         try {
             c.id = response.getString("_id");
             c.name = response.getString("name");
