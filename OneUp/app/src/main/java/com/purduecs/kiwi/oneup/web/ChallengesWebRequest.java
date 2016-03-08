@@ -1,5 +1,7 @@
 package com.purduecs.kiwi.oneup.web;
 
+import android.support.v4.util.ArrayMap;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -13,16 +15,35 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Adam on 2/25/16.
  */
 public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayList<Challenge>> {
 
-    public ChallengesWebRequest(String type, final RequestHandler<ArrayList<Challenge>> handler) {
+    public ChallengesWebRequest(String type, int start, int length, final RequestHandler<ArrayList<Challenge>> handler) {
 
-        Request request = new JsonObjectRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges", null,
+        /*Request request = new JsonObjectRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges", null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        handler.onSuccess(parseResponse(response));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                handler.onFailure();
+            }
+        });*/
+
+        Map<String, String> headerArgs = new ArrayMap<String, String>();;
+        headerArgs.put("offset", Integer.toString(start));
+        headerArgs.put("limit", Integer.toString(length));
+
+        Request request = new JsonObjectEditHeaderRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges", headerArgs, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

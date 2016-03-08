@@ -6,6 +6,7 @@ package com.purduecs.kiwi.oneup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -34,6 +35,8 @@ import java.util.List;
 
 public class NewsfeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static int REQUEST_SIZE = 1;
+
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     CardAdapter adapter;
@@ -41,6 +44,8 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
 
     private String newsFeedType;
     private int lastTab;
+
+    private int numbLoaded;
 
     Animation rightTabAnimation, leftTabAnimation;
 
@@ -55,12 +60,14 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
 
         ////////////////////////SETUP TABS/////////////////////////////////
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Local"));
         tabLayout.addTab(tabLayout.newTab().setText("Popular"));
+        tabLayout.addTab(tabLayout.newTab().setText("New"));
         tabLayout.addTab(tabLayout.newTab().setText("Global"));
 
-        newsFeedType = "local";
+        newsFeedType = "popular";
         lastTab = 0;
+
+        numbLoaded = 0;
 
         leftTabAnimation = AnimationUtils.loadAnimation(this, R.anim.tab_animation_left);
         leftTabAnimation.setAnimationListener(tabAnimationListener);
@@ -72,10 +79,10 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tabLayout.getSelectedTabPosition() == 0) {
-                    newsFeedType = "local";
+                    newsFeedType = "popular";
 
                 } else if (tabLayout.getSelectedTabPosition() == 1) {
-                    newsFeedType = "popular";
+                    newsFeedType = "new";
 
                 } else if (tabLayout.getSelectedTabPosition() == 2) {
                     newsFeedType = "global";
@@ -171,11 +178,13 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void refreshContent(){
-        new ChallengesWebRequest(newsFeedType, new RequestHandler<ArrayList<Challenge>>() {
+        numbLoaded = 0;
+        new ChallengesWebRequest(newsFeedType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
             @Override
             public void onSuccess(ArrayList<Challenge> response) {
                 challenges = response;
                 adapter.resetItems(challenges);
+                numbLoaded += challenges.size();
                 swipeRefreshLayout.setRefreshing(false);
             }
 
@@ -187,19 +196,27 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
-        new ChallengesWebRequest(newsFeedType, new RequestHandler<ArrayList<Challenge>>() {
+        //temp 5 second delay
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
             @Override
-            public void onSuccess(ArrayList<Challenge> response) {
-                challenges = response;
-                adapter.addItems(challenges);
-                listener.finishedLoading();
-            }
+            public void run() {
+                new ChallengesWebRequest(newsFeedType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
+                    @Override
+                    public void onSuccess(ArrayList<Challenge> response) {
+                        challenges = response;
+                        adapter.addItems(challenges);
+                        numbLoaded += challenges.size();
+                        listener.finishedLoading();
+                    }
 
-            @Override
-            public void onFailure() {
-                Log.e("HEY", "Our challenge webrequest in newsfeed failed");
+                    @Override
+                    public void onFailure() {
+                        Log.e("HEY", "Our challenge webrequest in newsfeed failed");
+                    }
+                });
             }
-        });
+        }, 5000);
     }
 
 
