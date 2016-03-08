@@ -6,12 +6,13 @@ package com.purduecs.kiwi.oneup.models;
 public class Challenge {
     public String id;
     public String name;
-    public int image;
+    public String image;
     public String owner;
     public String[] categories;
     public int score;
     public float time;
     public String desc;
+    public String previewImage;
 
         /*public String getName() { return name; }
         public void setName(String name) { this.name = name; }
@@ -24,10 +25,5 @@ public class Challenge {
 
     public Challenge() {
 
-    }
-
-    public Challenge(String name, int image) {
-        this.name = name;
-        this.image = image;
     }
 }

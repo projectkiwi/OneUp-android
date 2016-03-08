@@ -152,7 +152,7 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     private void initializeData() {
 
         challenges = new ArrayList<Challenge>();
-        adapter = new CardAdapter(recyclerView, challenges, new View.OnClickListener() {
+        adapter = new CardAdapter(this, recyclerView, challenges, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView view = (TextView) v.findViewById(R.id.card_id);

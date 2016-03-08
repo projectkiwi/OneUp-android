@@ -61,13 +61,14 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 challe = new Challenge();
                 challe.id = chall.getString("_id");
                 challe.name = chall.getString("name");
-                challe.image = R.drawable.doge_with_sunglasses;
+                challe.image = chall.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
                 challe.categories = chall.getJSONArray("categories").toString()
                         .replace("\"", "").replace("[", "").replace("]", "").split(",");
                 challe.owner = winners[r.nextInt(winners.length)];
                 challe.score = r.nextInt(1000);
                 challe.time = r.nextInt(10);
                 challe.desc = "lots of placeholder text yo so this looks like a pretty high quality description";
+                challe.previewImage = chall.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
                 c.add(challe);
             }
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.purduecs.kiwi.oneup.views;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
 import com.purduecs.kiwi.oneup.R;
 import com.purduecs.kiwi.oneup.models.Challenge;
 
@@ -34,10 +36,13 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private View.OnClickListener clickListener;
 
-    public CardAdapter(RecyclerView recyclerView, List<Challenge> list, View.OnClickListener cardListener, final OnLoadMoreListener onLoadMoreListener) {
+    private Activity mActivity;
+
+    public CardAdapter(Activity holdingActivity, RecyclerView recyclerView, List<Challenge> list, View.OnClickListener cardListener, final OnLoadMoreListener onLoadMoreListener) {
         this.list = list;
         this.mLoadListener = onLoadMoreListener;
         this.clickListener = cardListener;
+        this.mActivity = holdingActivity;
 
         if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
             mLayout = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -100,7 +105,10 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             h.cardid.setText(getItem(position).id);
             h.challenge=getItem(position);
             h.cardtitle.setText(list.get(position).name);
-            h.cardimage.setImageResource(list.get(position).image);
+            Glide.with(mActivity)
+                    .load(list.get(position).previewImage)
+                    .error(R.drawable.doge_with_sunglasses)
+                    .into(h.cardimage);
             h.cardowner.setText("by " + list.get(position).owner);
             String categories = "";
             for (int i = 0; i < list.get(position).categories.length; i++) {

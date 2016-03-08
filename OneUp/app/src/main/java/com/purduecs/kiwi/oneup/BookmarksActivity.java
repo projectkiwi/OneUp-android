@@ -93,7 +93,7 @@ public class BookmarksActivity extends AppCompatActivity implements NavigationVi
 
         challenges = new ArrayList<Challenge>();
 
-        adapter = new CardAdapter(recyclerView, challenges, new View.OnClickListener() {
+        adapter = new CardAdapter(this, recyclerView, challenges, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
