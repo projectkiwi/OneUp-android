@@ -58,7 +58,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 handler.onFailure();
             }
         });
-        
+
         RequestQueueSingleton.getInstance(OneUpApplication.getAppContext()).addToRequestQueue(mRequest);
     }
 
