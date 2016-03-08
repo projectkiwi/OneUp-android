@@ -85,6 +85,17 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public void resetItems(@NonNull List<Challenge> list) {
+        firstVisibleItem = 0;
+        visibleItemCount = 0;
+        totalItemCount = 0;
+        previousTotal = 0;
+
+        this.list.clear();
+        addItems(list);
+        scrollCheck();
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ITEM_VIEW_TYPE_BASIC) {
@@ -152,18 +163,6 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void addItems(@NonNull List<Challenge> list) {
         this.list.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void resetItems(@NonNull List<Challenge> list) {
-        loading = false;
-        firstVisibleItem = 0;
-        visibleItemCount = 0;
-        totalItemCount = 0;
-        previousTotal = 0;
-
-        this.list.clear();
-        addItems(list);
-        scrollCheck();
     }
 
     @Override

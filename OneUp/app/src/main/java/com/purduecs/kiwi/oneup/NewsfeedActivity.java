@@ -25,17 +25,20 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.purduecs.kiwi.oneup.views.CardAdapter;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
 import com.purduecs.kiwi.oneup.models.Challenge;
+import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NewsfeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static int REQUEST_SIZE = 1;
+    private static int REQUEST_SIZE = 10;
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -46,6 +49,8 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     private int lastTab;
 
     private int numbLoaded;
+
+    OneUpWebRequest mWebRequest;
 
     Animation rightTabAnimation, leftTabAnimation;
 
@@ -156,6 +161,13 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
 
     }
 
+    @Override
+    protected void onStop() {
+        if (mWebRequest != null) mWebRequest.cancelRequest();
+
+        super.onStop();
+    }
+
     private void initializeData() {
 
         challenges = new ArrayList<Challenge>();
@@ -179,13 +191,24 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
 
     private void refreshContent(){
         numbLoaded = 0;
-        new ChallengesWebRequest(newsFeedType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
+        adapter.resetItems(new ArrayList<Challenge>());
+        loadMoreContent(new CardAdapter.FinishedLoadingListener() {
+            @Override
+            public void finishedLoading() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
+        mWebRequest = new ChallengesWebRequest(newsFeedType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
             @Override
             public void onSuccess(ArrayList<Challenge> response) {
                 challenges = response;
-                adapter.resetItems(challenges);
+                adapter.addItems(challenges);
                 numbLoaded += challenges.size();
-                swipeRefreshLayout.setRefreshing(false);
+                listener.finishedLoading();
+                mWebRequest = null;
             }
 
             @Override
@@ -193,30 +216,6 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
                 Log.e("HEY", "Our challenge webrequest in newsfeed failed");
             }
         });
-    }
-
-    private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
-        //temp 5 second delay
-        final Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                new ChallengesWebRequest(newsFeedType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
-                    @Override
-                    public void onSuccess(ArrayList<Challenge> response) {
-                        challenges = response;
-                        adapter.addItems(challenges);
-                        numbLoaded += challenges.size();
-                        listener.finishedLoading();
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        Log.e("HEY", "Our challenge webrequest in newsfeed failed");
-                    }
-                });
-            }
-        }, 5000);
     }
 
 
@@ -294,7 +293,6 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
 
         @Override
         public void onAnimationEnd(Animation animation) {
-            adapter.resetItems(new ArrayList<Challenge>());
             refreshContent();
         }
 

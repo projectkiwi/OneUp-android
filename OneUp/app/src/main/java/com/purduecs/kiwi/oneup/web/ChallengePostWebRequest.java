@@ -20,6 +20,8 @@ import java.util.ArrayList;
  */
 public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
 
+    Request mRequest;
+
     public ChallengePostWebRequest(Challenge challenge, final RequestHandler<Boolean> handler) {
         // Make the json object to send
         JSONObject post = new JSONObject();
@@ -37,7 +39,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Bool
         }
 
         // Now post that object
-        Request request = new JsonObjectRequest(Request.Method.POST,
+        mRequest = new JsonObjectRequest(Request.Method.POST,
                 OneUpWebRequest.BASE_URL + "/challenges",
                 post,
                 new Response.Listener<JSONObject>() {
@@ -52,12 +54,19 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Bool
                     }
                 });
 
-        RequestQueueSingleton.getInstance(OneUpApplication.getAppContext()).addToRequestQueue(request);
+        RequestQueueSingleton.getInstance(OneUpApplication.getAppContext()).addToRequestQueue(mRequest);
     }
 
     @Override
     public Boolean parseResponse(JSONObject response) {
         // May need to check response to see if we got success or failure back
+        return true;
+    }
+
+    @Override
+    public boolean cancelRequest() {
+        if (mRequest.isCanceled()) return false;
+        mRequest.cancel();
         return true;
     }
 }

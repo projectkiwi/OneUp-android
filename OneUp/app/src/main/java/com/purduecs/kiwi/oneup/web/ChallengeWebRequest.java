@@ -18,10 +18,12 @@ import org.json.JSONObject;
  */
 public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challenge> {
 
+    Request mRequest;
+
     public ChallengeWebRequest(String challengeId, final RequestHandler<Challenge> handler) {
 
         // Now get that object
-        Request request = new JsonObjectRequest(Request.Method.GET,
+        mRequest = new JsonObjectRequest(Request.Method.GET,
                 OneUpWebRequest.BASE_URL + "/challenges/" + challengeId,
                 null,
                 new Response.Listener<JSONObject>() {
@@ -36,7 +38,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             }
         });
 
-        RequestQueueSingleton.getInstance(OneUpApplication.getAppContext()).addToRequestQueue(request);
+        RequestQueueSingleton.getInstance(OneUpApplication.getAppContext()).addToRequestQueue(mRequest);
     }
 
     @Override
@@ -57,5 +59,12 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             Log.e("HEY", "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest");
         }
         return c;
+    }
+
+    @Override
+    public boolean cancelRequest() {
+        if (mRequest.isCanceled()) return false;
+        mRequest.cancel();
+        return true;
     }
 }

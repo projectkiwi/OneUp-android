@@ -1,6 +1,7 @@
 package com.purduecs.kiwi.oneup.web;
 
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -24,6 +25,8 @@ import java.util.Map;
  */
 public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayList<Challenge>> {
 
+    Request mRequest;
+
     public ChallengesWebRequest(String type, int start, int length, final RequestHandler<ArrayList<Challenge>> handler) {
 
         /*Request request = new JsonObjectRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges", null,
@@ -43,7 +46,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
         headerArgs.put("offset", Integer.toString(start));
         headerArgs.put("limit", Integer.toString(length));
 
-        Request request = new JsonObjectEditHeaderRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges", headerArgs, null,
+        mRequest = new JsonObjectEditHeaderRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges", headerArgs, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -55,8 +58,8 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 handler.onFailure();
             }
         });
-
-        RequestQueueSingleton.getInstance(OneUpApplication.getAppContext()).addToRequestQueue(request);
+        
+        RequestQueueSingleton.getInstance(OneUpApplication.getAppContext()).addToRequestQueue(mRequest);
     }
 
     String[] winners = new String[] {"loeb", "mkausas", "dalal", "semenza", "christiansen", "craven"};
@@ -96,6 +99,13 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
 
         }
         return c;
+    }
+
+    @Override
+    public boolean cancelRequest() {
+        if (mRequest.isCanceled()) return false;
+        mRequest.cancel();
+        return true;
     }
 
     private static Challenge[] toChallengesArray(ArrayList<Challenge> challenges)
