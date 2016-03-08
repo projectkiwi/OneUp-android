@@ -4,6 +4,7 @@ package com.purduecs.kiwi.oneup;
 
  */
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -235,8 +236,20 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     }
 
     public void newChallenge(MenuItem menuItem) {
-        Intent intent = new Intent(this, ChallengeCreationActivity.class);
-        startActivity(intent);
+        startActivityForResult(ChallengeCreationActivity.intentFor(this), ChallengeCreationActivity.REQUEST_POST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ChallengeCreationActivity.REQUEST_POST:
+                if (resultCode == Activity.RESULT_OK) {
+                    String id = data.getStringExtra(ChallengeCreationActivity.EXTRA_ID);
+                    startActivity(ChallengeDetailActivity.intentFor(NewsfeedActivity.this, id));
+                }
+                break;
+        }
     }
 
     @Override

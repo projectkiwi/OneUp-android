@@ -18,18 +18,18 @@ import java.util.ArrayList;
 /**
  * Created by Adam on 3/3/16.
  */
-public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
+public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, String> {
 
     Request mRequest;
 
-    public ChallengePostWebRequest(Challenge challenge, final RequestHandler<Boolean> handler) {
+    public ChallengePostWebRequest(Challenge challenge, final RequestHandler<String> handler) {
         // Make the json object to send
         JSONObject post = new JSONObject();
         JSONArray cats = new JSONArray();
         try {
             post.put("name", challenge.name);
-            post.put("desc", challenge.desc);
-            post.put("owner", challenge.owner);
+            post.put("description", challenge.desc);
+            //post.put("owner", challenge.owner);
             for (int i = 0; i < challenge.categories.length; i++) {
                 cats.put(i, challenge.categories[i]);
             }
@@ -58,9 +58,13 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Bool
     }
 
     @Override
-    public Boolean parseResponse(JSONObject response) {
+    public String parseResponse(JSONObject response) {
         // May need to check response to see if we got success or failure back
-        return true;
+        try {
+            return response.getJSONObject("data").getString("_id");
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
