@@ -87,6 +87,7 @@ public class ChallengeCreationActivity extends AppCompatActivity {
         c.owner = "loeb";
         c.desc = descField.getText().toString();
         c.categories = catField.getText().toString().split(",");
+        c.pattern = "pattern yo";
         return c;
     }
 }

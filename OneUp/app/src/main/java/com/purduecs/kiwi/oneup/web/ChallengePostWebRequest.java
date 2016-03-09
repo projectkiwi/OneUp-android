@@ -29,6 +29,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
         try {
             post.put("name", challenge.name);
             post.put("description", challenge.desc);
+            post.put("pattern", challenge.pattern);
             //post.put("owner", challenge.owner);
             for (int i = 0; i < challenge.categories.length; i++) {
                 cats.put(i, challenge.categories[i]);
@@ -61,6 +62,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
     public String parseResponse(JSONObject response) {
         // May need to check response to see if we got success or failure back
         try {
+            Log.d("HEY", response.getJSONObject("data").getString("_id"));
             return response.getJSONObject("data").getString("_id");
         } catch (Exception e) {
             return null;

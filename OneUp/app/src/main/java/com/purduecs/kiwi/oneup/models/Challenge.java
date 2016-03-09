@@ -13,6 +13,7 @@ public class Challenge {
     public float time;
     public String desc;
     public String previewImage;
+    public String pattern;
 
         /*public String getName() { return name; }
         public void setName(String name) { this.name = name; }
