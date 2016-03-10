@@ -5,7 +5,9 @@ package com.purduecs.kiwi.oneup;
  */
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -21,49 +23,63 @@ public class LoginActivity extends AppCompatActivity {
 
     protected CallbackManager callbackManager;
     protected LoginButton loginButton;
+    protected SharedPreferences preferences;
 
     protected String TAG = "OneUP";
+    protected String USERID = "fb_user_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-
-
-        try {
-            getSupportActionBar().hide();
-        } catch (Exception e) {
-            Log.e(TAG, String.format("No Action Bar. Error : " + e.getMessage()));
-        }
-
-        callbackManager = CallbackManager.Factory.create();
-        loginButton = (LoginButton) findViewById(R.id.fb_login_button);
-
         final Intent intent = new Intent(this, NewsfeedActivity.class);
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
+        ////////////////////////SHARED PREFS/////////////////////////////
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String name = preferences.getString(USERID, "not_found");
+        Log.d(TAG, String.format("USERID is " + name));
+        if(name != null && !name.equals("not_found")) {
+            startActivity(intent);
+        }
+        else {
 
-                //TODO: Send to Backend. Store in SharedPrefs
-                Log.d(TAG, String.format(
-                                "User ID: " + loginResult.getAccessToken().getUserId()
-                                        + " Token: " + loginResult.getAccessToken().getToken())
-                );
-                startActivity(intent);
+            ////////////////////////HIDE ACTION BAR/////////////////////////////
+            try {
+                getSupportActionBar().hide();
+            } catch (Exception e) {
+                Log.e(TAG, String.format("No Action Bar. Error : " + e.getMessage()));
             }
 
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "FB Cancelled");
-            }
+            callbackManager = CallbackManager.Factory.create();
+            loginButton = (LoginButton) findViewById(R.id.fb_login_button);
 
-            @Override
-            public void onError(FacebookException exception) {
-                Log.e(TAG, String.format("FB Error" + exception.getMessage()));
-            }
-        });
+            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+
+                    //TODO: Send to Backend.
+                    Log.d(TAG, String.format(
+                                    "User ID: " + loginResult.getAccessToken().getUserId()
+                                            + " Token: " + loginResult.getAccessToken().getToken())
+                    );
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(USERID, String.format("" + loginResult.getAccessToken().getUserId()));
+                    editor.commit();
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onCancel() {
+                    Log.d(TAG, "FB Cancelled");
+                }
+
+                @Override
+                public void onError(FacebookException exception) {
+                    Log.e(TAG, String.format("FB Error" + exception.getMessage()));
+                }
+            });
+        }
     }
 
     @Override
