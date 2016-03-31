@@ -6,7 +6,15 @@ package com.purduecs.kiwi.oneup;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +22,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.app.AlertDialog;
+import android.widget.Toast;
 
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.web.ChallengePostWebRequest;
@@ -23,10 +34,20 @@ import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.InputStream;
+
 public class ChallengeCreationActivity extends AppCompatActivity {
 
     public static final int REQUEST_POST = 12;
     public static final String EXTRA_ID = "com.purduecs.kiwi.oneup.extra_id";
+
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
+    private static final int SELECT_PHOTO_ACTIVITY_REQUEST_CODE = 300;
+
+    private Uri fileUri;
+    private Bitmap challenge_pic;
 
     public static Intent intentFor(Context context) {
         return new Intent(context, ChallengeCreationActivity.class);
@@ -90,4 +111,116 @@ public class ChallengeCreationActivity extends AppCompatActivity {
         c.pattern = "pattern yo";
         return c;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Image captured and saved to fileUri specified in the Intent
+                Toast.makeText(this, "Image saved to:\n" +
+                        data.getData(), Toast.LENGTH_LONG).show();
+                Bundle extras = data.getExtras();
+                challenge_pic = (Bitmap) extras.get("data");
+            } else if (resultCode == RESULT_CANCELED) {
+                // User cancelled the image capture
+            } else {
+                // Image capture failed, advise user
+            }
+
+        } else if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Video captured and saved to fileUri specified in the Intent
+                Toast.makeText(this, "Video saved to:\n" +
+                        data.getData(), Toast.LENGTH_LONG).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                // User cancelled the video capture
+            } else {
+                // Video capture failed, advise user
+            }
+
+        } else if(requestCode == SELECT_PHOTO_ACTIVITY_REQUEST_CODE) {
+            if(resultCode == RESULT_OK){
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                Cursor cursor = getContentResolver().query(
+                        selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                challenge_pic = BitmapFactory.decodeFile(filePath);
+                Toast.makeText(ChallengeCreationActivity.this, "File Path = " + filePath, Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if(resultCode == RESULT_OK) {
+            ImageButton button = (ImageButton) findViewById(R.id.challenge_media_button);
+            button.setImageBitmap(challenge_pic);
+        }
+    }
+
+    //OnClick Listener for imagebutton
+    public void selectMedia(View v) {
+        final CharSequence[] items = { "Take Photo", "Take Video", "Photo from Gallery","Video from Gallery", "Cancel" };
+
+        AlertDialog.Builder media_sel = new AlertDialog.Builder(ChallengeCreationActivity.this);
+        media_sel.setTitle("Select Media");
+        media_sel.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                    //TODO: Store based on TimeStamp
+                    File media_folder = new File(Environment.getExternalStorageDirectory(), "OneUp");
+                    media_folder.mkdirs();
+                    File image = new File(media_folder, "hello_world.jpg");
+                    Uri uriSavedImage = Uri.fromFile(image);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
+
+                    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
+                } else if (items[item].equals("Take Video")) {
+
+                    /*
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+                    //TODO: Store based on TimeStamp
+                    File media_folder = new File(Environment.getExternalStorageDirectory(), "OneUp");
+                    media_folder.mkdirs();
+                    File image = new File(media_folder, "hello_world.mp4");
+                    Uri uriSavedImage = Uri.fromFile(image);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
+
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
+                    startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+                    */
+
+                    Toast.makeText(ChallengeCreationActivity.this, "This feature coming soon!\n", Toast.LENGTH_LONG).show();
+
+                } else if (items[item].equals("Photo from Gallery")) {
+
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, SELECT_PHOTO_ACTIVITY_REQUEST_CODE);
+
+                } else if (items[item].equals("Video from Gallery")) {
+
+                    Toast.makeText(ChallengeCreationActivity.this, "This feature coming soon!\n", Toast.LENGTH_LONG).show();
+
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        media_sel.show();
+    }
 }
+
+

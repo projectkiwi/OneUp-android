@@ -16,7 +16,8 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/add_media_button"
         android:background="@drawable/add_media_border"
-        android:scaleType="center"/>
+        android:scaleType="center"
+        android:onClick="selectMedia" />
 
     <EditText
         android:id="@+id/challenge_name"
