@@ -14,4 +14,7 @@
     <color name="timerColor">@color/lightGreyText</color>
     <color name="heartColorUnpressed">@color/lightGreyText</color>
     <color name="heartColor">#f96060</color>
+    <color name="confirmedGreen">#3BEA52</color>
+
+    <color name="overlayGrey">#889C9C9C</color>
 </resources>

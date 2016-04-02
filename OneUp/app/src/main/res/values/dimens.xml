@@ -7,12 +7,13 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin_small">4dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_margin_large">28dp</dimen>
 
     <dimen name="newsfeed_item_margin">5dp</dimen>
     <dimen name="newsfeed_item_height">175dp</dimen>
     <dimen name="divider_margin">0dp</dimen>
-    <dimen name="text_margin_small">4dp</dimen>
 
     <dimen name="newsfeed_loading_bar_padding">10dp</dimen>
 

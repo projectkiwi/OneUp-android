@@ -3,37 +3,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.purduecs.kiwi.oneup.ChallengeDetailActivity">
+    tools:context="com.purduecs.kiwi.oneup.ChallengeDetailActivity"
+    android:background="@color/colorPrimary">
 
     <ImageView
         android:id="@+id/challenge_media"
+        android:layout_width="match_parent"
+        android:layout_height="325dp"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/holo_blue_light"/> <!-- TODO change dp to wrap_content-->
+
+    <TextView
+        android:id="@+id/learn_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/challenge_media"
+        android:layout_margin="0dp"
+        android:layout_marginTop="@dimen/text_margin_small"
+        android:background="@color/overlayGrey"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:text="Learn More >"/>
+
+    <com.purduecs.kiwi.oneup.views.CenterIconButton
+        android:id="@+id/like_button"
         android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_height="28dp"
+        android:layout_above="@id/learn_more"
+        android:layout_margin="@dimen/text_margin"
+        android:paddingLeft="-4dp"
+        android:paddingRight="-4dp"
+        android:background="@drawable/like_button_deats"
+        android:drawableLeft="@drawable/heart_small"
+        android:drawablePadding="@dimen/text_margin_small"
+        style="@style/TinyText"
+        android:textColor="@android:color/white"
+        android:textOn="LIKED"
+        android:textOff="LIKE ME"/>
 
     <TextView
         android:id="@+id/challenge_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_media"
-        style="@style/MediumText"/>
+        android:layout_above="@id/like_button"
+        android:layout_marginLeft="@dimen/text_margin"
+        style="@style/LargeText"
+        android:textColor="@android:color/white"
+        android:text="REALLY IMPORTANT"/>
 
     <TextView
         android:id="@+id/challenge_winner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_name"
-        style="@style/SmallText"/>
+        android:layout_above="@id/challenge_name"
+        android:layout_marginLeft="@dimen/text_margin"
+        style="@style/MediumText"
+        android:textColor="@android:color/white"
+        android:text="CHAMPION WINNER"/>
+
+    <com.purduecs.kiwi.oneup.views.CenterIconButton
+        android:id="@+id/bookmark_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/challenge_media"
+        android:layout_above="@id/learn_more"
+        android:layout_margin="@dimen/text_margin_large"
+        android:padding="0dp"
+        android:background="@drawable/bookmark_button_deats"
+        style="@style/TinyText"
+        android:textColor="@android:color/white"
+        android:textOn="BOOKMARKED"
+        android:textOff="BOOKMARK"/>
 
     <TextView
         android:id="@+id/challenge_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/challenge_winner"
+        android:visibility="invisible"
         style="@style/SmallText"
         android:textColor="@color/lightGreyText"/>
 
@@ -42,7 +89,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/challenge_desc"
+        android:visibility="invisible"
         style="@style/SmallText"
         android:textColor="@color/lightGreyText"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/challenge_media">
+
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>
