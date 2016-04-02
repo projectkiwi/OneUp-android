@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="com.purduecs.kiwi.oneup.ChallengeDetailActivity"
-    android:background="@color/colorPrimary">
+    android:background="@android:color/white">
 
     <ImageView
         android:id="@+id/challenge_media"
@@ -94,6 +94,7 @@
         android:textColor="@color/lightGreyText"/>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/attempt_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/challenge_media">

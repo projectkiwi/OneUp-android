@@ -17,4 +17,8 @@
     <color name="confirmedGreen">#3BEA52</color>
 
     <color name="overlayGrey">#889C9C9C</color>
+
+    <color name="firstGold">#F8E71C</color>
+    <color name="secondSilver">#E6E6E6</color>
+    <color name="thirdBronze">#D16119</color>
 </resources>
