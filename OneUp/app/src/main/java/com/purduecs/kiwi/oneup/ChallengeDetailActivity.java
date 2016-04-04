@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
+import com.purduecs.kiwi.oneup.views.CenterIconButton;
 import com.purduecs.kiwi.oneup.web.ChallengeWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
@@ -36,6 +37,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
     Challenge mChallenge;
     ImageView mMedia;
     TextView mTitle, mWinner, mDesc, mCategories;
+    CenterIconButton mLikeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
         mWinner = (TextView) findViewById(R.id.challenge_winner);
         mDesc = (TextView) findViewById(R.id.challenge_desc);
         mCategories = (TextView) findViewById(R.id.challenge_categories);
+        mLikeButton = (CenterIconButton) findViewById(R.id.like_button);
 
         String challengeId = getIntent().getStringExtra(EXTRA_CHALLENGE_ID);
 
