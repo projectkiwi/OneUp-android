@@ -53,9 +53,11 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                     .replace("\"", "").replace("[", "").replace("]", "").split(",");
             c.owner = "temp";
             c.score = 164;
-            c.time = 9;
-            c.desc = "lots of placeholder text yo so this looks like a pretty high quality description";
+            c.time = "1 d";
+            c.desc = response.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
             c.previewImage = response.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
+            c.likes = response.getInt("challenge_votes");//103;
+            c.liked = 0;
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest");
         }

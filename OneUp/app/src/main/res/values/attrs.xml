@@ -3,4 +3,8 @@
     <declare-styleable name="challenges_list">
         <attr name="type" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="like_button">
+        <attr name="state_past_liked" format="boolean" />
+    </declare-styleable>
 </resources>

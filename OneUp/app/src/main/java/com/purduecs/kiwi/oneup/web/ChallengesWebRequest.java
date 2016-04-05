@@ -29,19 +29,6 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
 
     public ChallengesWebRequest(String type, int start, int length, final RequestHandler<ArrayList<Challenge>> handler) {
 
-        /*Request request = new JsonObjectRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges", null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        handler.onSuccess(parseResponse(response));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                handler.onFailure();
-            }
-        });*/
-
         switch (type) {
             case "new":
             case "popular":
@@ -104,9 +91,11 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                         .replace("\"", "").replace("[", "").replace("]", "").split(",");
                 challe.owner = winners[r.nextInt(winners.length)];
                 challe.score = r.nextInt(1000);
-                challe.time = r.nextInt(10);
-                challe.desc = "lots of placeholder text yo so this looks like a pretty high quality description";
+                challe.time = "1 d";//chall.getString("updated_on").substring(0,10);
+                challe.desc = chall.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
                 challe.previewImage = chall.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
+                challe.likes = chall.getInt("challenge_votes");//r.nextInt(1000);
+                challe.liked = 0;//r.nextInt(3);
                 c.add(challe);
             }
         } catch (Exception e) {
@@ -120,16 +109,5 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
         if (mRequest.isCanceled()) return false;
         mRequest.cancel();
         return true;
-    }
-
-    private static Challenge[] toChallengesArray(ArrayList<Challenge> challenges)
-    {
-        Challenge[] ret = new Challenge[challenges.size()];
-        Iterator<Challenge> iterator = challenges.iterator();
-        for (int i = 0; i < ret.length; i++)
-        {
-            ret[i] = iterator.next();
-        }
-        return ret;
     }
 }

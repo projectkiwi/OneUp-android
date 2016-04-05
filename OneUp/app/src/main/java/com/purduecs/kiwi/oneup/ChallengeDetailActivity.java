@@ -7,9 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.views.CenterIconButton;
 import com.purduecs.kiwi.oneup.web.ChallengeWebRequest;
+import com.purduecs.kiwi.oneup.web.LikeWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 public class ChallengeDetailActivity extends AppCompatActivity {
@@ -67,6 +70,28 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                 mWinner.setText(mChallenge.owner);
                 mDesc.setText(mChallenge.desc);
 
+                Glide.with(ChallengeDetailActivity.this)
+                        .load(mChallenge.image)
+                        .error(R.drawable.doge_with_sunglasses)
+                        .into(mMedia);
+
+
+                mLikeButton.setText(Integer.toString(mChallenge.likes));
+                mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
+                mLikeButton.setTextOn(Integer.toString(mChallenge.likes + 1));
+                mLikeButton.setPastLiked(false);
+                switch (mChallenge.liked) {
+                    case 0:
+                        break;
+                    case 1:
+                        mLikeButton.toggle();
+                        break;
+                    case 2:
+                        mLikeButton.setPastLiked(true);
+                        break;
+                }
+                mLikeButton.setOnCheckedChangeListener(likeListener);
+
                 String categories = "";
                 for (int i = 0; i < mChallenge.categories.length; i++) {
                     categories += mChallenge.categories[i];
@@ -88,11 +113,6 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             public void onFailure() {
             }
         });
-
-        Glide.with(this)
-                .load("https://pbs.twimg.com/profile_images/675404869885276160/6Ybu2ZpU.jpg")
-                .error(R.drawable.doge_with_sunglasses)
-                .into(mMedia);
     }
 
     private void setUpActionBar() {
@@ -102,6 +122,29 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+
+    // Need this so the oncheckedchange listener doesn't loop when it fails
+    private boolean failed = false;
+
+    private CompoundButton.OnCheckedChangeListener likeListener =
+            new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (failed) { failed = false; return; }
+                    new LikeWebRequest(mChallenge.id, isChecked, new RequestHandler<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean response) {
+
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Log.d("HEY", "we failed to like the post :(");
+                            failed = true;
+                            mLikeButton.toggle();
+                        }
+                    });
+                }
+            };
 
     public class AttemptAdapter extends RecyclerView.Adapter<AttemptAdapter.ViewHolder> {
         private Attempt[] mDataset;
