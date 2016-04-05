@@ -7,25 +7,21 @@
     android:fitsSystemWindows="true"
     tools:context="com.purduecs.kiwi.oneup.NewsfeedActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.purduecs.kiwi.oneup.views.ChallengeListLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:oneup="http://schemas.android.com/apk/res/com.purduecs.kiwi.oneup"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/swipe_refresh_layout"
+        android:id="@+id/challenges_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.purduecs.kiwi.oneup.NewsfeedActivity"
         android:background="@color/newsfeedBackground"
-        android:focusable="false">
+        android:focusable="false"
+        oneup:type="popular">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/newsfeed_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="300dp" />
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.purduecs.kiwi.oneup.views.ChallengeListLayout>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/toolbar_container"

@@ -4,12 +4,9 @@ package com.purduecs.kiwi.oneup;
 
  */
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,33 +20,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.purduecs.kiwi.oneup.views.CardAdapter;
-import com.purduecs.kiwi.oneup.web.BookmarksWebRequest;
-import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
 import com.purduecs.kiwi.oneup.models.Challenge;
+import com.purduecs.kiwi.oneup.views.ChallengeListLayout;
+import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BookmarksActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static int REQUEST_SIZE = 10;
-
-    SwipeRefreshLayout swipeRefreshLayout;
-    RecyclerView recyclerView;
-    CardAdapter adapter;
-    List<Challenge> challenges;
-
-    private int numbLoaded;
-
-    OneUpWebRequest mWebRequest;
+    ChallengeListLayout challengesLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +44,6 @@ public class BookmarksActivity extends AppCompatActivity implements NavigationVi
         ////////////////////////SETUP TOOLBAR/////////////////////////////////
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_bookmarks);
         setSupportActionBar(toolbar);
-
-        numbLoaded = 0;
 
         ////////////////////////SETUP NAV DRAWER///////////////////////////////
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_bookmarks);
@@ -73,98 +56,16 @@ public class BookmarksActivity extends AppCompatActivity implements NavigationVi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_bookmarks);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ////////////////////////SETUP RECYCLER VIEW////////////////////////////
-        recyclerView = (RecyclerView) findViewById(R.id.bookmarks_recycler);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setHasFixedSize(true);
-        initializeData();
-
         ////////////////////////REFRESH VIEW///////////////////////////////////
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout_bookmarks);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
-
-        /*////////////////////////CLEAN TOOLBAR SCROLL/////////////////////////////
-        final View toolbarContainer = findViewById(R.id.toolbar_container_bookmarks);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                if (dy > 0) {
-                    if ( toolbarContainer.getTranslationY() == 0) {
-                        tabLayout.setVisibility(View.INVISIBLE);
-                    }
-                }
-                else {
-                    tabLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });*/
+        challengesLayout = (ChallengeListLayout) findViewById(R.id.challenges_layout);
 
     }
 
     @Override
     protected void onStop() {
-        if (mWebRequest != null) mWebRequest.cancelRequest();
+        challengesLayout.onStop();
 
         super.onStop();
-    }
-
-    private void initializeData() {
-
-        challenges = new ArrayList<Challenge>();
-        adapter = new CardAdapter(this, recyclerView, challenges, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView view = (TextView) v.findViewById(R.id.card_id);
-                startActivity(ChallengeDetailActivity.intentFor(BookmarksActivity.this,
-                        (String) view.getText()));
-            }
-        }, new CardAdapter.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(CardAdapter.FinishedLoadingListener listener) {
-                loadMoreContent(listener);
-            }
-        });
-        refreshContent();
-        recyclerView.setAdapter(adapter);
-
-    }
-
-    private void refreshContent(){
-        numbLoaded = 0;
-        adapter.resetItems(new ArrayList<Challenge>());
-        loadMoreContent(new CardAdapter.FinishedLoadingListener() {
-            @Override
-            public void finishedLoading() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-    }
-
-    private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
-        mWebRequest = new BookmarksWebRequest(numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
-            @Override
-            public void onSuccess(ArrayList<Challenge> response) {
-                challenges = response;
-                adapter.addItems(challenges);
-                numbLoaded += challenges.size();
-                listener.finishedLoading();
-                mWebRequest = null;
-            }
-
-            @Override
-            public void onFailure() {
-                Log.e("HEY", "Our challenge webrequest in newsfeed failed");
-            }
-        });
     }
 
 
@@ -235,19 +136,5 @@ public class BookmarksActivity extends AppCompatActivity implements NavigationVi
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-    private Animation.AnimationListener tabAnimationListener = new Animation.AnimationListener() {
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            refreshContent();
-        }
-
-        @Override
-        public void onAnimationStart(Animation animation) {}
-        @Override
-        public void onAnimationRepeat(Animation animation) {}
-    };
 }
 

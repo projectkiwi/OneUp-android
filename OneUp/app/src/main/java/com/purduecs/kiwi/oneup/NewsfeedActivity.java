@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.purduecs.kiwi.oneup.views.CardAdapter;
+import com.purduecs.kiwi.oneup.views.ChallengeListLayout;
 import com.purduecs.kiwi.oneup.web.ChallengesWebRequest;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
@@ -39,19 +40,9 @@ import java.util.List;
 
 public class NewsfeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static int REQUEST_SIZE = 10;
+    ChallengeListLayout challengesLayout;
 
-    SwipeRefreshLayout swipeRefreshLayout;
-    RecyclerView recyclerView;
-    CardAdapter adapter;
-    List<Challenge> challenges;
-
-    private String newsFeedType;
     private int lastTab;
-
-    private int numbLoaded;
-
-    OneUpWebRequest mWebRequest;
 
     Animation rightTabAnimation, leftTabAnimation;
 
@@ -59,6 +50,8 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
+
+        challengesLayout = (ChallengeListLayout) findViewById(R.id.challenges_layout);
 
         ////////////////////////SETUP TOOLBAR/////////////////////////////////
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
@@ -70,10 +63,7 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
         tabLayout.addTab(tabLayout.newTab().setText("New"));
         tabLayout.addTab(tabLayout.newTab().setText("Global"));
 
-        newsFeedType = "popular";
         lastTab = 0;
-
-        numbLoaded = 0;
 
         leftTabAnimation = AnimationUtils.loadAnimation(this, R.anim.tab_animation_left);
         leftTabAnimation.setAnimationListener(tabAnimationListener);
@@ -85,19 +75,19 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tabLayout.getSelectedTabPosition() == 0) {
-                    newsFeedType = "popular";
+                    challengesLayout.setChallengeType("popular");
 
                 } else if (tabLayout.getSelectedTabPosition() == 1) {
-                    newsFeedType = "new";
+                    challengesLayout.setChallengeType("new");
 
                 } else if (tabLayout.getSelectedTabPosition() == 2) {
-                    newsFeedType = "global";
+                    challengesLayout.setChallengeType("global");
                 }
 
                 if (lastTab > tabLayout.getSelectedTabPosition()) {
-                    recyclerView.startAnimation(rightTabAnimation);
+                    challengesLayout.startAnimation(rightTabAnimation);
                 } else {
-                    recyclerView.startAnimation(leftTabAnimation);
+                    challengesLayout.startAnimation(leftTabAnimation);
                 }
 
                 lastTab = tabLayout.getSelectedTabPosition();
@@ -125,26 +115,9 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view2);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ////////////////////////SETUP RECYCLER VIEW////////////////////////////
-        recyclerView = (RecyclerView) findViewById(R.id.newsfeed_recycler);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setHasFixedSize(true);
-        initializeData();
-
-        ////////////////////////REFRESH VIEW///////////////////////////////////
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
-
         ////////////////////////CLEAN TOOLBAR SCROLL/////////////////////////////
         final View toolbarContainer = findViewById(R.id.toolbar_container);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        challengesLayout.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -164,61 +137,10 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     protected void onStop() {
-        if (mWebRequest != null) mWebRequest.cancelRequest();
+        challengesLayout.onStop();
 
         super.onStop();
     }
-
-    private void initializeData() {
-
-        challenges = new ArrayList<Challenge>();
-        adapter = new CardAdapter(this, recyclerView, challenges, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView view = (TextView) v.findViewById(R.id.card_id);
-                startActivity(ChallengeDetailActivity.intentFor(NewsfeedActivity.this,
-                        (String) view.getText()));
-            }
-        }, new CardAdapter.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(CardAdapter.FinishedLoadingListener listener) {
-                loadMoreContent(listener);
-            }
-        });
-        refreshContent();
-        recyclerView.setAdapter(adapter);
-
-    }
-
-    private void refreshContent(){
-        numbLoaded = 0;
-        adapter.resetItems(new ArrayList<Challenge>());
-        loadMoreContent(new CardAdapter.FinishedLoadingListener() {
-            @Override
-            public void finishedLoading() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-    }
-
-    private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
-        mWebRequest = new ChallengesWebRequest(newsFeedType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
-            @Override
-            public void onSuccess(ArrayList<Challenge> response) {
-                challenges = response;
-                adapter.addItems(challenges);
-                numbLoaded += challenges.size();
-                listener.finishedLoading();
-                mWebRequest = null;
-            }
-
-            @Override
-            public void onFailure() {
-                Log.e("HEY", "Our challenge webrequest in newsfeed failed");
-            }
-        });
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -306,7 +228,7 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
 
         @Override
         public void onAnimationEnd(Animation animation) {
-            refreshContent();
+            challengesLayout.refreshContent();
         }
 
         @Override

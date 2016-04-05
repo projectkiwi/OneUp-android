@@ -42,13 +42,25 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
             }
         });*/
 
-        type = ((type == "global") ? "" : "local/" + type); // get rid of global until it's made a thing
+        switch (type) {
+            case "new":
+            case "popular":
+                type = "/challenges/local/" + type;
+                break;
+            case "bookmarks":
+                type = "/bookmarks/";
+                break;
+            case "global":
+            default:
+                type = "/challenges/";
+                break;
+        }
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
         headerArgs.put("offset", Integer.toString(start));
         headerArgs.put("limit", Integer.toString(length));
 
-        mRequest = new JsonObjectEditHeaderRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + "/challenges/" + type, headerArgs, null,
+        mRequest = new JsonObjectEditHeaderRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + type, headerArgs, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
