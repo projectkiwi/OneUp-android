@@ -4,17 +4,20 @@ package com.purduecs.kiwi.oneup;
 
  */
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +30,9 @@ import android.widget.TextView;
 import android.app.AlertDialog;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.web.ChallengePostWebRequest;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
@@ -37,8 +43,7 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.InputStream;
 
-public class ChallengeCreationActivity extends AppCompatActivity {
-
+public class ChallengeCreationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks{
     public static final int REQUEST_POST = 12;
     public static final String EXTRA_ID = "com.purduecs.kiwi.oneup.extra_id";
 
@@ -46,7 +51,8 @@ public class ChallengeCreationActivity extends AppCompatActivity {
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
     private static final int SELECT_PHOTO_ACTIVITY_REQUEST_CODE = 300;
 
-    private Uri fileUri;
+    private static String TAG = "OneUP";
+
     private Bitmap challenge_pic;
 
     public static Intent intentFor(Context context) {
@@ -57,6 +63,9 @@ public class ChallengeCreationActivity extends AppCompatActivity {
     TextView descField;
     TextView catField;
 
+    GoogleApiClient googleApiClient;
+    Location lastLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +75,14 @@ public class ChallengeCreationActivity extends AppCompatActivity {
         nameField = (TextView)findViewById(R.id.challenge_name);
         descField = (TextView)findViewById(R.id.challenge_desc);
         catField = (TextView)findViewById(R.id.challenge_categories);
+
+        // Create an instance of GoogleAPIClient.
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
     }
 
     private void setUpActionBar() {
@@ -83,6 +100,34 @@ public class ChallengeCreationActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        //Check damned permission
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(this, "No Permission for Location", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    protected void onStart() {
+        googleApiClient.connect();
+        super.onStart();
+    }
+
+    protected void onStop() {
+        googleApiClient.disconnect();
+        super.onStop();
+    }
+
+    public void onConnectionSuspended(int i) {
+        googleApiClient.disconnect();
+        super.onStop();
+    }
+
     public void uploadChallenge(MenuItem menuItem) {
         OneUpWebRequest r = new ChallengePostWebRequest(getChallenge(), new RequestHandler<String>() {
             @Override
@@ -97,7 +142,7 @@ public class ChallengeCreationActivity extends AppCompatActivity {
 
             @Override
             public void onFailure() {
-                Log.e("HEY", "Failed to post challenge");
+                Log.e(TAG, "Failed to post challenge");
             }
         });
     }

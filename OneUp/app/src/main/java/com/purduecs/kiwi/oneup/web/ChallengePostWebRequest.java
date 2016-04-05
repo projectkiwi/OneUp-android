@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, String> {
 
     Request mRequest;
+    private static String TAG = "OneUP";
 
     public ChallengePostWebRequest(Challenge challenge, final RequestHandler<String> handler) {
         // Make the json object to send
@@ -36,7 +37,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
             }
             post.put("categories", cats);
         } catch (Exception e) {
-            Log.e("HEY", "Something went wrong when making a challenge posting json object");
+            Log.e(TAG, "Something went wrong when making a challenge posting json object");
         }
 
         // Now post that object
@@ -62,7 +63,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
     public String parseResponse(JSONObject response) {
         // May need to check response to see if we got success or failure back
         try {
-            Log.d("HEY", response.getJSONObject("data").getString("_id"));
+            Log.d(TAG, response.getJSONObject("data").getString("_id"));
             return response.getJSONObject("data").getString("_id");
         } catch (Exception e) {
             return null;

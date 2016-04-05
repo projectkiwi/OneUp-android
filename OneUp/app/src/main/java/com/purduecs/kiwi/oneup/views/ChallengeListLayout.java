@@ -26,6 +26,7 @@ import java.util.List;
 public class ChallengeListLayout extends SwipeRefreshLayout {
 
     private static int REQUEST_SIZE = 10;
+    private static String TAG = "OneUP";
 
     Activity mContext;
     String mChallengeType;
@@ -128,7 +129,7 @@ public class ChallengeListLayout extends SwipeRefreshLayout {
 
             @Override
             public void onFailure() {
-                Log.e("HEY", "Our challenge webrequest in newsfeed failed");
+                Log.e(TAG, "Our challenge webrequest in newsfeed failed");
             }
         });
     }

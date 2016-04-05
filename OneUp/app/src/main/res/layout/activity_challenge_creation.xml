@@ -13,33 +13,55 @@
         android:id="@+id/challenge_media_button"
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:layout_centerHorizontal="true"
         android:src="@drawable/add_media_button"
         android:background="@drawable/add_media_border"
         android:scaleType="center"
-        android:onClick="selectMedia" />
+        android:onClick="selectMedia"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:id="@+id/challenge_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_media_button"
         android:inputType="text"
-        android:hint="Title"/>
+        android:hint="Description"
+        android:layout_below="@+id/challenge_media_button"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="45dp" />
 
     <EditText
-        android:id="@+id/challenge_desc"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_name"
-        android:inputType="textMultiLine"
-        android:hint="Description"/>
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/editText2"
+        android:hint="Number"
+        android:layout_below="@+id/challenge_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
-        android:id="@+id/challenge_categories"
+        android:id="@+id/editText3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/challenge_desc"
-        android:hint="Categories"/>
+        android:inputType="text"
+        android:hint="Pattern"
+        android:layout_alignBottom="@+id/editText2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/editText2"
+        android:layout_toRightOf="@+id/editText2" />
+
+    <EditText
+        android:id="@+id/editText4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="Location"
+        android:layout_below="@+id/editText2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

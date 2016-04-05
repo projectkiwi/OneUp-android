@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.purduecs.kiwi.oneup">
 
-    <!--TODO: Top 3, why? -->
+    <!-- TODO: Top 3, why? -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -12,8 +12,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-    <uses-feature android:name="android.hardware.camera"/>
-
+    <uses-feature android:name="android.hardware.camera" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -29,27 +28,23 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".OneUpActivity"
             android:label="@string/title_activity_one_up"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NewsfeedActivity"
             android:label="The Newsfeed"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".NewsfeedActivity">
+            android:parentActivityName=".NewsfeedActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
-
         <activity
             android:name=".NotificationsActivity"
             android:label="Notifications"
@@ -59,7 +54,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
-
         <activity
             android:name=".BookmarksActivity"
             android:label="Bookmarks"
@@ -69,17 +63,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
-
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login">
+            android:label="OneUp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ProfileActivity"
             android:label="Your Profile"
@@ -89,19 +81,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
-
-        <activity android:name=".ChallengeDetailActivity"
-            android:parentActivityName=".NewsfeedActivity"/>
-
-        <activity android:name=".ChallengeCreationActivity"
-            android:parentActivityName=".NewsfeedActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".ChallengeDetailActivity"
+            android:parentActivityName=".NewsfeedActivity" />
+        <activity
+            android:name=".ChallengeCreationActivity"
+            android:exported="true"
+            android:parentActivityName=".NewsfeedActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
         <activity
             android:name=".MapsActivity"
@@ -111,12 +104,13 @@
                 android:value="com.purduecs.kiwi.oneup.NewsfeedActivity" />
         </activity>
 
-        <!--Facebook, you be so needy-->
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
-
+        <!-- Facebook, you be so needy -->
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".NewUserActivity"></activity>
     </application>
+
 </manifest>

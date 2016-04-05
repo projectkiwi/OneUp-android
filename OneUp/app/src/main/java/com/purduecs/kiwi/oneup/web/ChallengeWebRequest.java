@@ -19,6 +19,7 @@ import org.json.JSONObject;
 public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challenge> {
 
     Request mRequest;
+    private static String TAG = "OneUP";
 
     public ChallengeWebRequest(String challengeId, final RequestHandler<Challenge> handler) {
 
@@ -56,7 +57,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.desc = "lots of placeholder text yo so this looks like a pretty high quality description";
             c.previewImage = response.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
         } catch (Exception e) {
-            Log.e("HEY", "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest");
+            Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest");
         }
         return c;
     }
