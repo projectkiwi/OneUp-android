@@ -1,17 +1,20 @@
 package com.purduecs.kiwi.oneup.web;
 
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.purduecs.kiwi.oneup.OneUpApplication;
 import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.Map;
+
 
 public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, String> {
 
@@ -43,9 +46,13 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
             Log.e(TAG, "Something went wrong when making a challenge posting json object");
         }
 
+        Map<String, String> headerArgs = new ArrayMap<String, String>();;
+        headerArgs.put("userid", "57065ffb81b46b7c289a6144");
+
         // Now post that object
-        mRequest = new JsonObjectRequest(Request.Method.POST,
+        mRequest = new JsonObjectEditHeaderRequest(Request.Method.POST,
                 OneUpWebRequest.BASE_URL + "/challenges",
+                headerArgs,
                 post,
                 new Response.Listener<JSONObject>() {
                     @Override

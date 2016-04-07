@@ -1,5 +1,6 @@
 package com.purduecs.kiwi.oneup.web;
 
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -13,6 +14,8 @@ import com.purduecs.kiwi.oneup.models.Challenge;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 /**
  * Created by Adam on 3/3/16.
  */
@@ -23,9 +26,13 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
 
     public ChallengeWebRequest(String challengeId, final RequestHandler<Challenge> handler) {
 
+        Map<String, String> headerArgs = new ArrayMap<String, String>();;
+        headerArgs.put("userid", "57065ffb81b46b7c289a6144");
+
         // Now get that object
-        mRequest = new JsonObjectRequest(Request.Method.GET,
+        mRequest = new JsonObjectEditHeaderRequest(Request.Method.GET,
                 OneUpWebRequest.BASE_URL + "/challenges/" + challengeId,
+                headerArgs,
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override

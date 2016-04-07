@@ -1,5 +1,6 @@
 package com.purduecs.kiwi.oneup.web;
 
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -9,6 +10,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.purduecs.kiwi.oneup.OneUpApplication;
 
 import org.json.JSONObject;
+
+import java.util.Map;
 
 public class LikeWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
 
@@ -27,9 +30,13 @@ public class LikeWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
         String url = "/challenges/like/";
         url = url + challengeId;
 
+        Map<String, String> headerArgs = new ArrayMap<String, String>();;
+        headerArgs.put("userid", "57065ffb81b46b7c289a6144");
+
         // Now POST that object
-        request = new JsonObjectRequest(Request.Method.POST,
+        request = new JsonObjectEditHeaderRequest(Request.Method.POST,
                 OneUpWebRequest.BASE_URL + url,
+                headerArgs,
                 post,
                 new Response.Listener<JSONObject>() {
                     @Override
