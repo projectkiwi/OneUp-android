@@ -17,6 +17,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -49,11 +50,18 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
-    private static final int SELECT_PHOTO_ACTIVITY_REQUEST_CODE = 300;
+    private static final int SELECT_VIDEO_ACTIVITY_REQUEST_CODE = 300;
+    private static final int SELECT_PHOTO_ACTIVITY_REQUEST_CODE = 400;
 
     private static String TAG = "OneUP";
 
     private Bitmap challenge_pic;
+    private Uri uriSavedImage;
+
+    final private int PERMISSION_ACCESS_FINE_LOCATION = 123;
+    final private int PERMISSION_ACCESS_CAMERA = 124;
+    final private int PERMISSION_READ_STORAGE = 125;
+    final private int PERMISSION_WRITE_STORAGE = 126;
 
     public static Intent intentFor(Context context) {
         return new Intent(context, ChallengeCreationActivity.class);
@@ -104,15 +112,52 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     public void onConnected(Bundle connectionHint) {
         //Check damned permission
         if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_ACCESS_FINE_LOCATION);
         }
-        else {
-            Toast.makeText(this, "No Permission for Location", Toast.LENGTH_LONG).show();
+        else{
+            getLocation();
         }
     }
 
+    private void getLocation() {
+        try {
+            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
+        } catch (SecurityException e) {
+            Toast.makeText(this, "No permission for Location", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error : No permission for Location detected.");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case PERMISSION_ACCESS_FINE_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    getLocation();
+                } else {
+                    Toast.makeText(this, "No permission for Location", Toast.LENGTH_SHORT).show();
+                    Log.v(TAG, "User refused to give Location permission");
+                }
+            } break;
+            case PERMISSION_READ_STORAGE: //Do nothing
+                break;
+            case PERMISSION_WRITE_STORAGE: //Do nothing
+                break;
+            case PERMISSION_ACCESS_CAMERA: //Do nothing
+                break;
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
@@ -160,32 +205,40 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        ImageButton imgButton = (ImageButton) (findViewById(R.id.challenge_media_button));
+
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
                 Toast.makeText(this, "Image saved to:\n" +
-                        data.getData(), Toast.LENGTH_LONG).show();
-                Bundle extras = data.getExtras();
-                challenge_pic = (Bitmap) extras.get("data");
-            } else if (resultCode == RESULT_CANCELED) {
-                // User cancelled the image capture
+                        uriSavedImage.toString(), Toast.LENGTH_LONG).show();
+                Log.v(TAG, String.format("Image saved to:\n" + uriSavedImage.toString()));
+
+                try {
+                    challenge_pic = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uriSavedImage);
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                imgButton.setImageBitmap(challenge_pic);
+
             } else {
-                // Image capture failed, advise user
+                Log.e(TAG, "Something happened during Image capture.");
             }
 
         } else if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // Video captured and saved to fileUri specified in the Intent
                 Toast.makeText(this, "Video saved to:\n" +
-                        data.getData(), Toast.LENGTH_LONG).show();
-            } else if (resultCode == RESULT_CANCELED) {
-                // User cancelled the video capture
+                        uriSavedImage.toString(), Toast.LENGTH_LONG).show();
+                Log.v(TAG, String.format("Video saved to:\n" + uriSavedImage.toString()));
+
             } else {
-                // Video capture failed, advise user
+                Log.e(TAG, "Something happened during Video capture.");
             }
 
         } else if(requestCode == SELECT_PHOTO_ACTIVITY_REQUEST_CODE) {
             if(resultCode == RESULT_OK){
+
                 Uri selectedImage = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
@@ -199,18 +252,50 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
                 challenge_pic = BitmapFactory.decodeFile(filePath);
                 Toast.makeText(ChallengeCreationActivity.this, "File Path = " + filePath, Toast.LENGTH_LONG).show();
+                Log.v(TAG, String.format(TAG, "Image selected from " + filePath));
             }
-        }
+        } else if (requestCode == SELECT_VIDEO_ACTIVITY_REQUEST_CODE) {
+            if(resultCode == RESULT_OK){
 
-        if(resultCode == RESULT_OK) {
-            ImageButton button = (ImageButton) findViewById(R.id.challenge_media_button);
-            button.setImageBitmap(challenge_pic);
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                Cursor cursor = getContentResolver().query(
+                        selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                challenge_pic = BitmapFactory.decodeFile(filePath);
+                Toast.makeText(ChallengeCreationActivity.this, "File Path = " + filePath, Toast.LENGTH_LONG).show();
+                Log.v(TAG, String.format(TAG, "Video selected from " + filePath));
+            }
         }
     }
 
     //OnClick Listener for imagebutton
     public void selectMedia(View v) {
         final CharSequence[] items = { "Take Photo", "Take Video", "Photo from Gallery","Video from Gallery", "Cancel" };
+
+        //Storage permissions
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.RECORD_AUDIO,},
+                    PERMISSION_READ_STORAGE);
+        }
 
         AlertDialog.Builder media_sel = new AlertDialog.Builder(ChallengeCreationActivity.this);
         media_sel.setTitle("Select Media");
@@ -222,32 +307,30 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                    //TODO: Store based on TimeStamp
                     File media_folder = new File(Environment.getExternalStorageDirectory(), "OneUp");
                     media_folder.mkdirs();
-                    File image = new File(media_folder, "hello_world.jpg");
-                    Uri uriSavedImage = Uri.fromFile(image);
+                    Long tsLong = System.currentTimeMillis()/1000;
+                    String ts = String.format(tsLong.toString() + ".jpg");
+                    File image = new File(media_folder, ts);
+                    uriSavedImage = Uri.fromFile(image);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
 
                     startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 
                 } else if (items[item].equals("Take Video")) {
 
-                    /*
                     Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
-                    //TODO: Store based on TimeStamp
                     File media_folder = new File(Environment.getExternalStorageDirectory(), "OneUp");
                     media_folder.mkdirs();
-                    File image = new File(media_folder, "hello_world.mp4");
-                    Uri uriSavedImage = Uri.fromFile(image);
+                    Long tsLong = System.currentTimeMillis()/1000;
+                    String ts = String.format(tsLong.toString() + ".mp4");
+                    File image = new File(media_folder, ts);
+                    uriSavedImage = Uri.fromFile(image);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
 
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
                     startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
-                    */
-
-                    Toast.makeText(ChallengeCreationActivity.this, "This feature coming soon!\n", Toast.LENGTH_LONG).show();
 
                 } else if (items[item].equals("Photo from Gallery")) {
 
@@ -257,7 +340,10 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
                 } else if (items[item].equals("Video from Gallery")) {
 
-                    Toast.makeText(ChallengeCreationActivity.this, "This feature coming soon!\n", Toast.LENGTH_LONG).show();
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("video/*");
+                    startActivityForResult(photoPickerIntent, SELECT_VIDEO_ACTIVITY_REQUEST_CODE);
+
 
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
