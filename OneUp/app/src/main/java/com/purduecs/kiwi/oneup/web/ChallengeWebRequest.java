@@ -45,8 +45,10 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
     @Override
     public Challenge parseResponse(JSONObject response) {
         Challenge c = new Challenge();
+        String temp = "x";
         try {
             c.id = response.getString("_id");
+            temp = c.id;
             c.attempt_id = response.getJSONArray("attempts").getJSONObject(0).getString("_id");
             c.name = response.getString("name");
             c.image = response.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
@@ -60,7 +62,9 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.likes = response.getInt("challenge_likes");//103;
             c.liked = 0;
         } catch (Exception e) {
-            Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest");
+            Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest - " + e.getMessage());
+            c.id = temp;
+            c.debug_flag = 1;
         }
         return c;
     }

@@ -1,5 +1,8 @@
 package com.purduecs.kiwi.oneup.models;
 
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
+
 /**
  * Created by Adam on 3/3/16.
  */
@@ -18,6 +21,9 @@ public class Challenge {
     // 0 is unliked, 1 is liked, 2 is liked a past attempt
     public int likes;
     public int liked;
+
+    public String location;
+    public int debug_flag = 0;
 
         /*public String getName() { return name; }
         public void setName(String name) { this.name = name; }

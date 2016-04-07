@@ -90,7 +90,6 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onCompleted(JSONObject object, GraphResponse response) {
                                     Log.v(TAG, response.toString());
 
-                                    // Application code
                                     try {
                                         email = object.getString("email");
                                         id = object.getString("id");
@@ -119,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(USERID, id);
                     editor.putString(AUTH, auth_tok);
                     editor.putString(EMAIL, email);
-                    editor.commit();
+                    editor.apply();
 
                     checkUser();
                 }
@@ -166,25 +165,23 @@ public class LoginActivity extends AppCompatActivity {
 
     protected void checkUser() {
 
-        //TODO: Uncomment when Backend is ready
-//        webRequest = new LoginPostWebRequest(email, auth_tok, new RequestHandler<Boolean>() {
-//            @Override
-//            public void onSuccess(Boolean response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure() {
-//
-//            }
-//        });
-//        if(webRequest.getNew_user()) {
-//            newUser();
-//        }
-//        else {
-//            oldUser();
-//        }
-
+/*        webRequest = new LoginPostWebRequest(email, auth_tok, new RequestHandler<Boolean>() {
+            @Override
+            public void onSuccess(Boolean response) {
+                Log.d(TAG, "response is " + response);
+                if(response) {
+                    newUser();
+                }
+                else {
+                    oldUser();
+                }
+            }
+            @Override
+            public void onFailure() {
+                Log.e(TAG, "Something happened in sending login");
+            }
+        });*/
+        //newUser();
         oldUser();
     }
 }

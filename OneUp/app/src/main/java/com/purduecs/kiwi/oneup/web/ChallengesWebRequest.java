@@ -26,6 +26,7 @@ import java.util.Map;
 public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayList<Challenge>> {
 
     Request mRequest;
+    private static String TAG = "OneUP";
 
     public ChallengesWebRequest(String type, int start, int length, final RequestHandler<ArrayList<Challenge>> handler) {
 
@@ -85,6 +86,8 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 chall = response.getJSONObject(ind++);
                 challe = new Challenge();
                 challe.id = chall.getString("_id");
+                if(chall.getJSONArray("attempts").length() <= 0)
+                    continue;
                 challe.attempt_id = chall.getJSONArray("attempts").getJSONObject(0).getString("_id");
                 challe.name = chall.getString("name");
                 challe.image = chall.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
@@ -100,7 +103,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 c.add(challe);
             }
         } catch (Exception e) {
-
+                Log.e(TAG, "Something happened in the ChallengeS (plural) request");
         }
         return c;
     }

@@ -1,6 +1,6 @@
 package com.purduecs.kiwi.oneup;
 
-/* Challenge Creation Activity : Empty Activity
+/* Challenge Creation Activity : Creates an activity, genius
 
  */
 
@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.media.session.MediaController;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -27,22 +28,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.app.AlertDialog;
 import android.widget.Toast;
+import android.widget.VideoView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.web.ChallengePostWebRequest;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.io.InputStream;
+import java.util.Random;
 
 public class ChallengeCreationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks{
     public static final int REQUEST_POST = 12;
@@ -53,23 +54,36 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     private static final int SELECT_VIDEO_ACTIVITY_REQUEST_CODE = 300;
     private static final int SELECT_PHOTO_ACTIVITY_REQUEST_CODE = 400;
 
+    private static final int TYPE_PICTURE = 0;
+    private static final int TYPE_VIDEO = 1;
+
+    private int current_type = -1;
+
     private static String TAG = "OneUP";
 
     private Bitmap challenge_pic;
     private Uri uriSavedImage;
+    private MediaStore.Video challenge_video;
 
     final private int PERMISSION_ACCESS_FINE_LOCATION = 123;
     final private int PERMISSION_ACCESS_CAMERA = 124;
     final private int PERMISSION_READ_STORAGE = 125;
     final private int PERMISSION_WRITE_STORAGE = 126;
 
+    ///////FOR FUN/////
+    Random r;
+    int rand;
+    String cat;
+
     public static Intent intentFor(Context context) {
         return new Intent(context, ChallengeCreationActivity.class);
     }
 
     TextView nameField;
+    TextView numField;
     TextView descField;
     TextView catField;
+    TextView locField;
 
     GoogleApiClient googleApiClient;
     Location lastLocation;
@@ -83,6 +97,8 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         nameField = (TextView)findViewById(R.id.challenge_name);
         descField = (TextView)findViewById(R.id.challenge_desc);
         catField = (TextView)findViewById(R.id.challenge_categories);
+        numField = (TextView) findViewById(R.id.challenge_num);
+        locField = (TextView) findViewById(R.id.challenge_loc);
 
         // Create an instance of GoogleAPIClient.
         if (googleApiClient == null) {
@@ -125,7 +141,8 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     private void getLocation() {
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
+            locField.setText(String.format("" + lastLocation.getLatitude() + " , " + lastLocation.getLongitude()));
+            //Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
         } catch (SecurityException e) {
             Toast.makeText(this, "No permission for Location", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error : No permission for Location detected.");
@@ -154,8 +171,6 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
             case PERMISSION_ACCESS_CAMERA: //Do nothing
                 break;
 
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
     protected void onStart() {
@@ -174,7 +189,41 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     }
 
     public void uploadChallenge(MenuItem menuItem) {
-        OneUpWebRequest r = new ChallengePostWebRequest(getChallenge(), new RequestHandler<String>() {
+        if(current_type == -1) {
+            Toast.makeText(this, "Please choose media.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        r = new Random();
+        rand = r.nextInt(5);
+        switch (rand) {
+            case 0:
+                cat = "coffee";
+                break;
+            case 1:
+                cat = "book";
+                break;
+            case 2:
+                cat = "europe";
+                break;
+            case 3:
+                cat = "soccer";
+                break;
+            case 4:
+            default:
+                cat = "";
+                break;
+        }
+
+        if(locField.getText().toString().trim().length() <= 0 ||
+                nameField.getText().toString().trim().length() <= 0 ||
+                descField.getText().toString().trim().length() <= 0 ||
+                catField.getText().toString().trim().length() <= 0 ||
+                numField.getText().toString().trim().length() <= 0) {
+            Toast.makeText(this, "Please complete all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        OneUpWebRequest oneUpWebRequest = new ChallengePostWebRequest(getChallenge(), getAttempt(), new RequestHandler<String>() {
             @Override
             public void onSuccess(String response) {
                 if (response != null) {
@@ -182,6 +231,10 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                     result.putExtra(EXTRA_ID, response);
                     setResult(Activity.RESULT_OK, result);
                     finish();
+
+                    Toast.makeText(ChallengeCreationActivity.this, "Uploaded attempt", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ChallengeCreationActivity.this, NewsfeedActivity.class);
+                    startActivity(intent);
                 }
             }
 
@@ -194,11 +247,65 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
     private Challenge getChallenge() {
         Challenge c = new Challenge();
+
         c.name = nameField.getText().toString();
-        c.owner = "loeb";
-        c.desc = descField.getText().toString();
+        //c.owner = NewUserActivity.username;
+        c.owner = "Arthur Dent";
+
+        //c.desc = descField.getText().toString();
+        switch (rand) {
+            case 0:
+                c.desc = "Most not-actually-coffee drunk";
+                break;
+            case 1:
+                c.desc = "Most books pretended to read";
+                break;
+            case 2:
+                c.desc = "Most obscure countries visited";
+                break;
+            case 3:
+                c.desc = "Most times as a non-American called soccer as football";
+                break;
+            case 4:
+            default:
+                c.desc = "Most kittens pet";
+                break;
+        }
         c.categories = catField.getText().toString().split(",");
-        c.pattern = "pattern yo";
+        c.location = locField.getText().toString();
+
+        c.pattern = String.format("Pattern Number " + (r.nextInt(1) + 1000));
+        return c;
+    }
+
+    private Attempt getAttempt() {
+
+        Attempt c = new Attempt();
+
+        c.votes_num = 0;
+        c.likes_num = 0;
+        c.owner = "Arthur Dent";
+        c.desc = descField.getText().toString();
+        c.gif = "http://img.ifcdn.com/images/69df32f1fb243275b0f61c9823e0df03d157456542245ff557c4600040beb7f0_1.gif";
+
+        switch (rand) {
+            case 0:
+                c.image = "http://loremflickr.com/960/720/coffee";
+                break;
+            case 1:
+                c.image = "http://loremflickr.com/960/720/book";
+                break;
+            case 2:
+                c.image = "http://loremflickr.com/960/720/europe";
+                break;
+            case 3:
+                c.image = "http://loremflickr.com/960/720/soccer";
+                break;
+            case 4:
+            default:
+                c.image = "http://loremflickr.com/960/720/";
+                break;
+        }
         return c;
     }
 
@@ -206,6 +313,11 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         ImageButton imgButton = (ImageButton) (findViewById(R.id.challenge_media_button));
+        imgButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imgButton.setVisibility(View.VISIBLE);
+
+        VideoView videoView = (VideoView) (findViewById(R.id.view_video));
+        videoView.setVisibility(View.INVISIBLE);
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -220,17 +332,28 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                     Log.e(TAG, e.getMessage());
                 }
                 imgButton.setImageBitmap(challenge_pic);
+                current_type = TYPE_PICTURE;
 
             } else {
                 Log.e(TAG, "Something happened during Image capture.");
             }
 
         } else if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
+            imgButton.setScaleType(ImageView.ScaleType.CENTER);
             if (resultCode == RESULT_OK) {
                 // Video captured and saved to fileUri specified in the Intent
+                imgButton.setScaleType(ImageView.ScaleType.CENTER);
+                imgButton.setVisibility(View.INVISIBLE);
+                videoView.setVisibility(View.VISIBLE);
+
                 Toast.makeText(this, "Video saved to:\n" +
                         uriSavedImage.toString(), Toast.LENGTH_LONG).show();
                 Log.v(TAG, String.format("Video saved to:\n" + uriSavedImage.toString()));
+
+                current_type = TYPE_VIDEO;
+                videoView.setVideoURI(uriSavedImage);
+                videoView.requestFocus();
+                videoView.start();
 
             } else {
                 Log.e(TAG, "Something happened during Video capture.");
@@ -251,11 +374,17 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                 cursor.close();
 
                 challenge_pic = BitmapFactory.decodeFile(filePath);
+                imgButton.setImageBitmap(challenge_pic);
+
+                current_type = TYPE_PICTURE;
                 Toast.makeText(ChallengeCreationActivity.this, "File Path = " + filePath, Toast.LENGTH_LONG).show();
                 Log.v(TAG, String.format(TAG, "Image selected from " + filePath));
             }
         } else if (requestCode == SELECT_VIDEO_ACTIVITY_REQUEST_CODE) {
+            imgButton.setScaleType(ImageView.ScaleType.CENTER);
             if(resultCode == RESULT_OK){
+                imgButton.setVisibility(View.INVISIBLE);
+                videoView.setVisibility(View.VISIBLE);
 
                 Uri selectedImage = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -268,11 +397,19 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                 String filePath = cursor.getString(columnIndex);
                 cursor.close();
 
-                challenge_pic = BitmapFactory.decodeFile(filePath);
                 Toast.makeText(ChallengeCreationActivity.this, "File Path = " + filePath, Toast.LENGTH_LONG).show();
                 Log.v(TAG, String.format(TAG, "Video selected from " + filePath));
+
+                current_type = TYPE_VIDEO;
+                videoView.setVideoURI(selectedImage);
+                videoView.requestFocus();
+                videoView.start();
             }
         }
+        if(resultCode != RESULT_OK) {
+            current_type = -1;
+        }
+        Log.d(TAG, String.format("Current Type is " + current_type));
     }
 
     //OnClick Listener for imagebutton

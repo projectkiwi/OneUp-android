@@ -50,19 +50,8 @@
         android:layout_marginTop="92dp"
         android:layout_below="@+id/editText"
         android:layout_alignRight="@+id/editText"
-        android:layout_alignEnd="@+id/editText" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Skip"
-        android:id="@+id/button"
-        android:fontFamily="sans-serif-light"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignTop="@+id/next_button"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignStart="@+id/editText"
-        android:visibility="visible" />
+        android:layout_alignEnd="@+id/editText"
+        android:onClick="goNext" />
 
 
 </RelativeLayout>
