@@ -316,7 +316,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         imgButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imgButton.setVisibility(View.VISIBLE);
 
-        VideoView videoView = (VideoView) (findViewById(R.id.view_video));
+        VideoView videoView = new VideoView(this);//(VideoView) (findViewById(R.id.view_video));
         videoView.setVisibility(View.INVISIBLE);
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {

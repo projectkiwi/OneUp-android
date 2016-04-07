@@ -2,6 +2,7 @@ package com.purduecs.kiwi.oneup;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.ComposePathEffect;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.views.CenterIconButton;
+import com.purduecs.kiwi.oneup.web.BookmarkChallengeWebRequest;
 import com.purduecs.kiwi.oneup.web.ChallengeWebRequest;
 import com.purduecs.kiwi.oneup.web.LikeWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
@@ -41,6 +43,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
     ImageView mMedia;
     TextView mTitle, mWinner, mDesc, mCategories;
     CenterIconButton mLikeButton;
+    CenterIconButton mBookmarkButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
         mWinner = (TextView) findViewById(R.id.challenge_winner);
         mDesc = (TextView) findViewById(R.id.challenge_desc);
         mCategories = (TextView) findViewById(R.id.challenge_categories);
+        mBookmarkButton = (CenterIconButton) findViewById(R.id.bookmark_button);
         mLikeButton = (CenterIconButton) findViewById(R.id.like_button);
 
         String challengeId = getIntent().getStringExtra(EXTRA_CHALLENGE_ID);
@@ -125,6 +129,27 @@ public class ChallengeDetailActivity extends AppCompatActivity {
 
     // Need this so the oncheckedchange listener doesn't loop when it fails
     private boolean failed = false;
+    private boolean failed2 = false;
+
+    private CompoundButton.OnCheckedChangeListener bookmarkListner =
+            new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (failed2) { failed2 = false; return; }
+                    new BookmarkChallengeWebRequest(mChallenge.attempt_id, isChecked, new RequestHandler<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean response) {
+
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Log.d("HEY", "we failed to bookmark the post :(");
+                            failed2 = true;
+                            mBookmarkButton.toggle();
+                        }
+                    });
+                }
+            };
 
     private CompoundButton.OnCheckedChangeListener likeListener =
             new CompoundButton.OnCheckedChangeListener() {
