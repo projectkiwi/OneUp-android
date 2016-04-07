@@ -8,12 +8,19 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ToggleButton;
 
+import com.purduecs.kiwi.oneup.R;
+
 public class CenterIconButton extends ToggleButton {
+
+    private static final int[] STATE_PAST_LIKED = {R.attr.state_past_liked};
+
     private static final int LEFT = 0, TOP = 1, RIGHT = 2, BOTTOM = 3;
 
     // Pre-allocate objects for layout measuring
     private Rect textBounds = new Rect();
     private Rect drawableBounds = new Rect();
+
+    private boolean mIsPastLiked = false;
 
     public CenterIconButton(Context context) {
         this(context, null);
@@ -25,6 +32,20 @@ public class CenterIconButton extends ToggleButton {
 
     public CenterIconButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public void setPastLiked(boolean isPastLiked) {
+        mIsPastLiked = isPastLiked;
+        refreshDrawableState();
+    }
+
+    @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        if (mIsPastLiked) {
+            mergeDrawableStates(drawableState, STATE_PAST_LIKED);
+        }
+        return drawableState;
     }
 
     @Override

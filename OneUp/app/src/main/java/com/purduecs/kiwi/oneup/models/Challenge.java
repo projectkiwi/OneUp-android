@@ -5,15 +5,19 @@ package com.purduecs.kiwi.oneup.models;
  */
 public class Challenge {
     public String id;
+    public String attempt_id;
     public String name;
     public String image;
     public String owner;
     public String[] categories;
     public int score;
-    public float time;
+    public String time;
     public String desc;
     public String previewImage;
     public String pattern;
+    // 0 is unliked, 1 is liked, 2 is liked a past attempt
+    public int likes;
+    public int liked;
 
         /*public String getName() { return name; }
         public void setName(String name) { this.name = name; }

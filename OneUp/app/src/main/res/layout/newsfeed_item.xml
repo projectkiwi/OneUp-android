@@ -12,13 +12,18 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/attempt_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/card_image"
         android:layout_width="@dimen/newsfeed_item_height"
         android:layout_height="@dimen/newsfeed_item_height"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/doge_with_sunglasses"/>
+        android:layout_alignParentLeft="true" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,8 +41,7 @@
             android:drawableLeft="@drawable/timer_grey"
             android:drawablePadding="@dimen/text_margin_small"
             style="@style/TinyText"
-            android:textColor="@color/lightGreyText"
-            android:text="1 hr"/>
+            android:textColor="@color/lightGreyText" />
 
         <TextView
             android:id="@+id/card_title"
@@ -50,8 +54,7 @@
             android:layout_toLeftOf="@id/card_time"
             android:ellipsize="end"
             android:lines="1"
-            style="@style/MediumText"
-            android:text="Placeholder"/>
+            style="@style/MediumText" />
 
         <TextView
             android:id="@+id/card_winner"
@@ -61,8 +64,7 @@
             android:layout_marginLeft="@dimen/text_margin_small"
             android:layout_marginRight="@dimen/text_margin_small"
             android:layout_below="@id/card_title"
-            style="@style/SmallText"
-            android:text="By: Per50nW1thN4m3"/>
+            style="@style/SmallText" />
 
         <TextView
             android:id="@+id/card_desc"
@@ -72,8 +74,7 @@
             android:layout_below="@id/card_winner"
             android:layout_above="@+id/horzDiv"
             style="@style/SmallText"
-            android:textColor="@color/lightGreyText"
-            android:text="lots of placeholder text yo so this looks like a pretty high quality description"/>
+            android:textColor="@color/lightGreyText" />
 
         <View
             android:id="@+id/vertDiv"
@@ -102,12 +103,10 @@
             android:layout_below="@id/horzDiv"
             style="@style/MediumSmallText"
             android:textColor="@drawable/like_button_text"
-            android:gravity="center"
             android:drawableLeft="@drawable/like_button"
+            android:gravity="center"
             android:drawablePadding="@dimen/text_margin_small"
-            android:background="@android:color/transparent"
-            android:textOn="156"
-            android:textOff="156"/>
+            android:background="@android:color/transparent" />
 
         <TextView
             android:id="@+id/card_categories"
@@ -122,8 +121,7 @@
             android:gravity="center"
             android:layout_centerVertical="true"
             android:ellipsize="end"
-            android:lines="1"
-            android:text="Strength, General"/>
+            android:lines="1" />
 
     </RelativeLayout>
 
