@@ -100,6 +100,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 challe.previewImage = chall.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
                 challe.likes = chall.getInt("challenge_likes");//r.nextInt(1000);
                 challe.liked = 0;//r.nextInt(3);
+                challe.bookmarked = false;
                 c.add(challe);
             }
         } catch (Exception e) {

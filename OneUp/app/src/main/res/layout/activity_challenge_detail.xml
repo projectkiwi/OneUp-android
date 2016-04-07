@@ -68,8 +68,8 @@
         android:background="@drawable/bookmark_button_deats"
         style="@style/TinyText"
         android:textColor="@android:color/white"
-        android:textOn="BOOKMARKED"
-        android:textOff="BOOKMARK"/>
+        android:textOn="@string/bookmarked"
+        android:textOff="@string/bookmark"/>
 
     <TextView
         android:id="@+id/challenge_desc"

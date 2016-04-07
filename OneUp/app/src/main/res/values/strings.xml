@@ -87,4 +87,7 @@
     </string>
     <string name="title_activity_maps">Map</string>
     <string name="card_image_descriptor">Image goes here</string>
+
+    <string name="bookmark">Watch</string>
+    <string name="bookmarked">Watching</string>
 </resources>

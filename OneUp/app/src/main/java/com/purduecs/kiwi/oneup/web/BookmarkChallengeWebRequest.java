@@ -27,7 +27,7 @@ public class BookmarkChallengeWebRequest implements OneUpWebRequest<JSONObject, 
             Log.e(TAG, "Something went wrong when making a login posting json object");
         }
 
-        String url = "/users/bookmark/";
+        String url = "/users/bookmarks/";
         url = url + challengeId;
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;

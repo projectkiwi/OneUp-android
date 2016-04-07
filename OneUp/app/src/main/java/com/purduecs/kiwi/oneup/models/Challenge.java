@@ -21,6 +21,7 @@ public class Challenge {
     // 0 is unliked, 1 is liked, 2 is liked a past attempt
     public int likes;
     public int liked;
+    public boolean bookmarked;
 
     public String location;
     public int debug_flag = 0;

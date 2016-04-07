@@ -68,6 +68,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.previewImage = response.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
             c.likes = response.getInt("challenge_likes");//103;
             c.liked = 0;
+            c.bookmarked = false;
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest - " + e.getMessage());
             c.id = temp;

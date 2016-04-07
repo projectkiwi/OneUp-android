@@ -62,6 +62,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
         mDesc = (TextView) findViewById(R.id.challenge_desc);
         mCategories = (TextView) findViewById(R.id.challenge_categories);
         mBookmarkButton = (CenterIconButton) findViewById(R.id.bookmark_button);
+
         mLikeButton = (CenterIconButton) findViewById(R.id.like_button);
 
         String challengeId = getIntent().getStringExtra(EXTRA_CHALLENGE_ID);
@@ -78,6 +79,9 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                         .load(mChallenge.image)
                         .error(R.drawable.doge_with_sunglasses)
                         .into(mMedia);
+
+                mBookmarkButton.setChecked(mChallenge.bookmarked);
+                mBookmarkButton.setOnCheckedChangeListener(bookmarkListner);
 
 
                 mLikeButton.setText(Integer.toString(mChallenge.likes));
@@ -135,7 +139,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (failed2) { failed2 = false; return; }
-                    new BookmarkChallengeWebRequest(mChallenge.attempt_id, isChecked, new RequestHandler<Boolean>() {
+                    new BookmarkChallengeWebRequest(mChallenge.id, isChecked, new RequestHandler<Boolean>() {
                         @Override
                         public void onSuccess(Boolean response) {
 
