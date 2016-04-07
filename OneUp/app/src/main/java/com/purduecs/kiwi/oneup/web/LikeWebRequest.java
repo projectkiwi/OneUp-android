@@ -19,12 +19,13 @@ public class LikeWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
 
         JSONObject post = new JSONObject();
         try {
-            post.put("id", challengeId);
+            post.put("hello", "How are you today?");
         } catch (Exception e) {
             Log.e(TAG, "Something went wrong when making a login posting json object");
         }
 
-        String url = liked ? "/like/" : "/dislike/";
+        String url = "/challenges/like/";
+        url = url + challengeId;
 
         // Now POST that object
         request = new JsonObjectRequest(Request.Method.POST,
@@ -49,7 +50,7 @@ public class LikeWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
     public Boolean parseResponse(JSONObject response) {
         boolean liked = true;
         try {
-            liked = response.getBoolean("success");
+            liked = response.getString("message").equals("Like Recorded!");
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting return in LikeWebRequest");
         }

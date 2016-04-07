@@ -122,6 +122,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (getItemViewType(position) == ITEM_VIEW_TYPE_BASIC) {
             ViewHolder h = (ViewHolder) holder;
             h.cardid.setText(getItem(position).id);
+            h.attemptid.setText(getItem(position).attempt_id);
             h.challenge=getItem(position);
             h.cardtitle.setText(list.get(position).name);
             Glide.with(mActivity)
@@ -140,6 +141,8 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             h.cardlikes.setTextOff(Integer.toString(list.get(position).likes));
             h.cardlikes.setTextOn(Integer.toString(list.get(position).likes + 1));
             h.cardlikes.setPastLiked(false);
+            h.cardlikes.setOnCheckedChangeListener(null);
+            h.cardlikes.setChecked(false);
             switch (list.get(position).liked) {
                 case 0:
                     break;
@@ -203,6 +206,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         View cardview;
 
         TextView cardid;
+        TextView attemptid;
         ImageView cardimage;
         TextView cardtitle;
         TextView cardowner;
@@ -217,6 +221,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             cardview = itemView;
 
             cardid = (TextView) itemView.findViewById(R.id.card_id);
+            attemptid = (TextView) itemView.findViewById(R.id.attempt_id);
             cardimage = (ImageView) itemView.findViewById(R.id.card_image);
             cardtitle = (TextView) itemView.findViewById(R.id.card_title);
             cardowner = (TextView) itemView.findViewById(R.id.card_winner);
@@ -266,7 +271,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             (RelativeLayout)(
                                     (RelativeLayout)buttonView.getParent())
                                         .getParent())
-                                        .findViewById(R.id.card_id))
+                                        .findViewById(R.id.attempt_id))
                                         .getText()
                                         .toString();
                     new LikeWebRequest(challengeId, isChecked, new RequestHandler<Boolean>() {

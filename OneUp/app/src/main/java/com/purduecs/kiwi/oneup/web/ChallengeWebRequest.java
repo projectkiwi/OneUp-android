@@ -47,6 +47,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
         Challenge c = new Challenge();
         try {
             c.id = response.getString("_id");
+            c.attempt_id = response.getJSONArray("attempts").getJSONObject(0).getString("_id");
             c.name = response.getString("name");
             c.image = response.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
             c.categories = response.getJSONArray("categories").toString()
@@ -56,7 +57,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.time = "1 d";
             c.desc = response.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
             c.previewImage = response.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
-            c.likes = response.getInt("challenge_votes");//103;
+            c.likes = response.getInt("challenge_likes");//103;
             c.liked = 0;
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest");

@@ -5,6 +5,7 @@ package com.purduecs.kiwi.oneup.models;
  */
 public class Challenge {
     public String id;
+    public String attempt_id;
     public String name;
     public String image;
     public String owner;

@@ -12,6 +12,12 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/attempt_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/card_image"
         android:layout_width="@dimen/newsfeed_item_height"

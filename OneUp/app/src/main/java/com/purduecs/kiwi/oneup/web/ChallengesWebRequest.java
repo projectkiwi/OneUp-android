@@ -85,6 +85,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 chall = response.getJSONObject(ind++);
                 challe = new Challenge();
                 challe.id = chall.getString("_id");
+                challe.attempt_id = chall.getJSONArray("attempts").getJSONObject(0).getString("_id");
                 challe.name = chall.getString("name");
                 challe.image = chall.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
                 challe.categories = chall.getJSONArray("categories").toString()
@@ -94,7 +95,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 challe.time = "1 d";//chall.getString("updated_on").substring(0,10);
                 challe.desc = chall.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
                 challe.previewImage = chall.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
-                challe.likes = chall.getInt("challenge_votes");//r.nextInt(1000);
+                challe.likes = chall.getInt("challenge_likes");//r.nextInt(1000);
                 challe.liked = 0;//r.nextInt(3);
                 c.add(challe);
             }

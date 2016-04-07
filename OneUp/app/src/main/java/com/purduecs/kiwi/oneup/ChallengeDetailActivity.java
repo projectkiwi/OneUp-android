@@ -130,7 +130,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (failed) { failed = false; return; }
-                    new LikeWebRequest(mChallenge.id, isChecked, new RequestHandler<Boolean>() {
+                    new LikeWebRequest(mChallenge.attempt_id, isChecked, new RequestHandler<Boolean>() {
                         @Override
                         public void onSuccess(Boolean response) {
 
