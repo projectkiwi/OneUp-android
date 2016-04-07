@@ -10,6 +10,7 @@
     <color name="newsfeedItemGray">#FFFFFF</color>
     <color name="newsfeedBackground">#F5F5F5</color>
     <color name="dividerGray">#D8D8D8</color>
+    <color name="selectedGray">#E8E8E8</color>
 
     <color name="timerColor">@color/lightGreyText</color>
     <color name="heartColorUnpressed">@color/lightGreyText</color>
@@ -19,6 +20,6 @@
     <color name="overlayGrey">#889C9C9C</color>
 
     <color name="firstGold">#F8E71C</color>
-    <color name="secondSilver">#E6E6E6</color>
+    <color name="secondSilver">#C0C0C0</color>
     <color name="thirdBronze">#D16119</color>
 </resources>

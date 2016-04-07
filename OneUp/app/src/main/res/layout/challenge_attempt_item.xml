@@ -45,4 +45,18 @@
             style="@style/MediumSmallText"
             android:text="2 days ago" />
     </LinearLayout>
+
+    <ToggleButton
+        android:id="@+id/attempt_like_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:drawableTop="@drawable/like_button"
+        android:background="@android:color/transparent"
+        style="@style/SmallText"
+        android:textColor="@drawable/like_button_text"
+        android:text="123"
+        android:textOff="123"
+        android:textOn="124"/>
 </RelativeLayout>

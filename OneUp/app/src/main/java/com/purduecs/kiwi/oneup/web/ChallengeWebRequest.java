@@ -9,6 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.purduecs.kiwi.oneup.OneUpApplication;
 import com.purduecs.kiwi.oneup.R;
+import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
 
 import org.json.JSONArray;
@@ -56,9 +57,11 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
         try {
             c.id = response.getString("_id");
             temp = c.id;
-            c.attempt_id = response.getJSONArray("attempts").getJSONObject(0).getString("_id");
+
+            JSONArray attempts = response.getJSONArray("attempts");
+
             c.name = response.getString("name");
-            c.image = response.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
+            c.image = attempts.getJSONObject(0).getString("gif_img");
             c.categories = response.getJSONArray("categories").toString()
                     .replace("\"", "").replace("[", "").replace("]", "").split(",");
             c.owner = "temp";
@@ -69,6 +72,26 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.likes = response.getInt("challenge_likes");//103;
             c.liked = 0;
             c.bookmarked = false;
+
+            // now add attempts
+            c.attempts = new Attempt[attempts.length()];
+            for (int i = 0; i < attempts.length(); i++) {
+                JSONObject a = attempts.getJSONObject(i);
+                c.attempts[i] = new Attempt();
+                c.attempts[i].id = a.getString("_id");
+                c.attempts[i].image = a.getString("preview_img");
+                c.attempts[i].gif = a.getString("gif_img");
+                c.attempts[i].time = "1 day";
+                c.attempts[i].number = 1234;
+                c.attempts[i].desc = "people";
+                c.attempts[i].likes_num = a.getInt("like_total");
+                c.attempts[i].has_liked = false;
+                c.attempts[i].owner = "adam";
+                c.attempts[i].place = i+1;
+            }
+            if (c.attempts.length > 0)
+                c.attempt_main = c.attempts[0];
+
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest - " + e.getMessage());
             c.id = temp;

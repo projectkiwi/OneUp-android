@@ -7,15 +7,17 @@ import android.provider.MediaStore;
  * Created by Adam on 4/2/16.
  */
 public class Attempt {
+    public String id;
+
     public int place;
     public int number;
     public String desc;
-    public String winner;
     public String time;
 
     public int votes_num;
     public String owner;
     public int likes_num;
+    public boolean has_liked;
     public String gif;
     public String image;
 
@@ -34,7 +36,7 @@ public class Attempt {
         this.image = s;
         this.number = n;
         this.desc = d;
-        this.winner = w;
+        this.owner = w;
         this.time = t;
     }
 

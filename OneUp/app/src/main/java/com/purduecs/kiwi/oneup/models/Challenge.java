@@ -8,6 +8,9 @@ import android.provider.MediaStore;
  */
 public class Challenge {
     public String id;
+    // For use in challenge detail page
+    public Attempt attempt_main;
+    // For use in newsfeed (used instead of attempt_main)
     public String attempt_id;
     public String name;
     public String image;
@@ -22,6 +25,8 @@ public class Challenge {
     public int likes;
     public int liked;
     public boolean bookmarked;
+
+    public Attempt[] attempts;
 
     public String location;
     public int debug_flag = 0;

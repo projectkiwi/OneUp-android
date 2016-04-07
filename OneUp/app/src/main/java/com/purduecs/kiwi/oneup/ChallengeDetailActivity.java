@@ -2,7 +2,6 @@ package com.purduecs.kiwi.oneup;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.ComposePathEffect;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.purduecs.kiwi.oneup.models.Attempt;
@@ -36,7 +36,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
     }
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private AttemptAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     Challenge mChallenge;
@@ -81,7 +81,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                         .into(mMedia);
 
                 mBookmarkButton.setChecked(mChallenge.bookmarked);
-                mBookmarkButton.setOnCheckedChangeListener(bookmarkListner);
+                mBookmarkButton.setOnClickListener(bookmarkListener);
 
 
                 mLikeButton.setText(Integer.toString(mChallenge.likes));
@@ -98,7 +98,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                         mLikeButton.setPastLiked(true);
                         break;
                 }
-                mLikeButton.setOnCheckedChangeListener(likeListener);
+                mLikeButton.setOnClickListener(likeListener);
 
                 String categories = "";
                 for (int i = 0; i < mChallenge.categories.length; i++) {
@@ -108,12 +108,8 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                 categories = categories.substring(0, categories.length()-2);
                 mCategories.setText(categories);
 
-                Attempt[] as = new Attempt[] { new Attempt(1, "https://pbs.twimg.com/profile_images/675404869885276160/6Ybu2ZpU.jpg",
-                        3024, "people", "Purdue Hackers", "2 days"), new Attempt(2, "https://pbs.twimg.com/profile_images/675404869885276160/6Ybu2ZpU.jpg",
-                        2956, "people", "MHacks", "8 days"), new Attempt(3, "https://pbs.twimg.com/profile_images/675404869885276160/6Ybu2ZpU.jpg",
-                        2287, "people", "PennApps", "1 month"), new Attempt(4, "https://pbs.twimg.com/profile_images/675404869885276160/6Ybu2ZpU.jpg",
-                        1058, "people", "HackIllinois", "3 months") };
-                mAdapter = new AttemptAdapter(as);
+
+                mAdapter = new AttemptAdapter(mChallenge.attempts);
                 mRecyclerView.setAdapter(mAdapter);
             }
 
@@ -131,15 +127,52 @@ public class ChallengeDetailActivity extends AppCompatActivity {
         }
     }
 
-    // Need this so the oncheckedchange listener doesn't loop when it fails
-    private boolean failed = false;
-    private boolean failed2 = false;
+    private View.OnClickListener attemptClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String id = (String)v.findViewById(R.id.attempt_like_button).getTag();
+            Attempt a = new Attempt();
+            for (int i = 0; i < mChallenge.attempts.length; i++) {
+                if (mChallenge.attempts[i].id.equals(id)) {
+                    a = mChallenge.attempts[i];
+                    if (i != mAdapter.focusedItem) {
+                        int temp = mAdapter.focusedItem;
+                        mAdapter.focusedItem = i;
+                        mAdapter.notifyItemChanged(temp);
+                        mAdapter.notifyItemChanged(i);
+                    }
+                    break;
+                }
+            }
 
-    private CompoundButton.OnCheckedChangeListener bookmarkListner =
-            new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (failed2) { failed2 = false; return; }
-                    new BookmarkChallengeWebRequest(mChallenge.id, isChecked, new RequestHandler<Boolean>() {
+            mChallenge.attempt_main = a;
+
+            Glide.with(ChallengeDetailActivity.this)
+                    .load(a.gif)
+                    .error(R.drawable.doge_with_sunglasses)
+                    .into(mMedia);
+
+            mWinner.setText(a.owner);
+
+            // Want to leave the total likes here, not the individual
+            if (mLikeButton.isChecked() && !a.has_liked) {
+                mChallenge.likes++;
+            } else if (!mLikeButton.isChecked() && a.has_liked) {
+                mChallenge.likes--;
+            }
+            mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
+            mLikeButton.setTextOn(Integer.toString(mChallenge.likes + 1));
+            mLikeButton.setChecked(a.has_liked);
+
+        }
+    };
+
+    private View.OnClickListener bookmarkListener =
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CompoundButton buttonView = (CompoundButton) v;
+                    new BookmarkChallengeWebRequest(mChallenge.id, buttonView.isChecked(), new RequestHandler<Boolean>() {
                         @Override
                         public void onSuccess(Boolean response) {
 
@@ -148,34 +181,79 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                         @Override
                         public void onFailure() {
                             Log.d("HEY", "we failed to bookmark the post :(");
-                            failed2 = true;
                             mBookmarkButton.toggle();
                         }
                     });
                 }
             };
 
-    private CompoundButton.OnCheckedChangeListener likeListener =
-            new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (failed) { failed = false; return; }
-                    new LikeWebRequest(mChallenge.attempt_id, isChecked, new RequestHandler<Boolean>() {
+    private View.OnClickListener likeListener =
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final CompoundButton buttonView = (CompoundButton) v;
+                    new LikeWebRequest(mChallenge.attempt_main.id, buttonView.isChecked(), new RequestHandler<Boolean>() {
                         @Override
                         public void onSuccess(Boolean response) {
 
+                            mChallenge.attempt_main.has_liked = buttonView.isChecked();
+                            mAdapter.notifyItemChanged(mChallenge.attempt_main.place - 1);
                         }
 
                         @Override
                         public void onFailure() {
                             Log.d("HEY", "we failed to like the post :(");
-                            failed = true;
                             mLikeButton.toggle();
                         }
                     });
                 }
             };
 
+    private View.OnClickListener attemptLikeListener =
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final CompoundButton buttonView = (CompoundButton) v;
+                    new LikeWebRequest((String)buttonView.getTag(), buttonView.isChecked(), new RequestHandler<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean response) {
+
+                            String id = (String)buttonView.getTag();
+                            Attempt a = new Attempt();
+                            for (int i = 0; i < mChallenge.attempts.length; i++) {
+                                if (mChallenge.attempts[i].id.equals(id)) {
+                                    a = mChallenge.attempts[i];
+                                    break;
+                                }
+                            }
+
+                            a.has_liked = buttonView.isChecked();
+
+                            // If it's this one, toggle the button, else update the likes
+                            if (id.equals(mChallenge.attempt_main.id)) {
+                                mLikeButton.toggle();
+                            } else {
+                                if (a.has_liked) mChallenge.likes++;
+                                else mChallenge.likes--;
+                                mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
+                                mLikeButton.setTextOn(Integer.toString(mChallenge.likes+1));
+                                mLikeButton.setChecked(mLikeButton.isChecked());//update the text
+                            }
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Log.d("HEY", "we failed to like the attempt :(");
+                            buttonView.toggle();
+                        }
+                    });
+                }
+            };
+
     public class AttemptAdapter extends RecyclerView.Adapter<AttemptAdapter.ViewHolder> {
+        // Start with first item selected
+        public int focusedItem = 0;
+
         private Attempt[] mDataset;
 
         // Provide a reference to the views for each data item
@@ -183,16 +261,21 @@ public class ChallengeDetailActivity extends AppCompatActivity {
         // you provide access to all the views for a data item in a view holder
         public class ViewHolder extends RecyclerView.ViewHolder {
             // each data item is just a string in this case
+            View mView;
             public ImageView mImageView;
             public TextView mRecord;
             public TextView mWinner;
             public TextView mTime;
+            public ToggleButton mLikeButton;
             public ViewHolder(View v) {
                 super(v);
+                mView = v;
                 mImageView = (ImageView)v.findViewById(R.id.image);
                 mRecord = (TextView)v.findViewById(R.id.record);
                 mWinner = (TextView)v.findViewById(R.id.winner);
                 mTime = (TextView)v.findViewById(R.id.time);
+                mLikeButton = (ToggleButton)v.findViewById(R.id.attempt_like_button);
+                v.setOnClickListener(attemptClickListener);
             }
         }
 
@@ -224,8 +307,15 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                     .error(R.drawable.doge_with_sunglasses)
                     .into(holder.mImageView);
             holder.mRecord.setText(a.number + " " + a.desc);
-            holder.mWinner.setText(a.winner);
+            holder.mWinner.setText(a.owner);
             holder.mTime.setText(a.time);
+
+            holder.mLikeButton.setTag(a.id);
+            holder.mLikeButton.setTextOn(Integer.toString(a.likes_num + 1));
+            holder.mLikeButton.setTextOff(Integer.toString(a.likes_num));
+            holder.mLikeButton.setText(Integer.toString(a.likes_num));
+            holder.mLikeButton.setChecked(a.has_liked);
+            holder.mLikeButton.setOnClickListener(attemptLikeListener);
 
             switch (a.place) {
                 case 1:
@@ -238,9 +328,14 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                     holder.mRecord.setTextColor(getResources().getColor(R.color.thirdBronze));
                     break;
                 default:
-                    //holder.mRecord.setTextColor(getResources().getColor(R.color.firstGold));
+                    holder.mRecord.setTextColor(getResources().getColor(R.color.darkGreyText));
                     break;
             }
+
+            if (position == focusedItem)
+                holder.mView.setBackgroundResource(R.drawable.attempt_item_background_selected);
+            else
+                holder.mView.setBackgroundResource(R.drawable.attempt_item_background);
         }
 
         // Return the size of your dataset (invoked by the layout manager)
