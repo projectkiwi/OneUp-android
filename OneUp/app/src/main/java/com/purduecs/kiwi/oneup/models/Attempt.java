@@ -2,6 +2,9 @@ package com.purduecs.kiwi.oneup.models;
 
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
+import android.text.format.Time;
+
+import java.util.Date;
 
 /**
  * Created by Adam on 4/2/16.
@@ -12,7 +15,7 @@ public class Attempt {
     public int place;
     public int number;
     public String desc;
-    public String time;
+    public Date time;
 
     public int votes_num;
     public String owner;
@@ -31,7 +34,7 @@ public class Attempt {
     final static int TYPE_VIDEO = 1;
 
 
-    public Attempt(int place, String s, int n, String d, String w, String t) {
+    public Attempt(int place, String s, int n, String d, String w, Date t) {
         this.place = place;
         this.image = s;
         this.number = n;

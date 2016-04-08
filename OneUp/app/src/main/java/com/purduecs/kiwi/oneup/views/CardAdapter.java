@@ -25,6 +25,7 @@ import com.purduecs.kiwi.oneup.web.LikeWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -154,7 +155,33 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     break;
             }
             h.cardlikes.setOnCheckedChangeListener(likeListener);
-            h.cardtime.setText(list.get(position).time);
+
+            //h.cardtime.setText(list.get(position).time);
+            long time = (new Date()).getTime() - list.get(position).time.getTime();
+            String tim = "s";
+            time /= 1000; // At seconds
+            if (time >= 60) {
+                time /= 60;
+                tim = "m";
+                if (time >= 60) {
+                    time /= 60;
+                    tim = "h";
+                    if (time >= 24) {
+                        time /= 24;
+                        tim = "d";
+                        if (time >= 365) {
+                            time /= 365;
+                            tim = "y";
+                        }// At years
+                        else if (time >= 12) {
+                            time /= 12;
+                            tim = "mo";
+                        }// Else do months
+                    } // At days
+                }// At hours
+            }// At minutes
+            h.cardtime.setText(time + " " + tim);
+
             h.carddesc.setText(list.get(position).desc);
 
             h.cardview.setOnClickListener(clickListener);

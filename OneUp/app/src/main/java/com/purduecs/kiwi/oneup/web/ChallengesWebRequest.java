@@ -1,6 +1,7 @@
 package com.purduecs.kiwi.oneup.web;
 
 import android.support.v4.util.ArrayMap;
+import android.text.format.Time;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -15,10 +16,14 @@ import com.purduecs.kiwi.oneup.models.Challenge;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by Adam on 2/25/16.
@@ -95,7 +100,14 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                         .replace("\"", "").replace("[", "").replace("]", "").split(",");
                 challe.owner = winners[r.nextInt(winners.length)];
                 challe.score = r.nextInt(1000);
-                challe.time = "1 d";//chall.getString("updated_on").substring(0,10);
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                try {
+                    challe.time = format.parse(chall.getString("updated_on"));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    challe.time = new Date();
+                }
                 challe.desc = chall.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
                 challe.previewImage = chall.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
                 challe.likes = chall.getInt("challenge_likes");//r.nextInt(1000);

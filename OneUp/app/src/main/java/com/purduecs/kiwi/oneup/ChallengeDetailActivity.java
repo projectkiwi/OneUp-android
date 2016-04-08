@@ -25,6 +25,8 @@ import com.purduecs.kiwi.oneup.web.ChallengeWebRequest;
 import com.purduecs.kiwi.oneup.web.LikeWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
+import java.util.Date;
+
 public class ChallengeDetailActivity extends AppCompatActivity {
 
     private static String EXTRA_CHALLENGE_ID = "com.purduecs.kiwiw.challenge_id";
@@ -308,7 +310,34 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                     .into(holder.mImageView);
             holder.mRecord.setText(a.number + " " + a.desc);
             holder.mWinner.setText(a.owner);
-            holder.mTime.setText(a.time);
+
+            long time = (new Date()).getTime() - a.time.getTime();
+            String tim = "seconds";
+            time /= 1000; // At seconds
+            if (time >= 60) {
+                time /= 60;
+                tim = "minutes";
+                if (time >= 60) {
+                    time /= 60;
+                    tim = "hours";
+                    if (time >= 24) {
+                        time /= 24;
+                        tim = "days";
+                        if (time >= 365) {
+                            time /= 365;
+                            tim = "years";
+                        }// At years
+                        else if (time >= 12) {
+                            time /= 12;
+                            tim = "months";
+                        }// Else do months
+                    } // At days
+                }// At hours
+            }// At minutes
+
+
+
+            holder.mTime.setText(time + " " + tim);
 
             holder.mLikeButton.setTag(a.id);
             holder.mLikeButton.setTextOn(Integer.toString(a.likes_num + 1));

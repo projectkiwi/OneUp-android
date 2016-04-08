@@ -1,6 +1,7 @@
 package com.purduecs.kiwi.oneup.web;
 
 import android.support.v4.util.ArrayMap;
+import android.text.format.Time;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -15,7 +16,11 @@ import com.purduecs.kiwi.oneup.models.Challenge;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by Adam on 3/3/16.
@@ -66,7 +71,14 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                     .replace("\"", "").replace("[", "").replace("]", "").split(",");
             c.owner = "temp";
             c.score = 164;
-            c.time = "1 d";
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            try {
+                c.time = format.parse(response.getString("updated_on"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                c.time = new Date();
+            }
             c.desc = response.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
             c.previewImage = response.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
             c.likes = response.getInt("challenge_likes");//103;
@@ -81,7 +93,12 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 c.attempts[i].id = a.getString("_id");
                 c.attempts[i].image = a.getString("preview_img");
                 c.attempts[i].gif = a.getString("gif_img");
-                c.attempts[i].time = "1 day";
+                try {
+                    c.attempts[i].time = format.parse(a.getString("created_on"));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    c.attempts[i].time = new Date();
+                }
                 c.attempts[i].number = 1234;
                 c.attempts[i].desc = "people";
                 c.attempts[i].likes_num = a.getInt("like_total");

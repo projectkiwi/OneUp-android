@@ -1,7 +1,6 @@
 package com.purduecs.kiwi.oneup.models;
 
-import android.graphics.Bitmap;
-import android.provider.MediaStore;
+import java.util.Date;
 
 /**
  * Created by Adam on 3/3/16.
@@ -17,7 +16,7 @@ public class Challenge {
     public String owner;
     public String[] categories;
     public int score;
-    public String time;
+    public Date time;
     public String desc;
     public String previewImage;
     public String pattern;
