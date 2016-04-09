@@ -28,7 +28,7 @@ public class BookmarkChallengeWebRequest implements OneUpWebRequest<JSONObject, 
         }
 
         String url = "/users/bookmarks/";
-        if (!bookmark) url = "/users/unbookmark/"
+        if (!bookmark) url = "/users/unbookmark/";
         url = url + challengeId;
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
