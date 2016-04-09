@@ -90,15 +90,11 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                 mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
                 mLikeButton.setTextOn(Integer.toString(mChallenge.likes + 1));
                 mLikeButton.setPastLiked(false);
-                switch (mChallenge.liked) {
-                    case 0:
-                        break;
-                    case 1:
-                        mLikeButton.toggle();
-                        break;
-                    case 2:
-                        mLikeButton.setPastLiked(true);
-                        break;
+                if (mChallenge.liked >= 2) {
+                    mLikeButton.setPastLiked(true); // set to past liked if we've liked it before
+                }
+                if (mChallenge.liked % 2 == 1) {
+                    mLikeButton.toggle(); // set to liked if this attempt is liked
                 }
                 mLikeButton.setOnClickListener(likeListener);
 
@@ -147,7 +143,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                 }
             }
 
-            mChallenge.attempt_main = a;
+            mChallenge.attempt_id = a.id;
 
             Glide.with(ChallengeDetailActivity.this)
                     .load(a.gif)
@@ -194,12 +190,23 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     final CompoundButton buttonView = (CompoundButton) v;
-                    new LikeWebRequest(mChallenge.attempt_main.id, buttonView.isChecked(), new RequestHandler<Boolean>() {
+                    new LikeWebRequest(mChallenge.attempt_id, buttonView.isChecked(), new RequestHandler<Boolean>() {
                         @Override
                         public void onSuccess(Boolean response) {
 
-                            mChallenge.attempt_main.has_liked = buttonView.isChecked();
-                            mAdapter.notifyItemChanged(mChallenge.attempt_main.place - 1);
+                            int pastLikes = 0;
+                            Attempt a = new Attempt();
+                            for (int i = 0; i < mChallenge.attempts.length; i++) {
+                                if (mChallenge.attempts[i].id.equals(mChallenge.attempt_id)) {
+                                    a = mChallenge.attempts[i];
+                                }
+                                if (mChallenge.attempts[i].has_liked) pastLikes++;
+                            }
+                            if (pastLikes == 0) mLikeButton.setPastLiked(false);
+                            else mLikeButton.setPastLiked(true);
+
+                            a.has_liked = buttonView.isChecked();
+                            mAdapter.notifyItemChanged(a.place - 1);
                         }
 
                         @Override
@@ -221,18 +228,21 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                         public void onSuccess(Boolean response) {
 
                             String id = (String)buttonView.getTag();
+                            int pastLikes = 0;
                             Attempt a = new Attempt();
                             for (int i = 0; i < mChallenge.attempts.length; i++) {
                                 if (mChallenge.attempts[i].id.equals(id)) {
                                     a = mChallenge.attempts[i];
-                                    break;
                                 }
+                                if (mChallenge.attempts[i].has_liked) pastLikes++;
                             }
+                            if (pastLikes == 0) mLikeButton.setPastLiked(false);
+                            else mLikeButton.setPastLiked(true);
 
                             a.has_liked = buttonView.isChecked();
 
                             // If it's this one, toggle the button, else update the likes
-                            if (id.equals(mChallenge.attempt_main.id)) {
+                            if (id.equals(mChallenge.attempt_id)) {
                                 mLikeButton.toggle();
                             } else {
                                 if (a.has_liked) mChallenge.likes++;

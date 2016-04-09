@@ -33,7 +33,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
     public ChallengeWebRequest(String challengeId, final RequestHandler<Challenge> handler) {
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
-        headerArgs.put("userid", "57065ffb81b46b7c289a6144");
+        headerArgs.put("token", "57065ffb81b46b7c289a6144");
 
         // Now get that object
         mRequest = new JsonObjectEditHeaderRequest(Request.Method.GET,
@@ -82,7 +82,8 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.desc = response.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
             c.previewImage = response.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
             c.likes = response.getInt("challenge_likes");//103;
-            c.liked = 0;
+            c.liked = (response.getBoolean("liked_top_attempt") ? 1 : 0)
+                        + (response.getBoolean("liked_previous_attempt") ? 2 : 0);
             c.bookmarked = false;
 
             // now add attempts
@@ -102,12 +103,12 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 c.attempts[i].number = 1234;
                 c.attempts[i].desc = "people";
                 c.attempts[i].likes_num = a.getInt("like_total");
-                c.attempts[i].has_liked = false;
+                c.attempts[i].has_liked = a.getBoolean("liked_attempt");
                 c.attempts[i].owner = "adam";
                 c.attempts[i].place = i+1;
             }
             if (c.attempts.length > 0)
-                c.attempt_main = c.attempts[0];
+                c.attempt_id = c.attempts[0].id;
 
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest - " + e.getMessage());

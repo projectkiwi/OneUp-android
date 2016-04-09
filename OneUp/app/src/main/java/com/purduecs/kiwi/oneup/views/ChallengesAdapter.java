@@ -144,15 +144,11 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             h.cardlikes.setPastLiked(false);
             h.cardlikes.setOnCheckedChangeListener(null);
             h.cardlikes.setChecked(false);
-            switch (list.get(position).liked) {
-                case 0:
-                    break;
-                case 1:
-                    h.cardlikes.toggle();
-                    break;
-                case 2:
-                    h.cardlikes.setPastLiked(true);
-                    break;
+            if (list.get(position).liked >= 2) {
+                h.cardlikes.setPastLiked(true); // set to past liked if we've liked it before
+            }
+            if (list.get(position).liked % 2 == 1) {
+                h.cardlikes.toggle(); // set to liked if this attempt is liked
             }
             h.cardlikes.setOnCheckedChangeListener(likeListener);
 

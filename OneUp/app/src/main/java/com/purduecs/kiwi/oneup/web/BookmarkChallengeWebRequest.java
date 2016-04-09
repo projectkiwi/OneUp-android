@@ -28,10 +28,11 @@ public class BookmarkChallengeWebRequest implements OneUpWebRequest<JSONObject, 
         }
 
         String url = "/users/bookmarks/";
+        if (!bookmark) url = "/users/unbookmark/"
         url = url + challengeId;
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
-        headerArgs.put("userid", "57065ffb81b46b7c289a6144");
+        headerArgs.put("token", "57065ffb81b46b7c289a6144");
 
         // Now POST that object
         request = new JsonObjectEditHeaderRequest(Request.Method.POST,

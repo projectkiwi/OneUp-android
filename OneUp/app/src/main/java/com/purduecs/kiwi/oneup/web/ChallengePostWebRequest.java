@@ -47,7 +47,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
         }
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
-        headerArgs.put("userid", "57065ffb81b46b7c289a6144");
+        headerArgs.put("token", "57065ffb81b46b7c289a6144");
 
         // Now post that object
         mRequest = new JsonObjectEditHeaderRequest(Request.Method.POST,

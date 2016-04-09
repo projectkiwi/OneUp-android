@@ -7,8 +7,6 @@ import java.util.Date;
  */
 public class Challenge {
     public String id;
-    // For use in challenge detail page
-    public Attempt attempt_main;
     // For use in newsfeed (used instead of attempt_main)
     public String attempt_id;
     public String name;
@@ -20,7 +18,7 @@ public class Challenge {
     public String desc;
     public String previewImage;
     public String pattern;
-    // 0 is unliked, 1 is liked, 2 is liked a past attempt
+    // 0 is unliked, 1 is liked, 2 is liked a past attempt, 3 is liked past and this one
     public int likes;
     public int liked;
     public boolean bookmarked;

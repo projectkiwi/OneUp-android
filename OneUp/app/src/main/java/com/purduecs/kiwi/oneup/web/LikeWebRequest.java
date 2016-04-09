@@ -28,10 +28,11 @@ public class LikeWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
         }
 
         String url = "/challenges/like/";
+        if (!liked) url = "/challenges/unlike/";
         url = url + challengeId;
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
-        headerArgs.put("userid", "57065ffb81b46b7c289a6144");
+        headerArgs.put("token", "57065ffb81b46b7c289a6144");
 
         // Now POST that object
         request = new JsonObjectEditHeaderRequest(Request.Method.POST,
