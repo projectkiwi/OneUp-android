@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VISIBLE_THRESHOLD = 4;
 
@@ -47,7 +47,7 @@ public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity mActivity;
 
-    public CardAdapter(Activity holdingActivity, RecyclerView recyclerView, List<Challenge> list, View.OnClickListener cardListener, final OnLoadMoreListener onLoadMoreListener) {
+    public ChallengesAdapter(Activity holdingActivity, RecyclerView recyclerView, List<Challenge> list, View.OnClickListener cardListener, final OnLoadMoreListener onLoadMoreListener) {
         this.list = list;
         this.mLoadListener = onLoadMoreListener;
         this.clickListener = cardListener;

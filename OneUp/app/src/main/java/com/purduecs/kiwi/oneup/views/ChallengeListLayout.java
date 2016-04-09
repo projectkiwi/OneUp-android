@@ -32,7 +32,7 @@ public class ChallengeListLayout extends SwipeRefreshLayout {
     String mChallengeType;
 
     RecyclerView recyclerView;
-    CardAdapter adapter;
+    ChallengesAdapter adapter;
     List<Challenge> challenges;
 
     private int numbLoaded;
@@ -87,7 +87,7 @@ public class ChallengeListLayout extends SwipeRefreshLayout {
     public void refreshContent(){
         numbLoaded = 0;
         adapter.resetItems(new ArrayList<Challenge>());
-        loadMoreContent(new CardAdapter.FinishedLoadingListener() {
+        loadMoreContent(new ChallengesAdapter.FinishedLoadingListener() {
             @Override
             public void finishedLoading() {
                 ChallengeListLayout.this.setRefreshing(false);
@@ -98,16 +98,16 @@ public class ChallengeListLayout extends SwipeRefreshLayout {
     private void initializeData() {
 
         challenges = new ArrayList<Challenge>();
-        adapter = new CardAdapter(mContext, recyclerView, challenges, new View.OnClickListener() {
+        adapter = new ChallengesAdapter(mContext, recyclerView, challenges, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView view = (TextView) v.findViewById(R.id.card_id);
                 mContext.startActivity(ChallengeDetailActivity.intentFor(mContext,
                         (String) view.getText()));
             }
-        }, new CardAdapter.OnLoadMoreListener() {
+        }, new ChallengesAdapter.OnLoadMoreListener() {
             @Override
-            public void onLoadMore(CardAdapter.FinishedLoadingListener listener) {
+            public void onLoadMore(ChallengesAdapter.FinishedLoadingListener listener) {
                 loadMoreContent(listener);
             }
         });
@@ -116,7 +116,7 @@ public class ChallengeListLayout extends SwipeRefreshLayout {
 
     }
 
-    private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
+    private void loadMoreContent(final ChallengesAdapter.FinishedLoadingListener listener) {
         mWebRequest = new ChallengesWebRequest(mChallengeType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
             @Override
             public void onSuccess(ArrayList<Challenge> response) {

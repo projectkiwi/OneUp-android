@@ -20,8 +20,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.purduecs.kiwi.oneup.views.CardAdapter;
+import com.purduecs.kiwi.oneup.models.Notification;
+import com.purduecs.kiwi.oneup.views.ChallengesAdapter;
 import com.purduecs.kiwi.oneup.models.Challenge;
+import com.purduecs.kiwi.oneup.views.NotificationsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,8 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
-    CardAdapter adapter;
-    List<Challenge> challenges;
+    NotificationsAdapter adapter;
+    Notification[] notifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,7 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //getContent(0);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -92,19 +94,11 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
     //TODO: Special Card for Notifications
     private void initializeData() {
 
-        challenges = new ArrayList<Challenge>();
+        notifications = new Notification[] { new Notification("http://imgs.xkcd.com/comics/mycology.png", "5703fbcffab47e0837d94498", "You have a notification!"),
+                new Notification("http://imgs.xkcd.com/comics/jack_and_jill.png", "5703f996fab47e0837d94495", "You have a notification!"),
+                new Notification("http://imgs.xkcd.com/comics/podium.png", "5703f988fab47e0837d94492", "You have a notification!"),};
 
-        adapter = new CardAdapter(this, recyclerView, challenges, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        }, new CardAdapter.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(CardAdapter.FinishedLoadingListener listener) {
-                //loadMoreContent(listener);
-            }
-        });
+        adapter = new NotificationsAdapter(this, notifications, notificationClick);
         recyclerView.setAdapter(adapter);
 
         /*challenges.add(new Challenge("Notification 1", R.drawable.doge_with_sunglasses));
@@ -115,6 +109,15 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
         challenges.add(new Challenge("Notification 7", R.drawable.doge_with_sunglasses));
         challenges.add(new Challenge("Notification 8", R.drawable.doge_with_sunglasses));*/
     }
+
+    View.OnClickListener notificationClick =
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(ChallengeDetailActivity.intentFor(NotificationsActivity.this,
+                            (String)v.findViewById(R.id.notif_image).getTag()));
+                }
+            };
 
     /*//TODO: Request Notifications by category
     private void getContent(int category){
@@ -136,7 +139,7 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
         });
     }
 
-    private void loadMoreContent(final CardAdapter.FinishedLoadingListener listener) {
+    private void loadMoreContent(final ChallengesAdapter.FinishedLoadingListener listener) {
         new ChallengesWebRequest("", new RequestHandler<ChallengesWebRequest.Challenge[]>() {
             @Override
             public void onSuccess(ChallengesWebRequest.Challenge[] response) {
