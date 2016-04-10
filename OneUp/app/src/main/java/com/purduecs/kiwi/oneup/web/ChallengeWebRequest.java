@@ -72,6 +72,9 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 c.image = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
                 c.previewImage = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
                 c.owner = holders.getJSONObject(holders.length()-1).getString("email").split("@")[0];
+                if (attempts.getJSONObject(attempts.length()-1).has("orig_video")) {
+                    //c.video = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length() - 1).getString("orig_video");
+                }
             } else {
                 c.image = "nope";
                 c.previewImage = "nope";
@@ -106,6 +109,9 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 c.attempts[attempts.length() - i - 1].id = a.getString("_id");
                 c.attempts[attempts.length() - i - 1].image = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
                 c.attempts[attempts.length() - i - 1].gif = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
+                if (a.has("orig_video")) {
+                    //c.attempts[attempts.length()-i-1].video = OneUpWebRequest.BASE_URL + "/" + a.getString("orig_video");
+                }
                 try {
                     c.attempts[attempts.length() - i - 1].time = format.parse(a.getString("created_on"));
                 } catch (ParseException e) {

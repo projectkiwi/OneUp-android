@@ -2,6 +2,7 @@ package com.purduecs.kiwi.oneup;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.purduecs.kiwi.oneup.models.Attempt;
@@ -44,6 +46,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
 
     Challenge mChallenge;
     ImageView mMedia;
+    VideoView mVideo;
     TextView mTitle, mWinner, mDesc, mCategories;
     CenterIconButton mLikeButton;
     CenterIconButton mBookmarkButton;
@@ -60,6 +63,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mMedia = (ImageView) findViewById(R.id.challenge_media);
+        mVideo = (VideoView) findViewById(R.id.challenge_video);
         mTitle = (TextView) findViewById(R.id.challenge_name);
         mWinner = (TextView) findViewById(R.id.challenge_winner);
         mDesc = (TextView) findViewById(R.id.challenge_desc);
@@ -78,10 +82,18 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                 mWinner.setText(mChallenge.owner);
                 mDesc.setText(mChallenge.desc);
 
-                Glide.with(ChallengeDetailActivity.this)
-                        .load(mChallenge.image)
-                        .error(R.drawable.doge_with_sunglasses)
-                        .into(mMedia);
+                if (mChallenge.video == null) {
+                    Glide.with(ChallengeDetailActivity.this)
+                            .load(mChallenge.image)
+                            .error(R.drawable.doge_with_sunglasses)
+                            .into(mMedia);
+                } else {
+                    Uri uri = Uri.parse(mChallenge.video);
+                    mMedia.setVisibility(View.GONE);
+                    mVideo.setVisibility(View.VISIBLE);
+                    mVideo.setVideoURI(uri);
+                    mVideo.start();
+                }
 
                 mBookmarkButton.setChecked(mChallenge.bookmarked);
                 mBookmarkButton.setOnClickListener(bookmarkListener);
@@ -149,10 +161,20 @@ public class ChallengeDetailActivity extends AppCompatActivity {
 
             mChallenge.attempt_id = a.id;
 
-            Glide.with(ChallengeDetailActivity.this)
-                    .load(a.gif)
-                    .error(R.drawable.doge_with_sunglasses)
-                    .into(mMedia);
+            if (a.video == null) {
+                mMedia.setVisibility(View.VISIBLE);
+                mVideo.setVisibility(View.GONE);
+                Glide.with(ChallengeDetailActivity.this)
+                        .load(a.gif)
+                        .error(R.drawable.doge_with_sunglasses)
+                        .into(mMedia);
+            } else {
+                Uri uri = Uri.parse(a.video);
+                mMedia.setVisibility(View.GONE);
+                mVideo.setVisibility(View.VISIBLE);
+                mVideo.setVideoURI(uri);
+                mVideo.start();
+            }
 
             mWinner.setText(a.owner);
 

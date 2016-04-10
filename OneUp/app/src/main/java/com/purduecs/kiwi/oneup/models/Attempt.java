@@ -22,13 +22,14 @@ public class Attempt {
     public int likes_num;
     public boolean has_liked;
     public String gif;
+    public String video; // can be null
     public String image;
 
 
     //0 is picture, 1 is video
     public int mediaType;
     public Bitmap picture;
-    public MediaStore.Video video;
+    //public MediaStore.Video video;
     public String picture_url;
     final static int TYPE_PICTURE = 0;
     final static int TYPE_VIDEO = 1;

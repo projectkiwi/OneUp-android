@@ -12,6 +12,7 @@ public class Challenge {
     public String name;
     public String image;
     public String owner;
+    public String video; // Can be null
     public String[] categories;
     public int score;
     public Date time;

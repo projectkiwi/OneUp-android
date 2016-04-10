@@ -13,6 +13,13 @@
         android:layout_alignParentTop="true"
         android:background="@android:color/black"/> <!-- TODO change dp to wrap_content-->
 
+    <VideoView
+        android:id="@+id/challenge_video"
+        android:layout_width="match_parent"
+        android:layout_height="325dp"
+        android:layout_alignParentTop="true"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/learn_more"
         android:layout_width="match_parent"
