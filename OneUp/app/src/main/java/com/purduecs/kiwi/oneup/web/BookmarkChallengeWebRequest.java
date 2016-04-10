@@ -32,7 +32,7 @@ public class BookmarkChallengeWebRequest implements OneUpWebRequest<JSONObject, 
         url = url + challengeId;
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
-        headerArgs.put("token", "57065ffb81b46b7c289a6144");
+        headerArgs.put("token", RequestQueueSingleton.AUTH_TOKEN);
 
         // Now POST that object
         request = new JsonObjectEditHeaderRequest(Request.Method.POST,

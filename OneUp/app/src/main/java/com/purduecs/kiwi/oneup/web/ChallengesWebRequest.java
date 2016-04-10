@@ -52,7 +52,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
         Map<String, String> headerArgs = new ArrayMap<String, String>();
         headerArgs.put("offset", Integer.toString(start));
         headerArgs.put("limit", Integer.toString(length));
-        headerArgs.put("token", "57065ffb81b46b7c289a6144");
+        headerArgs.put("token", RequestQueueSingleton.AUTH_TOKEN);
 
         mRequest = new JsonObjectEditHeaderRequest(Request.Method.GET, OneUpWebRequest.BASE_URL + type, headerArgs, null,
                 new Response.Listener<JSONObject>() {
@@ -110,7 +110,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                     challe.time = new Date();
                 }
                 challe.desc = chall.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
-                challe.previewImage = chall.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
+                challe.previewImage = chall.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
                 challe.likes = chall.getInt("challenge_likes");//r.nextInt(1000);
                 challe.liked = (chall.getBoolean("liked_top_attempt") ? 1 : 0)
                         + (chall.getBoolean("liked_previous_attempt") ? 2 : 0);//r.nextInt(3);
@@ -118,6 +118,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 c.add(challe);
             }
         } catch (Exception e) {
+            e.printStackTrace();
                 Log.e(TAG, "Something happened in the ChallengeS (plural) request");
         }
         return c;

@@ -33,7 +33,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
     public ChallengeWebRequest(String challengeId, final RequestHandler<Challenge> handler) {
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
-        headerArgs.put("token", "57065ffb81b46b7c289a6144");
+        headerArgs.put("token", RequestQueueSingleton.AUTH_TOKEN);
 
         // Now get that object
         mRequest = new JsonObjectEditHeaderRequest(Request.Method.GET,
@@ -92,7 +92,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 JSONObject a = attempts.getJSONObject(i);
                 c.attempts[i] = new Attempt();
                 c.attempts[i].id = a.getString("_id");
-                c.attempts[i].image = a.getString("preview_img");
+                c.attempts[i].image = a.getString("gif_img");
                 c.attempts[i].gif = a.getString("gif_img");
                 try {
                     c.attempts[i].time = format.parse(a.getString("created_on"));

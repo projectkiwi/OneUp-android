@@ -25,6 +25,7 @@ import com.facebook.login.widget.LoginButton;
 import com.purduecs.kiwi.oneup.web.LoginPostWebRequest;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
+import com.purduecs.kiwi.oneup.web.RequestQueueSingleton;
 
 import org.json.JSONObject;
 
@@ -165,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
 
     protected void checkUser() {
 
-/*        webRequest = new LoginPostWebRequest(email, auth_tok, new RequestHandler<Boolean>() {
+        webRequest = new LoginPostWebRequest(email, auth_tok, new RequestHandler<Boolean>() {
             @Override
             public void onSuccess(Boolean response) {
                 Log.d(TAG, "response is " + response);
@@ -180,9 +181,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure() {
                 Log.e(TAG, "Something happened in sending login");
             }
-        });*/
+        });
         //newUser();
-        oldUser();
+        //oldUser();
     }
 }
 

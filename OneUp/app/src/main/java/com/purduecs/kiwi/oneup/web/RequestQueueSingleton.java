@@ -14,6 +14,8 @@ import com.android.volley.toolbox.Volley;
  */
 public class RequestQueueSingleton {
 
+    public static String AUTH_TOKEN = "NOT_AVAILABLE";
+
     private static RequestQueueSingleton mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
