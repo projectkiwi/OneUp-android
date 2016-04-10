@@ -119,7 +119,6 @@ public class ChallengeListLayout extends SwipeRefreshLayout {
     private boolean requestMade = false;
 
     private void loadMoreContent(final ChallengesAdapter.FinishedLoadingListener listener) {
-        Log.d("HEY", "loading challenges -- numbLoaded: " + numbLoaded + " request_size: " + REQUEST_SIZE);
         if (requestMade) return;
         requestMade = true;
         mWebRequest = new ChallengesWebRequest(mChallengeType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
