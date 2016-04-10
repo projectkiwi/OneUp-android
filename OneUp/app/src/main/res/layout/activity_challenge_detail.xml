@@ -47,7 +47,7 @@
         android:textColor="@android:color/white" />
 
     <TextView
-        android:id="@+id/challenge_name"
+        android:id="@+id/challenge_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/like_button"
@@ -59,7 +59,7 @@
         android:id="@+id/challenge_winner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/challenge_name"
+        android:layout_above="@id/challenge_desc"
         android:layout_marginLeft="@dimen/text_margin"
         style="@style/MediumText"
         android:textColor="@android:color/white" />

@@ -11,6 +11,7 @@ import java.util.Date;
  */
 public class Attempt {
     public String id;
+    public String challenge_id;
 
     public int place;
     public int number;

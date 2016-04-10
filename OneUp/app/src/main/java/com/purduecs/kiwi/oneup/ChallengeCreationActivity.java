@@ -14,7 +14,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.media.session.MediaController;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -38,6 +37,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
+import com.purduecs.kiwi.oneup.web.AttemptPostWebRequest;
 import com.purduecs.kiwi.oneup.web.ChallengePostWebRequest;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
@@ -69,6 +69,8 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     final private int PERMISSION_ACCESS_CAMERA = 124;
     final private int PERMISSION_READ_STORAGE = 125;
     final private int PERMISSION_WRITE_STORAGE = 126;
+
+    private String responseID = "";
 
     ///////FOR FUN/////
     Random r;
@@ -223,7 +225,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
             return;
         }
 
-        OneUpWebRequest oneUpWebRequest = new ChallengePostWebRequest(getChallenge(), getAttempt(), new RequestHandler<String>() {
+        OneUpWebRequest oneUpWebRequest = new ChallengePostWebRequest(getChallenge(), new RequestHandler<String>() {
             @Override
             public void onSuccess(String response) {
                 if (response != null) {
@@ -232,9 +234,29 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                     setResult(Activity.RESULT_OK, result);
                     finish();
 
-                    Toast.makeText(ChallengeCreationActivity.this, "Uploaded attempt", Toast.LENGTH_SHORT).show();
+                    responseID = response;
+
+                    Log.d(TAG, "In challenge. response " + response);
+
+                    OneUpWebRequest oneUpWebRequest1 = new AttemptPostWebRequest(getAttempt(), new RequestHandler<String>() {
+                        @Override
+                        public void onSuccess(String response) {
+                            Log.d(TAG, "In Attempt. ResponseID = " + responseID);
+                            Log.d(TAG, "Attempt response = " + response);
+
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Log.e(TAG, "Failed to post attempt");
+                        }
+                    });
+
+                    Log.d(TAG, "After attempt post attempt");
+                    Toast.makeText(ChallengeCreationActivity.this, "Uploaded challenge!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(ChallengeCreationActivity.this, NewsfeedActivity.class);
                     startActivity(intent);
+
                 }
             }
 
@@ -243,6 +265,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                 Log.e(TAG, "Failed to post challenge");
             }
         });
+
     }
 
     private Challenge getChallenge() {
@@ -282,6 +305,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
         Attempt c = new Attempt();
 
+        c.challenge_id = responseID;
         c.votes_num = 0;
         c.likes_num = 0;
         c.owner = "Arthur Dent";

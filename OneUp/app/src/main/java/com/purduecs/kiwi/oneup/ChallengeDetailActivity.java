@@ -64,7 +64,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
 
         mMedia = (ImageView) findViewById(R.id.challenge_media);
         mVideo = (VideoView) findViewById(R.id.challenge_video);
-        mTitle = (TextView) findViewById(R.id.challenge_name);
+        mTitle = (TextView) findViewById(R.id.challenge_desc);
         mWinner = (TextView) findViewById(R.id.challenge_winner);
         mDesc = (TextView) findViewById(R.id.challenge_desc);
         mCategories = (TextView) findViewById(R.id.challenge_categories);

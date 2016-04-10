@@ -7,36 +7,29 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.purduecs.kiwi.oneup.OneUpApplication;
-import com.purduecs.kiwi.oneup.models.Challenge;
+import com.purduecs.kiwi.oneup.models.Attempt;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Map;
 
 
-public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, String> {
+public class AttemptPostWebRequest implements OneUpWebRequest<JSONObject, String> {
 
     Request mRequest;
     private static String TAG = "OneUP";
 
-    public ChallengePostWebRequest(Challenge challenge, final RequestHandler<String> handler) {
+    public AttemptPostWebRequest(Attempt attempt, final RequestHandler<String> handler) {
         // Make the json object to send
         JSONObject post = new JSONObject();
-        JSONArray cats = new JSONArray();
         try {
-            post.put("name", challenge.name);
-            post.put("description", challenge.desc);
-            post.put("pattern", challenge.pattern);
-            post.put("owner", challenge.owner);
-            for (int i = 0; i < challenge.categories.length; i++) {
-                cats.put(i, challenge.categories[i]);
-            }
-
-            post.put("categories", cats);
+            post.put("gif_img", attempt.gif);
+            post.put("preview_img", attempt.image);
+            post.put("description", attempt.desc);
+            post.put("challenge", attempt.challenge_id);
 
         } catch (Exception e) {
-            Log.e(TAG, "Something went wrong when making a challenge posting json object");
+            Log.e(TAG, "Something went wrong when making an attempt posting json object " + e.getMessage());
         }
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
@@ -44,7 +37,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
 
         // Now post that object
         mRequest = new JsonObjectEditHeaderRequest(Request.Method.POST,
-                OneUpWebRequest.BASE_URL + "/challenges",
+                OneUpWebRequest.BASE_URL + "/challenges/" + attempt.challenge_id + "/attempts",
                 headerArgs,
                 post,
                 new Response.Listener<JSONObject>() {
@@ -66,9 +59,10 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
     public String parseResponse(JSONObject response) {
         // May need to check response to see if we got success or failure back
         try {
-            Log.d(TAG, response.getJSONObject("data").getString("_id"));
+            Log.d(TAG, "ATTEMPT: " + response.getJSONObject("data").getString("_id"));
             return response.getJSONObject("data").getString("_id");
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return null;
         }
     }
