@@ -36,9 +36,10 @@
         android:layout_alignLeft="@+id/welcome_text"
         android:layout_alignStart="@+id/welcome_text"
         android:textColor="#b39ddb"
+        android:textColorHint="#b39ddb"
         android:textAlignment="center"
         android:fontFamily="sans-serif-light"
-        android:text="username" />
+        android:hint="username" />
 
     <Button
         android:layout_width="wrap_content"
