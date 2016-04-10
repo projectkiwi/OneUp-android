@@ -95,7 +95,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.likes = response.getInt("challenge_likes");//103;
             c.liked = (response.getBoolean("liked_top_attempt") ? 1 : 0)
                         + (response.getBoolean("liked_previous_attempt") ? 2 : 0);
-            c.bookmarked = false;
+            c.bookmarked = response.getBoolean("bookmarked_challenge");
 
             // now add attempts
             c.attempts = new Attempt[attempts.length()];

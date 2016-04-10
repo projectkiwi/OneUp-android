@@ -178,11 +178,11 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CompoundButton buttonView = (CompoundButton) v;
+                    final CompoundButton buttonView = (CompoundButton) v;
                     new BookmarkChallengeWebRequest(mChallenge.id, buttonView.isChecked(), new RequestHandler<Boolean>() {
                         @Override
                         public void onSuccess(Boolean response) {
-
+                            mChallenge.bookmarked = buttonView.isChecked();
                         }
 
                         @Override

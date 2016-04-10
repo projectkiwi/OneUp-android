@@ -6,11 +6,11 @@
 
 #### User Story 2
 
-- [ ] Implement tabs for recent, popular, and global - Adam
+- [X] Implement tabs for recent, popular, and global - Adam
 
 #### User Story 3
 
-- [ ] Express an opinion on past records by liking - Adam
+- [X] Express an opinion on past records by liking - Adam
 
 #### User Story 4
 
@@ -29,18 +29,18 @@
 
 #### User Story 7
 
-- [ ] Implement Challenge Detail Page - Adam
+- [X] Implement Challenge Detail Page - Adam
 
 #### User Story 8
 
-- [ ] Implement timeline of past record holders - Adam 
-- [ ] As a user, I would like to know how long each record was held for - Adam
+- [X] Implement timeline of past record holders - Adam 
+- [X] As a user, I would like to know how long each record was held for - Adam
 
 #### User Story 9
 
-- [ ] Implement bookmark button on challenge detail page. - Adam
+- [X] Implement bookmark button on challenge detail page. - Adam
 - [ ] Implement bookmarked challenges page - Adam
-- [ ] New changes in bookmarked challenges should be sent to notifications - Adam
+- [X] New changes in bookmarked challenges should be sent to notifications - Adam
 
 #### User Story 10
 
