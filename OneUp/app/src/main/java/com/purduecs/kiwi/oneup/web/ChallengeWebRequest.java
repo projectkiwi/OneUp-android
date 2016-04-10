@@ -60,16 +60,27 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
         Challenge c = new Challenge();
         String temp = "x";
         try {
+            Log.d("HEY", response.toString());
             c.id = response.getString("_id");
             temp = c.id;
 
             JSONArray attempts = response.getJSONArray("attempts");
+            JSONArray holders = response.getJSONArray("record_holders");
 
             c.name = response.getString("name");
-            c.image = attempts.getJSONObject(0).getString("gif_img");
+            if (attempts.length() > 0) {
+                c.image = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
+                c.previewImage = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
+                c.owner = holders.getJSONObject(holders.length()-1).getString("email").split("@")[0];
+            } else {
+                c.image = "nope";
+                c.previewImage = "nope";
+                c.owner = "NONE";
+            }
+
             c.categories = response.getJSONArray("categories").toString()
                     .replace("\"", "").replace("[", "").replace("]", "").split(",");
-            c.owner = "temp";
+
             c.score = 164;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -80,7 +91,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 c.time = new Date();
             }
             c.desc = response.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
-            c.previewImage = response.getJSONArray("attempts").getJSONObject(0).getString("preview_img");
+
             c.likes = response.getInt("challenge_likes");//103;
             c.liked = (response.getBoolean("liked_top_attempt") ? 1 : 0)
                         + (response.getBoolean("liked_previous_attempt") ? 2 : 0);
@@ -90,25 +101,28 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.attempts = new Attempt[attempts.length()];
             for (int i = 0; i < attempts.length(); i++) {
                 JSONObject a = attempts.getJSONObject(i);
-                c.attempts[i] = new Attempt();
-                c.attempts[i].id = a.getString("_id");
-                c.attempts[i].image = a.getString("gif_img");
-                c.attempts[i].gif = a.getString("gif_img");
+                JSONObject h = holders.getJSONObject(i);
+                c.attempts[attempts.length() - i - 1] = new Attempt();
+                c.attempts[attempts.length() - i - 1].id = a.getString("_id");
+                c.attempts[attempts.length() - i - 1].image = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
+                c.attempts[attempts.length() - i - 1].gif = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
                 try {
-                    c.attempts[i].time = format.parse(a.getString("created_on"));
+                    c.attempts[attempts.length() - i - 1].time = format.parse(a.getString("created_on"));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    c.attempts[i].time = new Date();
+                    c.attempts[attempts.length() - i - 1].time = new Date();
                 }
-                c.attempts[i].number = 1234;
-                c.attempts[i].desc = "people";
-                c.attempts[i].likes_num = a.getInt("like_total");
-                c.attempts[i].has_liked = a.getBoolean("liked_attempt");
-                c.attempts[i].owner = "adam";
-                c.attempts[i].place = i+1;
+                c.attempts[attempts.length() - i - 1].number = 1234;
+                c.attempts[attempts.length() - i - 1].desc = a.getString("description");
+                c.attempts[attempts.length() - i - 1].likes_num = a.getInt("like_total");
+                c.attempts[attempts.length() - i - 1].has_liked = a.getBoolean("liked_attempt");
+                c.attempts[attempts.length() - i - 1].owner = h.getString("email").split("@")[0];
+                c.attempts[attempts.length() - i - 1].place = i+1;
             }
             if (c.attempts.length > 0)
                 c.attempt_id = c.attempts[0].id;
+            else
+                c.attempt_id = "nope";
 
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting individual challenge in ChallengeWebRequest - " + e.getMessage());

@@ -88,18 +88,30 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
             int ind = 0;
             JSONObject chall;
             Challenge challe;
-            while (!response.isNull(ind)) {
+            while (ind < response.length()) {
                 chall = response.getJSONObject(ind++);
                 challe = new Challenge();
                 challe.id = chall.getString("_id");
-                if(chall.getJSONArray("attempts").length() <= 0)
+
+                JSONArray attempts = chall.getJSONArray("attempts");
+                if(!chall.has("name"))
                     continue;
-                challe.attempt_id = chall.getJSONArray("attempts").getJSONObject(0).getString("_id");
+                if (attempts.length() > 0) {
+                    challe.attempt_id = attempts.getJSONObject(attempts.length() - 1).getString("_id");
+                    challe.image = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length() - 1).getString("gif_img");
+                    challe.previewImage = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length() - 1).getString("gif_img");
+                    JSONArray holders = chall.getJSONArray("record_holders");
+                    challe.owner = holders.getJSONObject(holders.length()-1).getString("email").split("@")[0];
+                } else {
+                    challe.attempt_id = "nope";
+                    challe.image = "nope";
+                    challe.previewImage = "nope";
+                    challe.owner = "NO ONE";
+                }
                 challe.name = chall.getString("name");
-                challe.image = chall.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
+
                 challe.categories = chall.getJSONArray("categories").toString()
                         .replace("\"", "").replace("[", "").replace("]", "").split(",");
-                challe.owner = winners[r.nextInt(winners.length)];
                 challe.score = r.nextInt(1000);
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 format.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -110,7 +122,6 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                     challe.time = new Date();
                 }
                 challe.desc = chall.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";
-                challe.previewImage = chall.getJSONArray("attempts").getJSONObject(0).getString("gif_img");
                 challe.likes = chall.getInt("challenge_likes");//r.nextInt(1000);
                 challe.liked = (chall.getBoolean("liked_top_attempt") ? 1 : 0)
                         + (chall.getBoolean("liked_previous_attempt") ? 2 : 0);//r.nextInt(3);

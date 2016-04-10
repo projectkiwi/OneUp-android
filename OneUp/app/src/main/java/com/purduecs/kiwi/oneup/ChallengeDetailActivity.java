@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -87,14 +88,17 @@ public class ChallengeDetailActivity extends AppCompatActivity {
 
 
                 mLikeButton.setText(Integer.toString(mChallenge.likes));
-                mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
-                mLikeButton.setTextOn(Integer.toString(mChallenge.likes + 1));
                 mLikeButton.setPastLiked(false);
                 if (mChallenge.liked >= 2) {
                     mLikeButton.setPastLiked(true); // set to past liked if we've liked it before
                 }
                 if (mChallenge.liked % 2 == 1) {
+                    mLikeButton.setTextOff(Integer.toString(mChallenge.likes - 1));
+                    mLikeButton.setTextOn(Integer.toString(mChallenge.likes));
                     mLikeButton.toggle(); // set to liked if this attempt is liked
+                } else {
+                    mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
+                    mLikeButton.setTextOn(Integer.toString(mChallenge.likes + 1));
                 }
                 mLikeButton.setOnClickListener(likeListener);
 
@@ -153,13 +157,18 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             mWinner.setText(a.owner);
 
             // Want to leave the total likes here, not the individual
-            if (mLikeButton.isChecked() && !a.has_liked) {
+            /*if (mLikeButton.isChecked() && !a.has_liked) {
                 mChallenge.likes++;
             } else if (!mLikeButton.isChecked() && a.has_liked) {
                 mChallenge.likes--;
+            }*/
+            if (a.has_liked) {
+                mLikeButton.setTextOff(Integer.toString(mChallenge.likes - 1));
+                mLikeButton.setTextOn(Integer.toString(mChallenge.likes));
+            } else {
+                mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
+                mLikeButton.setTextOn(Integer.toString(mChallenge.likes + 1));
             }
-            mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
-            mLikeButton.setTextOn(Integer.toString(mChallenge.likes + 1));
             mLikeButton.setChecked(a.has_liked);
 
         }
@@ -190,6 +199,13 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     final CompoundButton buttonView = (CompoundButton) v;
+
+                    if (mChallenge.attempts.length <= 0) {
+                        Toast.makeText(ChallengeDetailActivity.this, "A challenge needs to be attempted first!", Toast.LENGTH_SHORT).show();
+                        buttonView.toggle();
+                        return;
+                    }
+
                     new LikeWebRequest(mChallenge.attempt_id, buttonView.isChecked(), new RequestHandler<Boolean>() {
                         @Override
                         public void onSuccess(Boolean response) {
@@ -199,14 +215,16 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                             for (int i = 0; i < mChallenge.attempts.length; i++) {
                                 if (mChallenge.attempts[i].id.equals(mChallenge.attempt_id)) {
                                     a = mChallenge.attempts[i];
+                                    a.has_liked = buttonView.isChecked();
+                                    if (a.has_liked) { a.likes_num++; mChallenge.likes++; }
+                                    else { a.likes_num--; mChallenge.likes--; }
                                 }
                                 if (mChallenge.attempts[i].has_liked) pastLikes++;
                             }
                             if (pastLikes == 0) mLikeButton.setPastLiked(false);
                             else mLikeButton.setPastLiked(true);
 
-                            a.has_liked = buttonView.isChecked();
-                            mAdapter.notifyItemChanged(a.place - 1);
+                            mAdapter.notifyItemChanged(mChallenge.attempts.length - a.place);
                         }
 
                         @Override
@@ -233,22 +251,27 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                             for (int i = 0; i < mChallenge.attempts.length; i++) {
                                 if (mChallenge.attempts[i].id.equals(id)) {
                                     a = mChallenge.attempts[i];
+                                    a.has_liked = buttonView.isChecked();
+                                    if (a.has_liked) { a.likes_num++; mChallenge.likes++; }
+                                    else { a.likes_num--; mChallenge.likes--; }
                                 }
                                 if (mChallenge.attempts[i].has_liked) pastLikes++;
                             }
                             if (pastLikes == 0) mLikeButton.setPastLiked(false);
                             else mLikeButton.setPastLiked(true);
 
-                            a.has_liked = buttonView.isChecked();
-
                             // If it's this one, toggle the button, else update the likes
                             if (id.equals(mChallenge.attempt_id)) {
                                 mLikeButton.toggle();
                             } else {
-                                if (a.has_liked) mChallenge.likes++;
-                                else mChallenge.likes--;
-                                mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
-                                mLikeButton.setTextOn(Integer.toString(mChallenge.likes+1));
+                                if (mLikeButton.isChecked()) {
+                                    mLikeButton.setTextOff(Integer.toString(mChallenge.likes-1));
+                                    mLikeButton.setTextOn(Integer.toString(mChallenge.likes));
+                                } else {
+                                    mLikeButton.setTextOff(Integer.toString(mChallenge.likes));
+                                    mLikeButton.setTextOn(Integer.toString(mChallenge.likes+1));
+                                }
+
                                 mLikeButton.setChecked(mLikeButton.isChecked());//update the text
                             }
                         }
@@ -318,7 +341,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                     .load(a.image)
                     .error(R.drawable.doge_with_sunglasses)
                     .into(holder.mImageView);
-            holder.mRecord.setText(a.number + " " + a.desc);
+            holder.mRecord.setText(a.desc);
             holder.mWinner.setText(a.owner);
 
             long time = (new Date()).getTime() - a.time.getTime();
@@ -350,9 +373,14 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             holder.mTime.setText(time + " " + tim);
 
             holder.mLikeButton.setTag(a.id);
-            holder.mLikeButton.setTextOn(Integer.toString(a.likes_num + 1));
-            holder.mLikeButton.setTextOff(Integer.toString(a.likes_num));
             holder.mLikeButton.setText(Integer.toString(a.likes_num));
+            if (a.has_liked) {
+                holder.mLikeButton.setTextOn(Integer.toString(a.likes_num));
+                holder.mLikeButton.setTextOff(Integer.toString(a.likes_num - 1));
+            } else {
+                holder.mLikeButton.setTextOn(Integer.toString(a.likes_num + 1));
+                holder.mLikeButton.setTextOff(Integer.toString(a.likes_num));
+            }
             holder.mLikeButton.setChecked(a.has_liked);
             holder.mLikeButton.setOnClickListener(attemptLikeListener);
 

@@ -9,8 +9,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_alignParentLeft="true"
-        android:layout_margin="@dimen/text_margin_large"
-        android:src="@color/confirmedGreen"/>
+        android:layout_margin="@dimen/text_margin_large" />
 
     <LinearLayout android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -25,16 +24,14 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginBottom="@dimen/text_margin_small"
-            style="@style/MediumSmallText"
-            android:text="Purdue Hackers" />
+            style="@style/MediumSmallText" />
 
         <TextView
             android:id="@+id/record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            style="@style/MediumLargeText"
-            android:text="3207 people" />
+            style="@style/MediumLargeText" />
 
         <TextView
             android:id="@+id/time"
@@ -42,8 +39,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginTop="@dimen/text_margin_small"
-            style="@style/MediumSmallText"
-            android:text="2 days ago" />
+            style="@style/MediumSmallText" />
     </LinearLayout>
 
     <ToggleButton
@@ -55,8 +51,5 @@
         android:drawableTop="@drawable/like_button"
         android:background="@android:color/transparent"
         style="@style/SmallText"
-        android:textColor="@drawable/like_button_text"
-        android:text="123"
-        android:textOff="123"
-        android:textOn="124"/>
+        android:textColor="@drawable/like_button_text" />
 </RelativeLayout>

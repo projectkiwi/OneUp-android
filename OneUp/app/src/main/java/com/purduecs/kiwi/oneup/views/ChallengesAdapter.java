@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -121,6 +122,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == ITEM_VIEW_TYPE_BASIC) {
+
             ViewHolder h = (ViewHolder) holder;
             h.cardid.setText(getItem(position).id);
             h.attemptid.setText(getItem(position).attempt_id);
@@ -139,8 +141,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             categories = categories.substring(0, categories.length()-2);
             h.cardcategories.setText(categories);
             h.cardlikes.setText(Integer.toString(list.get(position).likes));
-            h.cardlikes.setTextOff(Integer.toString(list.get(position).likes));
-            h.cardlikes.setTextOn(Integer.toString(list.get(position).likes + 1));
+
             h.cardlikes.setPastLiked(false);
             h.cardlikes.setOnCheckedChangeListener(null);
             h.cardlikes.setChecked(false);
@@ -148,9 +149,15 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 h.cardlikes.setPastLiked(true); // set to past liked if we've liked it before
             }
             if (list.get(position).liked % 2 == 1) {
+                h.cardlikes.setTextOff(Integer.toString(list.get(position).likes - 1));
+                h.cardlikes.setTextOn(Integer.toString(list.get(position).likes));
                 h.cardlikes.toggle(); // set to liked if this attempt is liked
+            } else {
+                h.cardlikes.setTextOff(Integer.toString(list.get(position).likes));
+                h.cardlikes.setTextOn(Integer.toString(list.get(position).likes + 1));
             }
-            h.cardlikes.setOnCheckedChangeListener(likeListener);
+
+            h.cardlikes.setOnClickListener(likeListener);
 
             //h.cardtime.setText(list.get(position).time);
             long time = (new Date()).getTime() - list.get(position).time.getTime();
@@ -283,30 +290,57 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         void finishedLoading();
     }
 
-    // Need this so the oncheckedchange listener doesn't loop when it fails
-    private boolean failed = false;
-
-    private CompoundButton.OnCheckedChangeListener likeListener =
-            new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-                    if (failed) { failed = false; return; }
-                    String challengeId  = ((TextView)(
+    private View.OnClickListener likeListener =
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final CenterIconButton buttonView = (CenterIconButton) v;
+                    final String attemptId = ((TextView)(
                             (RelativeLayout)(
                                     (RelativeLayout)buttonView.getParent())
-                                        .getParent())
-                                        .findViewById(R.id.attempt_id))
-                                        .getText()
-                                        .toString();
-                    new LikeWebRequest(challengeId, isChecked, new RequestHandler<Boolean>() {
+                                    .getParent())
+                            .findViewById(R.id.attempt_id))
+                            .getText()
+                            .toString();
+
+                    final String challengeId = ((TextView)(
+                            (RelativeLayout)(
+                                    (RelativeLayout)buttonView.getParent())
+                                    .getParent())
+                            .findViewById(R.id.card_id))
+                            .getText()
+                            .toString();
+
+
+                    if (attemptId.equals("nope")) {
+                        Toast.makeText(mActivity, "A challenge needs to be attempted first!", Toast.LENGTH_SHORT).show();
+                        buttonView.toggle();
+                        return;
+                    }
+
+                    new LikeWebRequest(attemptId, buttonView.isChecked(), new RequestHandler<Boolean>() {
                         @Override
                         public void onSuccess(Boolean response) {
+                            int ind = 0;
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).id.equals(challengeId)) {
+                                    ind = i;
+                                    break;
+                                }
+                            }
 
+                            if (buttonView.isChecked()) {
+                                list.get(ind).likes++;
+                                list.get(ind).liked++;
+                            } else {
+                                list.get(ind).likes--;
+                                list.get(ind).liked--;
+                            }
                         }
 
                         @Override
                         public void onFailure() {
                             Log.d("HEY", "we failed to like the post :(");
-                            failed = true;
                             buttonView.toggle();
                         }
                     });
