@@ -275,25 +275,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         //c.owner = NewUserActivity.username;
         c.owner = "Arthur Dent";
 
-        //c.desc = descField.getText().toString();
-        switch (rand) {
-            case 0:
-                c.desc = "Most not-actually-coffee drunk";
-                break;
-            case 1:
-                c.desc = "Most books pretended to read";
-                break;
-            case 2:
-                c.desc = "Most obscure countries visited";
-                break;
-            case 3:
-                c.desc = "Most times as a non-American called soccer as football";
-                break;
-            case 4:
-            default:
-                c.desc = "Most kittens pet";
-                break;
-        }
+        c.desc = descField.getText().toString();
         c.categories = catField.getText().toString().split(",");
         c.location = locField.getText().toString();
 
@@ -310,26 +292,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         c.likes_num = 0;
         c.owner = "Arthur Dent";
         c.desc = descField.getText().toString();
-        c.gif = "http://img.ifcdn.com/images/69df32f1fb243275b0f61c9823e0df03d157456542245ff557c4600040beb7f0_1.gif";
-
-        switch (rand) {
-            case 0:
-                c.image = "http://loremflickr.com/960/720/coffee";
-                break;
-            case 1:
-                c.image = "http://loremflickr.com/960/720/book";
-                break;
-            case 2:
-                c.image = "http://loremflickr.com/960/720/europe";
-                break;
-            case 3:
-                c.image = "http://loremflickr.com/960/720/soccer";
-                break;
-            case 4:
-            default:
-                c.image = "http://loremflickr.com/960/720/";
-                break;
-        }
+        
         return c;
     }
 

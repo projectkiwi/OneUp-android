@@ -39,7 +39,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
             Log.e(TAG, "Something went wrong when making a challenge posting json object");
         }
 
-        Map<String, String> headerArgs = new ArrayMap<String, String>();;
+        Map<String, String> headerArgs = new ArrayMap<String, String>();
         headerArgs.put("token", RequestQueueSingleton.AUTH_TOKEN);
 
         // Now post that object
