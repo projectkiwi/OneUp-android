@@ -28,7 +28,7 @@ public class LikeWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
         }
 
         String url = "/challenges/like/";
-        if (!liked) url = "/challenges/unlike/";
+        //if (!liked) url = "/challenges/unlike/";
         url = url + challengeId;
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
@@ -58,7 +58,7 @@ public class LikeWebRequest implements OneUpWebRequest<JSONObject, Boolean> {
     public Boolean parseResponse(JSONObject response) {
         boolean liked = true;
         try {
-            liked = response.getString("message").equals("Like Recorded!");
+            liked = response.getBoolean("success");
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting return in LikeWebRequest");
         }

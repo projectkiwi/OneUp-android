@@ -28,7 +28,7 @@ public class BookmarkChallengeWebRequest implements OneUpWebRequest<JSONObject, 
         }
 
         String url = "/users/bookmark/";
-        if (!bookmark) url = "/users/unbookmark/";
+        //if (!bookmark) url = "/users/unbookmark/";
         url = url + challengeId;
 
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
@@ -58,7 +58,7 @@ public class BookmarkChallengeWebRequest implements OneUpWebRequest<JSONObject, 
     public Boolean parseResponse(JSONObject response) {
         boolean liked = true;
         try {
-            liked = response.getString("message").equals("Bookmark Recorded!");
+            liked = response.getBoolean("success");
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting return in BookmarkChallengeWebRequest");
         }
