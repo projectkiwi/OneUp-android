@@ -42,7 +42,10 @@ import com.purduecs.kiwi.oneup.web.ChallengePostWebRequest;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 public class ChallengeCreationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks{
@@ -83,6 +86,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
     TextView nameField;
     TextView numField;
+    TextView qualField;
     TextView descField;
     TextView catField;
     TextView locField;
@@ -100,6 +104,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         descField = (TextView)findViewById(R.id.challenge_desc);
         catField = (TextView)findViewById(R.id.challenge_categories);
         numField = (TextView) findViewById(R.id.challenge_num);
+        qualField = (TextView) findViewById(R.id.challenges_number_descriptor);
         locField = (TextView) findViewById(R.id.challenge_loc);
 
         // Create an instance of GoogleAPIClient.
@@ -238,7 +243,16 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
                     Log.d(TAG, "In challenge. response " + response);
 
-                    OneUpWebRequest oneUpWebRequest1 = new AttemptPostWebRequest(getAttempt(), new RequestHandler<String>() {
+                    byte[] inputData = new byte[0];
+
+                    try {
+                        InputStream iStream = getContentResolver().openInputStream(uriSavedImage);
+                        inputData = getBytes(iStream);
+                    } catch (Exception e) {
+                        Log.d("HEY", "issue converting uri to bytes");
+                    }
+
+                    OneUpWebRequest oneUpWebRequest1 = new AttemptPostWebRequest(getAttempt(), inputData, new RequestHandler<String>() {
                         @Override
                         public void onSuccess(String response) {
                             Log.d(TAG, "In Attempt. ResponseID = " + responseID);
@@ -268,6 +282,18 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
     }
 
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
     private Challenge getChallenge() {
         Challenge c = new Challenge();
 
@@ -291,7 +317,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         c.votes_num = 0;
         c.likes_num = 0;
         c.owner = "Arthur Dent";
-        c.desc = descField.getText().toString();
+        c.desc = numField.getText().toString() + qualField.getText().toString();
         
         return c;
     }
@@ -349,11 +375,11 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         } else if(requestCode == SELECT_PHOTO_ACTIVITY_REQUEST_CODE) {
             if(resultCode == RESULT_OK){
 
-                Uri selectedImage = data.getData();
+                uriSavedImage = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                 Cursor cursor = getContentResolver().query(
-                        selectedImage, filePathColumn, null, null, null);
+                        uriSavedImage, filePathColumn, null, null, null);
                 cursor.moveToFirst();
 
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
@@ -373,11 +399,11 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                 imgButton.setVisibility(View.INVISIBLE);
                 videoView.setVisibility(View.VISIBLE);
 
-                Uri selectedImage = data.getData();
+                uriSavedImage = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                 Cursor cursor = getContentResolver().query(
-                        selectedImage, filePathColumn, null, null, null);
+                        uriSavedImage, filePathColumn, null, null, null);
                 cursor.moveToFirst();
 
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
@@ -388,7 +414,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                 Log.v(TAG, String.format(TAG, "Video selected from " + filePath));
 
                 current_type = TYPE_VIDEO;
-                videoView.setVideoURI(selectedImage);
+                videoView.setVideoURI(uriSavedImage);
                 videoView.requestFocus();
                 videoView.start();
             }

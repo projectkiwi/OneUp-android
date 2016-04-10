@@ -1,8 +1,11 @@
 package com.purduecs.kiwi.oneup.web;
 
+import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -11,6 +14,10 @@ import com.purduecs.kiwi.oneup.models.Attempt;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 
@@ -19,7 +26,12 @@ public class AttemptPostWebRequest implements OneUpWebRequest<JSONObject, String
     Request mRequest;
     private static String TAG = "OneUP";
 
-    public AttemptPostWebRequest(Attempt attempt, final RequestHandler<String> handler) {
+    private final String twoHyphens = "--";
+    private final String lineEnd = "\r\n";
+    private final String boundary = "apiclient-" + System.currentTimeMillis();
+    private final String mimeType = "multipart/form-data;boundary=" + boundary;
+
+    public AttemptPostWebRequest(Attempt attempt, byte[] file, final RequestHandler<String> handler) {
         // Make the json object to send
         JSONObject post = new JSONObject();
         try {
@@ -35,22 +47,38 @@ public class AttemptPostWebRequest implements OneUpWebRequest<JSONObject, String
         Map<String, String> headerArgs = new ArrayMap<String, String>();;
         headerArgs.put("token", RequestQueueSingleton.AUTH_TOKEN);
 
+        String url = OneUpWebRequest.BASE_URL + "/challenges/" + attempt.challenge_id + "/attempts";
+
+        byte[] multipartBody = new byte[0];
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(bos);
+        try {
+            // the first file
+            buildPart(dos, file, "hi_nicky.png");
+            // send multipart form data necesssary after file data
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+            // now the rest of the stuff
+            buildTextPart(dos, "description", attempt.desc);
+            // send multipart form data necesssary after file data
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+            // pass to multipart body
+            multipartBody = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Now post that object
-        mRequest = new JsonObjectEditHeaderRequest(Request.Method.POST,
-                OneUpWebRequest.BASE_URL + "/challenges/" + attempt.challenge_id + "/attempts",
-                headerArgs,
-                post,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        handler.onSuccess(parseResponse(response));
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        handler.onFailure();
-                    }
-                });
+        mRequest = new MultipartRequest(url, headerArgs, mimeType, multipartBody, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                Log.d("HEY", "uploaded img stuff");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("HEY", "failed to upload image stuff");
+            }
+        });
 
         RequestQueueSingleton.getInstance(OneUpApplication.getAppContext()).addToRequestQueue(mRequest);
     }
@@ -72,5 +100,40 @@ public class AttemptPostWebRequest implements OneUpWebRequest<JSONObject, String
         if (mRequest.isCanceled()) return false;
         mRequest.cancel();
         return true;
+    }
+
+
+    private void buildPart(DataOutputStream dataOutputStream, byte[] fileData, String fileName) throws IOException {
+        dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
+        dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"video\"; filename=\""
+                + fileName + "\"" + lineEnd);
+        dataOutputStream.writeBytes(lineEnd);
+
+        ByteArrayInputStream fileInputStream = new ByteArrayInputStream(fileData);
+        int bytesAvailable = fileInputStream.available();
+
+        int maxBufferSize = 1024 * 1024;
+        int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+        byte[] buffer = new byte[bufferSize];
+
+        // read file and write it into form...
+        int bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+        while (bytesRead > 0) {
+            dataOutputStream.write(buffer, 0, bufferSize);
+            bytesAvailable = fileInputStream.available();
+            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+        }
+
+        dataOutputStream.writeBytes(lineEnd);
+    }
+
+    private void buildTextPart(DataOutputStream dataOutputStream, String parameterName, String parameterValue) throws IOException {
+        dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
+        dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" + parameterName + "\"" + lineEnd);
+        dataOutputStream.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
+        dataOutputStream.writeBytes(lineEnd);
+        dataOutputStream.writeBytes(parameterValue + lineEnd);
     }
 }
