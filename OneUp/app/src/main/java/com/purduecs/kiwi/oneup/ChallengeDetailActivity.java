@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -38,6 +40,13 @@ public class ChallengeDetailActivity extends AppCompatActivity {
         Intent intent = new Intent(context, ChallengeDetailActivity.class);
         intent.putExtra(EXTRA_CHALLENGE_ID, challengeId);
         return intent;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_challenge_detail, menu);
+        return true;
     }
 
     private RecyclerView mRecyclerView;
@@ -131,6 +140,12 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             public void onFailure() {
             }
         });
+    }
+
+    public void newChallenge(MenuItem menuItem) {
+        NewsfeedActivity.attemptUpload = true;
+        Intent intent = new Intent(this, ChallengeCreationActivity.class);
+        startActivity(intent);
     }
 
     private void setUpActionBar() {

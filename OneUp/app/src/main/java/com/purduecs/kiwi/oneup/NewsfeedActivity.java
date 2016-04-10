@@ -28,7 +28,7 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     ChallengeListLayout challengesLayout;
 
     private int lastTab;
-
+    static public boolean attemptUpload = false;
     Animation rightTabAnimation, leftTabAnimation;
 
     @Override
@@ -144,6 +144,7 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
     }
 
     public void newChallenge(MenuItem menuItem) {
+        attemptUpload = false;
         startActivityForResult(ChallengeCreationActivity.intentFor(this), ChallengeCreationActivity.REQUEST_POST);
     }
 
