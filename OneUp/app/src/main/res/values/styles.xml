@@ -48,4 +48,25 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name="DialogTitle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="DialogTitleSecondary">
+        <item name="android:textColor">@color/lightGreyText</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+
+    <style name="TextField">
+        <item name="android:textColorHint">@color/lightGreyText</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingLeft">@dimen/text_margin</item>
+        <item name="android:paddingRight">@dimen/text_margin</item>
+        <item name="android:paddingTop">@dimen/text_margin_medium</item>
+        <item name="android:paddingBottom">@dimen/text_margin_medium</item>
+        <item name="android:gravity">top</item>
+    </style>
+
 </resources>
