@@ -69,6 +69,7 @@
         android:layout_height="wrap_content"
         android:inputType="text"
         android:hint="Location"
-        android:layout_below="@+id/challenge_categories" />
+        android:layout_below="@+id/challenge_categories"
+        android:onClick="selectLocation" />
 
 </RelativeLayout>

@@ -53,7 +53,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
     private AttemptAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    Challenge mChallenge;
+    static Challenge mChallenge;
     ImageView mMedia;
     VideoView mVideo;
     TextView mTitle, mWinner, mDesc, mCategories;

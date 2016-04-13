@@ -54,12 +54,12 @@ public class AttemptPostWebRequest implements OneUpWebRequest<JSONObject, String
         DataOutputStream dos = new DataOutputStream(bos);
         try {
             // the first file
-            buildPart(dos, file, "hi_nicky.png");
             // send multipart form data necesssary after file data
-            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+            //dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
             // now the rest of the stuff
             buildTextPart(dos, "description", attempt.desc);
             // send multipart form data necesssary after file data
+            buildPart(dos, file, "hi_nicky.png");
             dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
             // pass to multipart body
             multipartBody = bos.toByteArray();
@@ -76,7 +76,7 @@ public class AttemptPostWebRequest implements OneUpWebRequest<JSONObject, String
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("HEY", "failed to upload image stuff");
+                Log.d(TAG, "failed to upload image stuff");
             }
         });
 

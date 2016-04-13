@@ -22,6 +22,7 @@ import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.purduecs.kiwi.oneup.web.LoginPostUsernameWebRequest;
 import com.purduecs.kiwi.oneup.web.LoginPostWebRequest;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
@@ -174,6 +175,17 @@ public class LoginActivity extends AppCompatActivity {
                     newUser();
                 }
                 else {
+                    OneUpWebRequest oneUpWebRequest = new LoginPostUsernameWebRequest(email, auth_tok, new RequestHandler<String>() {
+                        @Override
+                        public void onSuccess(String response) {
+                            Log.d(TAG, "Got username as " + response);
+                        }
+
+                        @Override
+                        public void onFailure() {
+
+                        }
+                    });
                     oldUser();
                 }
             }

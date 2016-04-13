@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -39,6 +40,7 @@ import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.web.AttemptPostWebRequest;
 import com.purduecs.kiwi.oneup.web.ChallengePostWebRequest;
+import com.purduecs.kiwi.oneup.web.LocationGetWebRequest;
 import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
 
@@ -46,6 +48,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 public class ChallengeCreationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks{
@@ -66,7 +70,6 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
     private Bitmap challenge_pic;
     private Uri uriSavedImage;
-    private MediaStore.Video challenge_video;
 
     final private int PERMISSION_ACCESS_FINE_LOCATION = 123;
     final private int PERMISSION_ACCESS_CAMERA = 124;
@@ -74,6 +77,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     final private int PERMISSION_WRITE_STORAGE = 126;
 
     private String responseID = "";
+    private String locID = "";
 
     ///////FOR FUN/////
     Random r;
@@ -106,6 +110,18 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         numField = (TextView) findViewById(R.id.challenge_num);
         qualField = (TextView) findViewById(R.id.challenges_number_descriptor);
         locField = (TextView) findViewById(R.id.challenge_loc);
+
+        if(NewsfeedActivity.attemptUpload == true) {
+            nameField.setVisibility(View.INVISIBLE);
+            descField.setVisibility(View.INVISIBLE);
+            catField.setVisibility(View.INVISIBLE);
+            locField.setVisibility(View.INVISIBLE);
+        } else {
+            nameField.setVisibility(View.VISIBLE);
+            descField.setVisibility(View.VISIBLE);
+            catField.setVisibility(View.VISIBLE);
+            locField.setVisibility(View.VISIBLE);
+        }
 
         // Create an instance of GoogleAPIClient.
         if (googleApiClient == null) {
@@ -148,8 +164,8 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     private void getLocation() {
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            locField.setText(String.format("" + lastLocation.getLatitude() + " , " + lastLocation.getLongitude()));
-            //Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
+            //locField.setText(String.format("" + lastLocation.getLatitude() + " , " + lastLocation.getLongitude()));
+            Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
         } catch (SecurityException e) {
             Toast.makeText(this, "No permission for Location", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error : No permission for Location detected.");
@@ -202,84 +218,104 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         }
         r = new Random();
         rand = r.nextInt(5);
-        switch (rand) {
-            case 0:
-                cat = "coffee";
-                break;
-            case 1:
-                cat = "book";
-                break;
-            case 2:
-                cat = "europe";
-                break;
-            case 3:
-                cat = "soccer";
-                break;
-            case 4:
-            default:
-                cat = "";
-                break;
-        }
 
-        if(locField.getText().toString().trim().length() <= 0 ||
-                nameField.getText().toString().trim().length() <= 0 ||
-                descField.getText().toString().trim().length() <= 0 ||
-                catField.getText().toString().trim().length() <= 0 ||
-                numField.getText().toString().trim().length() <= 0) {
-            Toast.makeText(this, "Please complete all fields.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if(NewsfeedActivity.attemptUpload == false) {
+            if (locField.getText().toString().trim().length() <= 0 ||
+                    nameField.getText().toString().trim().length() <= 0 ||
+                    descField.getText().toString().trim().length() <= 0 ||
+                    qualField.getText().toString().trim().length() <= 0 ||
+                    numField.getText().toString().trim().length() <= 0) {
+                Toast.makeText(this, "Please complete all fields.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        OneUpWebRequest oneUpWebRequest = new ChallengePostWebRequest(getChallenge(), new RequestHandler<String>() {
-            @Override
-            public void onSuccess(String response) {
-                if (response != null) {
-                    Intent result = new Intent();
-                    result.putExtra(EXTRA_ID, response);
-                    setResult(Activity.RESULT_OK, result);
-                    finish();
+            OneUpWebRequest oneUpWebRequest = new ChallengePostWebRequest(getChallenge(), new RequestHandler<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    if (response != null) {
+                        Intent result = new Intent();
+                        result.putExtra(EXTRA_ID, response);
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
 
-                    responseID = response;
+                        responseID = response;
 
-                    Log.d(TAG, "In challenge. response " + response);
+                        Log.d(TAG, "In challenge. response " + response);
 
-                    byte[] inputData = new byte[0];
+                        byte[] inputData = new byte[0];
 
-                    try {
-                        InputStream iStream = getContentResolver().openInputStream(uriSavedImage);
-                        inputData = getBytes(iStream);
-                    } catch (Exception e) {
-                        Log.d("HEY", "issue converting uri to bytes");
+                        try {
+                            InputStream iStream = getContentResolver().openInputStream(uriSavedImage);
+                            inputData = getBytes(iStream);
+                        } catch (Exception e) {
+                            Log.d("HEY", "issue converting uri to bytes");
+                        }
+
+                        OneUpWebRequest oneUpWebRequest1 = new AttemptPostWebRequest(getAttempt(), inputData, new RequestHandler<String>() {
+                            @Override
+                            public void onSuccess(String response) {
+                                Log.d(TAG, "In Attempt. ResponseID = " + responseID);
+                                Log.d(TAG, "Attempt response = " + response);
+
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                Log.e(TAG, "Failed to post attempt");
+                            }
+                        });
+
+                        Log.d(TAG, "After attempt post attempt");
+                        Toast.makeText(ChallengeCreationActivity.this, "Uploaded challenge!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(ChallengeCreationActivity.this, NewsfeedActivity.class);
+                        startActivity(intent);
+
                     }
+                }
 
-                    OneUpWebRequest oneUpWebRequest1 = new AttemptPostWebRequest(getAttempt(), inputData, new RequestHandler<String>() {
-                        @Override
-                        public void onSuccess(String response) {
-                            Log.d(TAG, "In Attempt. ResponseID = " + responseID);
-                            Log.d(TAG, "Attempt response = " + response);
+                @Override
+                public void onFailure() {
+                    Log.e(TAG, "Failed to post challenge");
+                }
+            });
+        } else {
+            if (qualField.getText().toString().trim().length() <= 0 ||
+                    numField.getText().toString().trim().length() <= 0) {
+                Toast.makeText(this, "Please complete all fields.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                        }
+            responseID = ChallengeDetailActivity.mChallenge.id;
 
-                        @Override
-                        public void onFailure() {
-                            Log.e(TAG, "Failed to post attempt");
-                        }
-                    });
+            byte[] inputData = new byte[0];
 
-                    Log.d(TAG, "After attempt post attempt");
-                    Toast.makeText(ChallengeCreationActivity.this, "Uploaded challenge!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(ChallengeCreationActivity.this, NewsfeedActivity.class);
-                    startActivity(intent);
+            try {
+                InputStream iStream = getContentResolver().openInputStream(uriSavedImage);
+                inputData = getBytes(iStream);
+            } catch (Exception e) {
+                Log.d(TAG, "issue converting uri to bytes");
+            }
+
+            OneUpWebRequest oneUpWebRequest1 = new AttemptPostWebRequest(getAttempt(), inputData, new RequestHandler<String>() {
+                @Override
+                public void onSuccess(String response) {
+                    Log.d(TAG, "In Attempt. ResponseID = " + responseID);
+                    Log.d(TAG, "Attempt response = " + response);
 
                 }
-            }
 
-            @Override
-            public void onFailure() {
-                Log.e(TAG, "Failed to post challenge");
-            }
-        });
+                @Override
+                public void onFailure() {
+                    Log.e(TAG, "Failed to post attempt");
+                }
+            });
 
+            Log.d(TAG, "Trying attempy");
+            Toast.makeText(ChallengeCreationActivity.this, "Uploaded attempt!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ChallengeCreationActivity.this, NewsfeedActivity.class);
+            startActivity(intent);
+
+        }
     }
 
     public byte[] getBytes(InputStream inputStream) throws IOException {
@@ -303,8 +339,8 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
         c.desc = descField.getText().toString();
         c.categories = catField.getText().toString().split(",");
-        c.location = locField.getText().toString();
-
+        //c.location = locField.getText().toString();
+        c.location = locID;
         c.pattern = String.format("Pattern Number " + (r.nextInt(1) + 1000));
         return c;
     }
@@ -423,6 +459,53 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
             current_type = -1;
         }
         Log.d(TAG, String.format("Current Type is " + current_type));
+    }
+
+    //listener for location
+    public void selectLocation(View v) {
+        try {
+            final ArrayList<String> items = new ArrayList<>();
+            final ArrayList<String> ids = new ArrayList<>();
+
+            OneUpWebRequest oneUpWebRequest = new LocationGetWebRequest(String.format("" + lastLocation.getLatitude())
+                    , String.format("" + lastLocation.getLongitude()), new RequestHandler<ArrayList<ArrayList<String>>>() {
+                @Override
+                public void onSuccess(ArrayList<ArrayList<String>> response) {
+                    int i = 0;
+                    for (ArrayList<String> a : response) {
+                        items.add(i, a.get(0));
+                        ids.add(i, a.get(1));
+                    }
+                }
+
+                @Override
+                public void onFailure() {
+                    Log.e(TAG, "Something went wrong in populating our location editText");
+                }
+            });
+
+            AlertDialog.Builder media_sel = new AlertDialog.Builder(ChallengeCreationActivity.this);
+            media_sel.setTitle("Select Location");
+            final CharSequence[] items2 = new CharSequence[items.size()];
+            int i = 0;
+
+            for (String s : items) {
+                items2[i] = s;
+                i++;
+            }
+
+            media_sel.setItems(items2, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    locField.setText(items.get(item));
+                    locID = ids.get(item);
+                    dialog.dismiss();
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in setting location. " + e.getMessage());
+            locField.setText(String.format("" + lastLocation.getLatitude() + " , " + lastLocation.getLongitude()));
+        }
     }
 
     //OnClick Listener for imagebutton

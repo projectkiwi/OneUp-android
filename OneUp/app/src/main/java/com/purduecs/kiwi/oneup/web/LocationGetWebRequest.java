@@ -5,28 +5,31 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.purduecs.kiwi.oneup.OneUpApplication;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
-public class LocationGetWebRequest implements OneUpWebRequest<JSONObject, Map<String, String>> {
+public class LocationGetWebRequest implements OneUpWebRequest<JSONArray, ArrayList<ArrayList<String>>> {
 
     Request request;
     private static String TAG = "OneUP";
-    private Boolean new_user;
 
-    public LocationGetWebRequest(String lat, String lon, final RequestHandler<Map<String, String>> handler) {
+    public LocationGetWebRequest(String lat, String lon, final RequestHandler<ArrayList<ArrayList<String>>> handler) {
 
         // Now POST that object
-        request = new JsonObjectRequest(Request.Method.GET,
+        request = new JsonArrayRequest(Request.Method.GET,
                 OneUpWebRequest.BASE_URL + "/locations?lat=" + lat + "&lon=" + lon,
                 null,
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(JSONArray response) {
                         handler.onSuccess(parseResponse(response));
                     }
                 }, new Response.ErrorListener() {
@@ -40,15 +43,23 @@ public class LocationGetWebRequest implements OneUpWebRequest<JSONObject, Map<St
     }
 
     @Override
-    public Map<String,String> parseResponse(JSONObject response) {
+    public ArrayList<ArrayList<String>> parseResponse(JSONArray response) {
+        ArrayList arrayList = new ArrayList();
+        JSONObject j;
         try {
-            new_user = response.getBoolean("new_account");
-            RequestQueueSingleton.AUTH_TOKEN = response.getString("token");
-            Log.d("HEY", "token: " + RequestQueueSingleton.AUTH_TOKEN);
+            for (int i = 0; i < response.length(); i++) {
+                j = response.getJSONObject(i);
+                ArrayList a = new ArrayList();
+                a.add(j.getString("name"));
+                Log.d(TAG, i + "th name is : " + j.getString("name"));
+                a.add(j.getString("_id"));
+                arrayList.add(a);
+            }
+
         } catch (Exception e) {
-            Log.e(TAG, "Had an issue parsing JSON when getting return in LoginPost");
+            Log.e(TAG, "Had an issue parsing JSON when getting return in LocationGET");
         }
-        return null;
+        return arrayList;
     }
 
     @Override
@@ -58,7 +69,4 @@ public class LocationGetWebRequest implements OneUpWebRequest<JSONObject, Map<St
         return true;
     }
 
-    public Boolean getNew_user(){
-        return new_user;
-    }
 }
