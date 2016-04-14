@@ -114,11 +114,10 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/text_margin_small"
             android:layout_toRightOf="@id/vertDiv"
+            android:layout_toEndOf="@id/vertDiv"
             android:layout_below="@id/horzDiv"
             style="@style/MediumSmallText"
             android:textColor="@color/lightGreyText"
-            android:textAlignment="center"
-            android:gravity="center"
             android:layout_centerVertical="true"
             android:ellipsize="end"
             android:lines="1" />
