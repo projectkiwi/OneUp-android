@@ -2,6 +2,7 @@ package com.purduecs.kiwi.oneup.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -116,11 +117,8 @@ public class ChallengeListLayout extends SwipeRefreshLayout {
 
     }
 
-    private boolean requestMade = false;
-
     private void loadMoreContent(final ChallengesAdapter.FinishedLoadingListener listener) {
-        if (requestMade) return;
-        requestMade = true;
+        if (mWebRequest != null) { listener.finishedLoading(); return; }
         mWebRequest = new ChallengesWebRequest(mChallengeType, numbLoaded, REQUEST_SIZE, new RequestHandler<ArrayList<Challenge>>() {
             @Override
             public void onSuccess(ArrayList<Challenge> response) {
@@ -131,12 +129,12 @@ public class ChallengeListLayout extends SwipeRefreshLayout {
                 //numbLoaded += challenges.size();
                 listener.finishedLoading();
                 mWebRequest = null;
-                requestMade = false;
             }
 
             @Override
             public void onFailure() {
-                requestMade = false;
+                listener.finishedLoading();
+                mWebRequest = null;
                 Log.e(TAG, "Our challenge webrequest in newsfeed failed");
             }
         });
