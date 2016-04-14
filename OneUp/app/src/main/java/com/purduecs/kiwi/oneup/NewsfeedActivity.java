@@ -25,6 +25,7 @@ import com.purduecs.kiwi.oneup.views.ChallengeListLayout;
 
 public class NewsfeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+
     ChallengeListLayout challengesLayout;
 
     private int lastTab;

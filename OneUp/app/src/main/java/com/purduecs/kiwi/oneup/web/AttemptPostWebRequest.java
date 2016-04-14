@@ -72,11 +72,13 @@ public class AttemptPostWebRequest implements OneUpWebRequest<JSONObject, String
             @Override
             public void onResponse(NetworkResponse response) {
                 Log.d("HEY", "uploaded img stuff");
+                handler.onSuccess("success");
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(TAG, "failed to upload image stuff");
+                handler.onFailure();
             }
         });
 

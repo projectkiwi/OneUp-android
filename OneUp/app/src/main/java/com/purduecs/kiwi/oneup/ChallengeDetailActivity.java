@@ -1,5 +1,6 @@
 package com.purduecs.kiwi.oneup;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -143,7 +144,21 @@ public class ChallengeDetailActivity extends AppCompatActivity {
     }
 
     public void newChallenge(MenuItem menuItem) {
-        startActivity(ChallengeCreationActivity.intentForAttempt(this));
+        startActivityForResult(ChallengeCreationActivity.intentForAttempt(this), ChallengeCreationActivity.REQUEST_POST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ChallengeCreationActivity.REQUEST_POST:
+                if (resultCode == Activity.RESULT_OK) {
+                    // TODO: maybe not just use finish here?
+                    startActivity(ChallengeDetailActivity.intentFor(this, mChallenge.id));
+                    finish();
+                }
+                break;
+        }
     }
 
     private void setUpActionBar() {
@@ -259,7 +274,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
                             if (pastLikes == 0) mLikeButton.setPastLiked(false);
                             else mLikeButton.setPastLiked(true);
 
-                            mAdapter.notifyItemChanged(mChallenge.attempts.length - a.place);
+                            mAdapter.notifyItemChanged(a.place-1);
                         }
 
                         @Override
