@@ -229,7 +229,6 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
             if (locField.getText().toString().trim().length() <= 0 ||
                     nameField.getText().toString().trim().length() <= 0 ||
                     descField.getText().toString().trim().length() <= 0 ||
-                    qualField.getText().toString().trim().length() <= 0 ||
                     numField.getText().toString().trim().length() <= 0) {
                 Toast.makeText(this, "Please complete all fields.", Toast.LENGTH_SHORT).show();
                 return;
@@ -285,8 +284,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                 }
             });
         } else {
-            if (qualField.getText().toString().trim().length() <= 0 ||
-                    numField.getText().toString().trim().length() <= 0) {
+            if (numField.getText().toString().trim().length() <= 0) {
                 Toast.makeText(this, "Please complete all fields.", Toast.LENGTH_SHORT).show();
                 return;
             }

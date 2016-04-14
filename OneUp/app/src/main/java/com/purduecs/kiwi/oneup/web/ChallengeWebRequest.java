@@ -103,27 +103,27 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             // now add attempts
             c.attempts = new Attempt[attempts.length()];
             for (int i = 0; i < attempts.length(); i++) {
-                JSONObject a = attempts.getJSONObject(i);
-                JSONObject h = holders.getJSONObject(i);
-                c.attempts[attempts.length() - i - 1] = new Attempt();
-                c.attempts[attempts.length() - i - 1].id = a.getString("_id");
-                c.attempts[attempts.length() - i - 1].image = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
-                c.attempts[attempts.length() - i - 1].gif = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
+                JSONObject a = attempts.getJSONObject(attempts.length() - i - 1);
+                JSONObject h = holders.getJSONObject(attempts.length() - i - 1);
+                c.attempts[i] = new Attempt();
+                c.attempts[i].id = a.getString("_id");
+                c.attempts[i].image = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
+                c.attempts[i].gif = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
                 if (a.has("orig_video")) {
                     //c.attempts[attempts.length()-i-1].video = OneUpWebRequest.BASE_URL + "/" + a.getString("orig_video");
                 }
                 try {
-                    c.attempts[attempts.length() - i - 1].time = format.parse(a.getString("created_on"));
+                    c.attempts[i].time = format.parse(a.getString("created_on"));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    c.attempts[attempts.length() - i - 1].time = new Date();
+                    c.attempts[i].time = new Date();
                 }
-                c.attempts[attempts.length() - i - 1].number = 1234;
-                c.attempts[attempts.length() - i - 1].desc = a.getString("description");
-                c.attempts[attempts.length() - i - 1].likes_num = a.getInt("like_total");
-                c.attempts[attempts.length() - i - 1].has_liked = a.getBoolean("liked_attempt");
-                c.attempts[attempts.length() - i - 1].owner = h.getString("email").split("@")[0];
-                c.attempts[attempts.length() - i - 1].place = i+1;
+                c.attempts[i].number = 1234;
+                c.attempts[i].desc = a.getString("description");
+                c.attempts[i].likes_num = a.getInt("like_total");
+                c.attempts[i].has_liked = a.getBoolean("liked_attempt");
+                c.attempts[i].owner = h.getString("email").split("@")[0];
+                c.attempts[i].place = i+1;
             }
             if (c.attempts.length > 0)
                 c.attempt_id = c.attempts[0].id;
