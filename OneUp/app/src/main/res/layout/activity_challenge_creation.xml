@@ -1,75 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.purduecs.kiwi.oneup.ChallengeCreationActivity">
 
-    <EditText
-        android:id="@+id/challenge_name"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="Name"
-        android:layout_alignParentTop="true" />
+        android:layout_height="match_parent">
 
-    <ImageButton
-        android:id="@+id/challenge_media_button"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:src="@drawable/add_media_button"
-        android:scaleType="center"
-        android:onClick="selectMedia"
-        android:layout_below="@id/challenge_name"
-        android:layout_centerHorizontal="true" />
-    <!--         android:background="@drawable/add_media_border" -->
+        <EditText
+            android:id="@+id/challenge_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="Name"
+            style="@style/TextField"
+            android:textSize="24sp"
+            android:layout_alignParentTop="true" />
 
-    <EditText
-        android:id="@+id/challenge_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="Description"
-        android:layout_below="@+id/challenge_media_button" />
+        <View android:id="@+id/divider_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/challenge_name"
+            android:background="@color/dividerGray"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/challenge_num"
-        android:hint="Number"
-        android:layout_below="@+id/challenge_desc" />
+        <ImageButton
+            android:id="@+id/challenge_media_button"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_margin="@dimen/text_margin_medium"
+            android:src="@drawable/add_media_button"
+            android:background="@drawable/dotted_border"
+            android:scaleType="center"
+            android:onClick="selectMedia"
+            android:layout_below="@id/divider_1"
+            android:layout_centerHorizontal="true" />
+        <!--         android:background="@drawable/add_media_border" -->
 
-    <EditText
-        android:id="@+id/challenges_number_descriptor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="Qualifier"
-        android:layout_toRightOf="@id/challenge_num"
-        android:layout_toEndOf="@id/challenge_num"
-        android:layout_below="@id/challenge_desc"/>
+        <View android:id="@+id/divider_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/challenge_media_button"
+            android:background="@color/dividerGray"/>
 
-    <EditText
-        android:id="@+id/challenge_categories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="Categories"
-        android:layout_below="@+id/challenge_num" />
+        <EditText
+            android:id="@+id/challenge_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:hint="Description..."
+            android:layout_below="@+id/divider_2"
+            android:lines="3"
+            android:minLines="3"
+            style="@style/TextField" />
 
-    <EditText
-        android:id="@+id/challenge_loc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="Location"
-        android:layout_below="@+id/challenge_categories"
-        android:onClick="selectLocation" />
+        <View android:id="@+id/divider_3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/challenge_desc"
+            android:background="@color/dividerGray"/>
 
-</RelativeLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/challenge_num"
+            android:hint="Number"
+            android:layout_below="@+id/divider_3"
+            style="@style/TextField"
+            android:focusable="false"
+            android:onClick="clickNumberField"/>
+
+        <View android:id="@+id/divider_4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/challenge_num"
+            android:background="@color/dividerGray"/>
+
+        <EditText
+            android:id="@+id/challenge_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="Categories"
+            android:layout_below="@+id/divider_4"
+            style="@style/TextField"/>
+
+        <View android:id="@+id/divider_5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/challenge_categories"
+            android:background="@color/dividerGray"/>
+
+        <EditText
+            android:id="@+id/challenge_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="Location"
+            android:layout_below="@+id/challenge_categories"
+            style="@style/TextField"
+            android:onClick="selectLocation"/>
+
+    </RelativeLayout>
+</ScrollView>

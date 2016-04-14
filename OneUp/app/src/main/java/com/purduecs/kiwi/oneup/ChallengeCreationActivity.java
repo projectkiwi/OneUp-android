@@ -24,11 +24,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.app.AlertDialog;
 import android.widget.Toast;
@@ -90,7 +98,6 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
     TextView nameField;
     TextView numField;
-    TextView qualField;
     TextView descField;
     TextView catField;
     TextView locField;
@@ -108,7 +115,6 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         descField = (TextView)findViewById(R.id.challenge_desc);
         catField = (TextView)findViewById(R.id.challenge_categories);
         numField = (TextView) findViewById(R.id.challenge_num);
-        qualField = (TextView) findViewById(R.id.challenges_number_descriptor);
         locField = (TextView) findViewById(R.id.challenge_loc);
 
         if(NewsfeedActivity.attemptUpload == true) {
@@ -353,7 +359,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         c.votes_num = 0;
         c.likes_num = 0;
         c.owner = "Arthur Dent";
-        c.desc = numField.getText().toString() + qualField.getText().toString();
+        c.desc = numField.getText().toString();
         
         return c;
     }
@@ -585,6 +591,135 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         });
         media_sel.show();
     }
+
+    public void clickNumberField(View v) {
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        String num;
+                        switch (dialogType) {
+                            case 0:
+                                num = Integer.toString(
+                                        ((NumberPicker) (
+                                                (AlertDialog) dialog).findViewById(R.id.number_picker))
+                                                .getValue());
+                                break;
+                            case 1:
+                                num = (String)((Spinner)(
+                                        (AlertDialog) dialog).findViewById(R.id.text_spinner))
+                                        .getSelectedItem();
+                                break;
+                            default:
+                                num = "0";
+                                break;
+                        }
+                        nextNumField(num);
+                    }
+                });
+
+
+        builder.setCustomTitle(inflateTitle(builder.getContext(), "24", "Pushups", 0));
+
+        final FrameLayout frameView = new FrameLayout(this);
+        builder.setView(frameView);
+
+        final AlertDialog alertDialog = builder.create();
+
+        dialogType = 0;
+        dialoglayout = inflater.inflate(R.layout.pick_attempt_number_dialog, frameView);
+
+        Spinner type = (Spinner)dialoglayout.findViewById(R.id.type_dropdown);
+        type.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, new String[]{"Numeric", "Text"}));
+        type.setOnItemSelectedListener(spinnerListener);
+
+        NumberPicker picker = (NumberPicker)dialoglayout.findViewById(R.id.number_picker);
+        picker.setMinValue(0);
+        picker.setMaxValue(10000);
+        picker.setValue(24);
+
+        Spinner text = (Spinner)dialoglayout.findViewById(R.id.text_spinner);
+        text.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, new String[]{"Most", "Least"}));
+
+        alertDialog.show();
+    }
+
+    private void nextNumField(final String num) {
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String qual = ((TextView) ((AlertDialog) dialog).findViewById(R.id.qualifier))
+                                .getText().toString();
+
+                        numField.setText(num + " " + qual);
+
+                        dialoglayout = null;
+                    }
+                });
+
+
+        builder.setCustomTitle(inflateTitle(builder.getContext(), num, "Pushups", 1));
+
+        final FrameLayout frameView = new FrameLayout(this);
+        builder.setView(frameView);
+
+        final AlertDialog alertDialog = builder.create();
+
+        dialoglayout = inflater.inflate(R.layout.pick_attempt_qual_dialog, frameView);
+        alertDialog.show();
+    }
+
+    private View inflateTitle(Context c, String one, String two, int focus) {
+        View title = View.inflate(c, R.layout.pick_attempt_dialog_title, null);
+
+        ((TextView)title.findViewById(R.id.title_num)).setText(one);
+        ((TextView)title.findViewById(R.id.title_qual)).setText(two);
+        if (focus == 0)
+            ((TextView)title.findViewById(R.id.title_qual))
+                    .setTextColor(getResources().getColor(R.color.transparentWhite));
+        else
+            ((TextView)title.findViewById(R.id.title_num))
+                    .setTextColor(getResources().getColor(R.color.transparentWhite));
+
+        return title;
+    }
+
+    private View dialoglayout;
+    private int dialogType;
+
+    private AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String type = (String)parent.getItemAtPosition(position);
+            switch (type) {
+                case "Numeric":
+                    dialoglayout.findViewById(R.id.number_picker).setVisibility(View.VISIBLE);
+                    dialoglayout.findViewById(R.id.text_spinner).setVisibility(View.GONE);
+                    dialogType = 0;
+                    break;
+                case "Text":
+                    dialoglayout.findViewById(R.id.number_picker).setVisibility(View.GONE);
+                    dialoglayout.findViewById(R.id.text_spinner).setVisibility(View.VISIBLE);
+                    dialogType = 1;
+                    break;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 }
 
 
