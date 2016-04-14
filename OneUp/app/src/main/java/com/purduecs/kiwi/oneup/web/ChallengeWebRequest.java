@@ -65,13 +65,13 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             temp = c.id;
 
             JSONArray attempts = response.getJSONArray("attempts");
-            JSONArray holders = response.getJSONArray("record_holders");
+            //JSONArray holders = response.getJSONArray("record_holders");
 
             c.name = response.getString("name");
             if (attempts.length() > 0) {
                 c.image = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
                 c.previewImage = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
-                c.owner = holders.getJSONObject(holders.length()-1).getString("email").split("@")[0];
+                c.owner = "test";//holders.getJSONObject(holders.length()-1).getString("email").split("@")[0];
                 if (attempts.getJSONObject(attempts.length()-1).has("orig_video")) {
                     //c.video = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length() - 1).getString("orig_video");
                 }
@@ -82,9 +82,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             }
 
             c.categories = response.getJSONArray("categories").toString()
-                    .replace("\"", "").replace("[", "").replace("]", "").split(",");
-
-            c.score = 164;
+                    .replace("\"", "").replace("[", "").replace("]", "").split(",");c.score = 164;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             try {
@@ -104,7 +102,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             c.attempts = new Attempt[attempts.length()];
             for (int i = 0; i < attempts.length(); i++) {
                 JSONObject a = attempts.getJSONObject(attempts.length() - i - 1);
-                JSONObject h = holders.getJSONObject(attempts.length() - i - 1);
+                //JSONObject h = holders.getJSONObject(attempts.length() - i - 1);
                 c.attempts[i] = new Attempt();
                 c.attempts[i].id = a.getString("_id");
                 c.attempts[i].image = OneUpWebRequest.BASE_URL + "/" + a.getString("gif_img");
@@ -122,7 +120,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 c.attempts[i].desc = a.getString("description");
                 c.attempts[i].likes_num = a.getInt("like_total");
                 c.attempts[i].has_liked = a.getBoolean("liked_attempt");
-                c.attempts[i].owner = h.getString("email").split("@")[0];
+                c.attempts[i].owner = "test";//h.getString("email").split("@")[0];
                 c.attempts[i].place = i+1;
             }
             if (c.attempts.length > 0)

@@ -64,6 +64,8 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     public static final int REQUEST_POST = 12;
     public static final String EXTRA_ID = "com.purduecs.kiwi.oneup.extra_id";
 
+    private static final String EXTRA_ATTEMPT = "com.purduecs.kiwi.oneup.extra_attempt_bool";
+
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
     private static final int SELECT_VIDEO_ACTIVITY_REQUEST_CODE = 300;
@@ -92,9 +94,19 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     int rand;
     String cat;
 
-    public static Intent intentFor(Context context) {
-        return new Intent(context, ChallengeCreationActivity.class);
+    public static Intent intentForChallenge(Context context) {
+        Intent intent = new Intent(context, ChallengeCreationActivity.class);
+        intent.putExtra(EXTRA_ATTEMPT, false);
+        return intent;
     }
+
+    public static Intent intentForAttempt(Context context) {
+        Intent intent = new Intent(context, ChallengeCreationActivity.class);
+        intent.putExtra(EXTRA_ATTEMPT, true);
+        return intent;
+    }
+
+    boolean isAttempt;
 
     TextView nameField;
     TextView numField;
@@ -111,22 +123,27 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         setContentView(R.layout.activity_challenge_creation);
         setUpActionBar();
 
+        isAttempt = getIntent().getBooleanExtra(EXTRA_ATTEMPT, false);
+
         nameField = (TextView)findViewById(R.id.challenge_name);
         descField = (TextView)findViewById(R.id.challenge_desc);
         catField = (TextView)findViewById(R.id.challenge_categories);
         numField = (TextView) findViewById(R.id.challenge_num);
         locField = (TextView) findViewById(R.id.challenge_loc);
 
-        if(NewsfeedActivity.attemptUpload == true) {
-            nameField.setVisibility(View.INVISIBLE);
-            descField.setVisibility(View.INVISIBLE);
-            catField.setVisibility(View.INVISIBLE);
-            locField.setVisibility(View.INVISIBLE);
+        if(isAttempt) {
+            nameField.setVisibility(View.GONE);
+            descField.setVisibility(View.GONE);
+            catField.setVisibility(View.GONE);
+            locField.setVisibility(View.GONE);
+            findViewById(R.id.divider_1).setVisibility(View.GONE);
+            findViewById(R.id.divider_3).setVisibility(View.GONE);
+            findViewById(R.id.divider_5).setVisibility(View.GONE);
         } else {
-            nameField.setVisibility(View.VISIBLE);
+            /*nameField.setVisibility(View.VISIBLE);
             descField.setVisibility(View.VISIBLE);
             catField.setVisibility(View.VISIBLE);
-            locField.setVisibility(View.VISIBLE);
+            locField.setVisibility(View.VISIBLE);*/
         }
 
         // Create an instance of GoogleAPIClient.
@@ -225,7 +242,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         r = new Random();
         rand = r.nextInt(5);
 
-        if(NewsfeedActivity.attemptUpload == false) {
+        if(!isAttempt) {
             if (locField.getText().toString().trim().length() <= 0 ||
                     nameField.getText().toString().trim().length() <= 0 ||
                     descField.getText().toString().trim().length() <= 0 ||
@@ -261,7 +278,9 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                             public void onSuccess(String response) {
                                 Log.d(TAG, "In Attempt. ResponseID = " + responseID);
                                 Log.d(TAG, "Attempt response = " + response);
-
+                                Toast.makeText(ChallengeCreationActivity.this, "Uploaded challenge!", Toast.LENGTH_SHORT).show();
+                                setResult(RESULT_OK);
+                                finish();
                             }
 
                             @Override
@@ -271,9 +290,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                         });
 
                         Log.d(TAG, "After attempt post attempt");
-                        Toast.makeText(ChallengeCreationActivity.this, "Uploaded challenge!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(ChallengeCreationActivity.this, NewsfeedActivity.class);
-                        startActivity(intent);
+
 
                     }
                 }
@@ -305,6 +322,9 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                 public void onSuccess(String response) {
                     Log.d(TAG, "In Attempt. ResponseID = " + responseID);
                     Log.d(TAG, "Attempt response = " + response);
+                    Toast.makeText(ChallengeCreationActivity.this, "Uploaded attempt!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
 
                 }
 
@@ -315,9 +335,6 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
             });
 
             Log.d(TAG, "Trying attempy");
-            Toast.makeText(ChallengeCreationActivity.this, "Uploaded attempt!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ChallengeCreationActivity.this, NewsfeedActivity.class);
-            startActivity(intent);
 
         }
     }

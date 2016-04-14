@@ -143,9 +143,7 @@ public class ChallengeDetailActivity extends AppCompatActivity {
     }
 
     public void newChallenge(MenuItem menuItem) {
-        NewsfeedActivity.attemptUpload = true;
-        Intent intent = new Intent(this, ChallengeCreationActivity.class);
-        startActivity(intent);
+        startActivity(ChallengeCreationActivity.intentForAttempt(this));
     }
 
     private void setUpActionBar() {

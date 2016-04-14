@@ -100,8 +100,8 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                     challe.attempt_id = attempts.getJSONObject(attempts.length() - 1).getString("_id");
                     challe.image = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length() - 1).getString("gif_img");
                     challe.previewImage = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length() - 1).getString("gif_img");
-                    JSONArray holders = chall.getJSONArray("record_holders");
-                    challe.owner = holders.getJSONObject(holders.length()-1).getString("email").split("@")[0];
+                    //JSONArray holders = chall.getJSONArray("record_holders");
+                    challe.owner = "test";//holders.getJSONObject(holders.length()-1).getString("email").split("@")[0];
                 } else {
                     challe.attempt_id = "nope";
                     challe.image = "nope";

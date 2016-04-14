@@ -31,6 +31,7 @@ public class ChallengePostWebRequest implements OneUpWebRequest<JSONObject, Stri
             post.put("owner", challenge.owner);
             for (int i = 0; i < challenge.categories.length; i++) {
                 cats.put(i, challenge.categories[i]);
+                Log.d("HEY", challenge.categories[i]);
             }
 
             post.put("categories", cats);
