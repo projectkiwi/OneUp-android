@@ -51,7 +51,8 @@ public class LoginPostWebRequest implements OneUpWebRequest<JSONObject, Boolean>
         try {
             new_user = response.getBoolean("new_account");
             RequestQueueSingleton.AUTH_TOKEN = response.getString("token");
-            Log.d("HEY", "token: " + RequestQueueSingleton.AUTH_TOKEN);
+            OneUpApplication.USER_ID = response.getJSONObject("user").getString("_id");
+            Log.d("HEY", "login: " + response.toString());
         } catch (Exception e) {
             Log.e(TAG, "Had an issue parsing JSON when getting return in LoginPost");
         }

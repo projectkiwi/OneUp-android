@@ -21,7 +21,7 @@
 
     <color name="overlayGrey">#889C9C9C</color>
 
-    <color name="firstGold">#F8E71C</color>
-    <color name="secondSilver">#C0C0C0</color>
-    <color name="thirdBronze">#D16119</color>
+    <color name="firstGold">#FFD600</color>
+    <color name="secondSilver">#B0BEC5</color>
+    <color name="thirdBronze">#FF6E40</color>
 </resources>

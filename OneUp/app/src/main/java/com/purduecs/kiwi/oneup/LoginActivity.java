@@ -175,17 +175,6 @@ public class LoginActivity extends AppCompatActivity {
                     newUser();
                 }
                 else {
-                    OneUpWebRequest oneUpWebRequest = new LoginPostUsernameWebRequest(email, auth_tok, new RequestHandler<String>() {
-                        @Override
-                        public void onSuccess(String response) {
-                            Log.d(TAG, "Got username as " + response);
-                        }
-
-                        @Override
-                        public void onFailure() {
-
-                        }
-                    });
                     oldUser();
                 }
             }

@@ -71,7 +71,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             if (attempts.length() > 0) {
                 c.image = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
                 c.previewImage = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
-                c.owner = "test";//holders.getJSONObject(holders.length()-1).getString("email").split("@")[0];
+                c.owner = attempts.getJSONObject(attempts.length()-1).getJSONObject("user").getString("email").split("@")[0];
                 if (attempts.getJSONObject(attempts.length()-1).has("orig_video")) {
                     //c.video = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length() - 1).getString("orig_video");
                 }
@@ -120,7 +120,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 c.attempts[i].desc = a.getString("description");
                 c.attempts[i].likes_num = a.getInt("like_total");
                 c.attempts[i].has_liked = a.getBoolean("liked_attempt");
-                c.attempts[i].owner = "test";//h.getString("email").split("@")[0];
+                c.attempts[i].owner = a.getJSONObject("user").getString("email").split("@")[0];
                 c.attempts[i].place = i+1;
             }
             if (c.attempts.length > 0)

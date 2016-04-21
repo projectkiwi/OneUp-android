@@ -24,6 +24,9 @@ public class Challenge {
     public int liked;
     public boolean bookmarked;
 
+    // 0 is never held, 1 is first place, 2 is second, ...
+    public int holds;
+
     public Attempt[] attempts;
 
     public String location;

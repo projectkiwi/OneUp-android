@@ -8,6 +8,8 @@ import android.content.Context;
  */
 public class OneUpApplication extends Application {
 
+    public static String USER_ID;
+
     private static Context context;
 
     @Override

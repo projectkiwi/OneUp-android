@@ -128,6 +128,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             h.attemptid.setText(getItem(position).attempt_id);
             h.challenge=getItem(position);
             h.cardtitle.setText(list.get(position).name);
+            h.wedgeView.setColor(list.get(position).holds);
             Glide.with(mActivity)
                     .load(list.get(position).previewImage)
                     .error(R.drawable.doge_with_sunglasses)
@@ -245,6 +246,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView cardtime;
         TextView carddesc;
         Challenge challenge;
+        WinnerWedgeView wedgeView;
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -259,6 +261,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             cardlikes = (CenterIconButton) itemView.findViewById(R.id.card_like_button);
             cardtime = (TextView) itemView.findViewById(R.id.card_time);
             carddesc = (TextView) itemView.findViewById(R.id.card_desc);
+            wedgeView = (WinnerWedgeView) itemView.findViewById(R.id.winner_wedge);
         }
     }
 
