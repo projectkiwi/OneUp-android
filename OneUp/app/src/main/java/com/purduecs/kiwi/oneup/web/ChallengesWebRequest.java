@@ -76,6 +76,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
     @Override
     public ArrayList<Challenge> parseResponse(JSONObject response2) {
 
+        Log.d(TAG, response2.toString());
         JSONArray response = null;
         try {
             response = response2.getJSONArray("docs");
@@ -137,8 +138,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 c.add(challe);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-                Log.e(TAG, "Something happened in the ChallengeS (plural) request");
+                Log.e(TAG, "Something happened in the ChallengeS (plural) request " + e.getMessage() + " " + e.toString());
         }
         return c;
     }

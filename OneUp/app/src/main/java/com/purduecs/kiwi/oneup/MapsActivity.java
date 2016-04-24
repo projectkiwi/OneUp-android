@@ -2,6 +2,8 @@ package com.purduecs.kiwi.oneup;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -47,11 +49,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Add a marker in Sydney and move the camera
         LatLng west_lafayette = new LatLng(40.427536, -86.916966);
 
+        Bitmap icon1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.logo_map_pin_transparent_actual);
+        Bitmap icon = Bitmap.createScaledBitmap(icon1, icon1.getWidth() / 15, icon1.getHeight() / 15, false);
+
         ///////////////////INITIALIZE MARKERS HERE///////////////////////////
         mMap.addMarker(new MarkerOptions()
                 .position(west_lafayette)
-                .title("Challenge 0"));
-
+                .title("Challenge 0")
+                .icon(BitmapDescriptorFactory.fromBitmap(icon)));
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(west_lafayette, 15));
     }
