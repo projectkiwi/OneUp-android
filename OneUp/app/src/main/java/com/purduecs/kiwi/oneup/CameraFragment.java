@@ -236,8 +236,13 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
         switch (v.getId()) {
             case R.id.picture:
                 if (mPictureState == STATE_PREVIEW) {
-                    mCamera.takePicture(null, null, jpegCallback);
+                    //mCamera.takePicture(null, null, jpegCallback);
+                    mSurfaceView.startVideo(mFile);
                     mPictureState = STATE_TAKEN;
+                }
+                else if (mPictureState == STATE_TAKEN) {
+                    mSurfaceView.endVideo();
+                    getActivity().finish();
                 }
                 break;
             case R.id.cancel:

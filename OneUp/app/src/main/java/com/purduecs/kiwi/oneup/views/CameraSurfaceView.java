@@ -12,7 +12,11 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 
+import com.purduecs.kiwi.oneup.helpers.AnimatedGifEncoder;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,7 +26,13 @@ import java.util.TimerTask;
  */
 public class CameraSurfaceView extends SurfaceView {
 
+    // rbg frame
     int[] rgbints;
+
+    // video stuff
+    boolean takingVideo;
+    AnimatedGifEncoder videoMaker;
+    int skip;
 
     // Timer stuff
     long startTime = 0;
@@ -34,6 +44,9 @@ public class CameraSurfaceView extends SurfaceView {
     public CameraSurfaceView(Context c) {
         super(c);
         setWillNotDraw(false);
+
+        takingVideo = false;
+        skip = 0;
 
         mTimer = new Timer();
         timerPaint = new Paint();
@@ -71,6 +84,15 @@ public class CameraSurfaceView extends SurfaceView {
 
                 draw(canvas, size);
 
+                if (takingVideo && skip > 1) {
+                    Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(),Bitmap.Config.ARGB_8888);
+                    Canvas canvas2 = new Canvas(bitmap);
+                    draw(canvas2, size);
+                    videoMaker.addFrame(bitmap);
+
+                    skip = 0;
+                } else { skip++; }
+
 
             }
         }  catch (Exception e){
@@ -94,6 +116,27 @@ public class CameraSurfaceView extends SurfaceView {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, os);
 
         return os.toByteArray();
+    }
+
+    public void startVideo(File file) {
+        takingVideo = true;
+        skip = 0;
+        try {
+            videoMaker = new AnimatedGifEncoder();
+            videoMaker.setFrameRate(30);
+            videoMaker.start(new FileOutputStream(file));
+        } catch (Exception e) {
+            Log.e("HEY", "problem starting video");
+            videoMaker = null;
+            takingVideo = false;
+            return;
+        }
+    }
+
+    public void endVideo() {
+        videoMaker.finish();
+        takingVideo = false;
+        videoMaker = null;
     }
 
     private void draw(Canvas c, Camera.Size size) {
