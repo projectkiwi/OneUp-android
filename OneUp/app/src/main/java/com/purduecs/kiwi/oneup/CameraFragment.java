@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.purduecs.kiwi.oneup.views.AutoFitTextureView;
+import com.purduecs.kiwi.oneup.views.CameraSurfaceView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,7 +63,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
 
     private Thread mSavePictureThread;
 
-    private SurfaceView mSurfaceView;
+    private CameraSurfaceView mSurfaceView;
 
 
     private static final int STATE_PREVIEW = 0;
@@ -81,7 +82,9 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_camera, container, false);
-        mSurfaceView = new SurfaceView(v.getContext());
+        mSurfaceView = new CameraSurfaceView(v.getContext());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mSurfaceView.setLayoutParams(params);
         v.addView(mSurfaceView, 0);
         mSurfaceView.getHolder().addCallback(this);
         mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -92,6 +95,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         view.findViewById(R.id.picture).setOnClickListener(this);
         view.findViewById(R.id.cancel).setOnClickListener(this);
+        view.findViewById(R.id.stopwatch).setOnClickListener(this);
         //mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
     }
 
@@ -160,11 +164,12 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
             //mSupportedPreviewSizes = localSizes;
             mSurfaceView.requestLayout();
 
-            try {
+            /*try {
                 mCamera.setPreviewDisplay(mSurfaceView.getHolder());
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
+            mCamera.setPreviewCallback(mPreviewCallback);
 
             // Important: Call startPreview() to start updating the preview
             // surface. Preview must be started before you can take a picture.
@@ -175,6 +180,15 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
 
         return qOpened;
     }
+
+    private Camera.PreviewCallback mPreviewCallback = new Camera.PreviewCallback() {
+        @Override
+        public void onPreviewFrame(byte[] data, Camera camera) {
+            if (mCamera != null) {
+                mSurfaceView.render(data, camera.getParameters().getPreviewSize());
+            }
+        }
+    };
 
     public void closeCamera() {
         if (mCamera != null) {
@@ -221,13 +235,27 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
                     mPictureState = STATE_PREVIEW;
                 }
                 break;
+            case R.id.stopwatch:
+                if (mPictureState == STATE_PREVIEW) {
+                    mSurfaceView.toggleTimer();
+                }
+                break;
         }
     }
 
     private Camera.PictureCallback jpegCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            mSavePictureThread = new Thread(new ImageSaver(data, mFile));
+            //mSavePictureThread = new Thread(new ImageSaver(data, mFile));
+            mSavePictureThread = new Thread(new ImageSaver(mSurfaceView.getPicture(camera.getParameters().getPreviewSize()), mFile, new FinishSaveListener() {
+                @Override
+                public void onFinish(boolean success) {
+                    if (success) {
+                        CameraFragment.this.getActivity().setResult(Activity.RESULT_OK);
+                        CameraFragment.this.getActivity().finish();
+                    }
+                }
+            }));
             mSavePictureThread.start();
         }
     };
@@ -241,14 +269,17 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
          * The JPEG image
          */
         private final byte[] mImage;
+
+        private FinishSaveListener mListener;
         /**
          * The file we save the image into.
          */
         private final File mFile;
 
-        public ImageSaver(byte[] image, File file) {
+        public ImageSaver(byte[] image, File file, FinishSaveListener listener) {
             mImage = image;
             mFile = file;
+            mListener = listener;
         }
 
         @Override
@@ -269,6 +300,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
                     }
                 }
             }
+            mListener.onFinish(true);
         }
 
     }
@@ -348,5 +380,9 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
                             })
                     .create();
         }
+    }
+
+    private abstract class FinishSaveListener {
+        public abstract void onFinish(boolean success);
     }
 }
