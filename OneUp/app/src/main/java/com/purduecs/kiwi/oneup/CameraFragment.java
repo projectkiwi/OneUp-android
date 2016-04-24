@@ -112,9 +112,9 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
     public void onResume() {
         super.onResume();
 
-        if (mSurfaceView.isActivated()) {
+        /*if (mSurfaceView.isActivated() && mCamera == null) {
             openCamera();
-        }
+        }*/
     }
 
     @Override
@@ -126,7 +126,11 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        openCamera();
+        if (!openCamera()) {
+            Log.d("HEY", "failed to open for some reason");
+            closeCamera();
+            ErrorDialog.newInstance("Error opening camera").show(getChildFragmentManager(), FRAGMENT_DIALOG);
+        }
     }
 
     @Override
@@ -143,23 +147,27 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
     }
 
     private boolean openCamera() {
+        Log.d("HEY", "opening");
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();
             return false;
         }
         boolean qOpened = false;
-
+        Log.d("HEY", "opening2");
         try {
             closeCamera();
             mCamera = Camera.open();
             qOpened = (mCamera != null);
         } catch (Exception e) {
-            Log.e(getString(R.string.app_name), "failed to open Camera");
+            Log.e("HEY", "failed to open Camera");
             e.printStackTrace();
         }
 
+        Log.d("HEY", "opening3");
+
         if (qOpened) {
+            Log.d("HEY", "opening4");
             //List<Size> localSizes = mCamera.getParameters().getSupportedPreviewSizes();
             //mSupportedPreviewSizes = localSizes;
             mSurfaceView.requestLayout();
@@ -191,10 +199,13 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
     };
 
     public void closeCamera() {
+        Log.d("HEY", "closing camera");
         if (mCamera != null) {
             mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
             mCamera.release();
             mCamera = null;
+            Log.d("HEY", "closing camera");
         }
     }
 
@@ -348,6 +359,13 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
                     .create();
         }
 
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            super.onDismiss(dialog);
+
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
+        }
     }
 
     /**

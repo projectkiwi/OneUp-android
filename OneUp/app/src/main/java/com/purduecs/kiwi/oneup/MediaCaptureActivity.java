@@ -14,9 +14,10 @@ public class MediaCaptureActivity extends AppCompatActivity {
 
     private static String EXTRA_IMAGE_FILE_NAME = "com.purduecs.kiwi.oneup.filenamecrapforimageinactivity";
 
-    public static Intent intentForImage(Context c, Uri file) {
+    public static Intent intentForImage(Context c, File file) {
         Intent i = new Intent(c, MediaCaptureActivity.class);
-        i.putExtra(EXTRA_IMAGE_FILE_NAME, file);
+        Log.d("HEY", file.toString());
+        i.putExtra(EXTRA_IMAGE_FILE_NAME, file.toString());
         return i;
     }
 
@@ -25,10 +26,10 @@ public class MediaCaptureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_capture);
         if (null == savedInstanceState) {
-            Uri uri = getIntent().getParcelableExtra(EXTRA_IMAGE_FILE_NAME);
+            String uri = getIntent().getStringExtra(EXTRA_IMAGE_FILE_NAME);
             CameraFragment fragment;
             if (uri != null) {
-                fragment = CameraFragment.newInstance(uri.toString());
+                fragment = CameraFragment.newInstance(uri);
             } else {
                 fragment = CameraFragment.newInstance(new File(getExternalFilesDir(null), "pic.jpg").toString());
             }

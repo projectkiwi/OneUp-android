@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.hardware.Camera;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 
@@ -48,7 +49,7 @@ public class CameraSurfaceView extends SurfaceView {
             timerRunning = false;
         } else {
             startTime = System.currentTimeMillis();
-            mTimer.schedule(new Stopwatch(), 0, 500);
+            mTimer.schedule(new Stopwatch(), 0, 33);
             timerRunning = true;
         }
     }
@@ -170,8 +171,9 @@ public class CameraSurfaceView extends SurfaceView {
             int seconds = (int) (millis / 1000);
             int minutes = seconds / 60;
             seconds     = seconds % 60;
+            millis      = (millis / 10) % 100;
 
-            timerText = String.format("%d:%02d", minutes, seconds);
+            timerText = String.format("%d:%02d.%02d", minutes, seconds, millis);
         }
     }
 }
