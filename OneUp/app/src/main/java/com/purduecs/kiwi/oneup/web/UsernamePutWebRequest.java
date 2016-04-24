@@ -58,7 +58,7 @@ public class UsernamePutWebRequest implements OneUpWebRequest<JSONObject, String
         // May need to check response to see if we got success or failure back
         try {
             Log.d(TAG, "PUT Username " + response.toString());
-            return null;
+            return response.toString();
         } catch (Exception e) {
             return null;
         }
