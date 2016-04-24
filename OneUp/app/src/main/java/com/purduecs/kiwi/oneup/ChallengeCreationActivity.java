@@ -581,7 +581,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                     String ts = String.format(tsLong.toString() + ".jpg");
                     File image = new File(media_folder, ts);
                     uriSavedImage = Uri.fromFile(image);
-                    intent = MediaCaptureActivity.intentForImage(ChallengeCreationActivity.this, uriSavedImage);
+                    intent = MediaCaptureActivity.intentForImage(ChallengeCreationActivity.this, image);
                     //intent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
 
                     startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
