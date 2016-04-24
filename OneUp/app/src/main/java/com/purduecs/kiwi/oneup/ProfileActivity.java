@@ -5,6 +5,9 @@ package com.purduecs.kiwi.oneup;
  */
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.StrictMode;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -16,14 +19,27 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.purduecs.kiwi.oneup.views.ChallengeListLayout;
+import com.purduecs.kiwi.oneup.web.AttemptPostWebRequest;
+import com.purduecs.kiwi.oneup.web.OneUpWebRequest;
+import com.purduecs.kiwi.oneup.web.RequestHandler;
+import com.purduecs.kiwi.oneup.web.UserGetWebRequest;
+import com.purduecs.kiwi.oneup.web.UsernamePutWebRequest;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     Animation rightTabAnimation, leftTabAnimation;
 
     ChallengeListLayout profileLayout;
-
+    private String TAG = "OneUP";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +97,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                     profileLayout.setChallengeType("new");
 
                 } else if (tabLayout.getSelectedTabPosition() == 2) {
-                    profileLayout.setChallengeType("global");
+                    profileLayout.setChallengeType("bookmarks");
                 }
 
                 if (lastTab > tabLayout.getSelectedTabPosition()) {
@@ -118,6 +134,38 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 } else {
                     tabLayout.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        //--------------VERY BAD PRACTICE. DO NOT TRY AT HOME------------------
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        //---------------------------------------------------------------------
+
+        ////////////////////////GET IMAGE/////////////////////////////
+        OneUpWebRequest oneUpWebRequest1 = new UserGetWebRequest(new RequestHandler<String>() {
+            @Override
+            public void onSuccess(String response) {
+                Bitmap bit;
+                //Log.d(TAG, "Gravatar is " + response);
+                try {
+                    URL url = new URL(response);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    bit = BitmapFactory.decodeStream(input);
+                    //Log.d(TAG, "Gravatar bitmap is " + bit.toString());
+                    CircleImageView circleImageView = (CircleImageView) findViewById(R.id.profile_image);
+                    circleImageView.setImageBitmap(bit);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error getting gravatar : " + e.toString());
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                Log.e(TAG, "Failed to get image");
             }
         });
 

@@ -41,7 +41,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 type = "/challenges/local/" + type;
                 break;
             case "bookmarks":
-                type = "/bookmarks/";
+                type = "/me/bookmarks/";
                 break;
             case "global":
             default:

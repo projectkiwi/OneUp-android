@@ -31,11 +31,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.NumberPicker;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.app.AlertDialog;
@@ -501,14 +505,15 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                     }
 
                     //sort the locations
+                    /*
                     Collections.sort(locations, new Comparator<com.purduecs.kiwi.oneup.models.Location>() {
                         @Override
                         public int compare(com.purduecs.kiwi.oneup.models.Location lhs, com.purduecs.kiwi.oneup.models.Location rhs) {
                             return lhs.name.compareToIgnoreCase(rhs.name);
                         }
-                    });
+                    });*/
 
-                    AlertDialog.Builder media_sel = new AlertDialog.Builder(ChallengeCreationActivity.this);
+                    final AlertDialog.Builder media_sel = new AlertDialog.Builder(ChallengeCreationActivity.this);
                     media_sel.setTitle("Select Location");
                     final CharSequence[] items2 = new CharSequence[locations.size()];
                     i = 0;
@@ -517,7 +522,47 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                         items2[i] = s.name;
                         i++;
                     }
-
+                    final SearchView input = new SearchView(ChallengeCreationActivity.this);
+                    input.setQueryHint("What are you looking for?");
+                    final Button button = new Button(ChallengeCreationActivity.this);
+                    button.setText("Search");
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String result = input.getQuery().toString();
+                            Log.d(TAG, "Item to search is " + result);
+                            final CharSequence[] items3 = new CharSequence[locations.size()];
+                            int j = 0;
+                            for (com.purduecs.kiwi.oneup.models.Location s : locations) {
+                                if (strStr(s.name.toLowerCase(), result.toLowerCase()) > 0) {
+                                    items3[j] = s.name;
+                                    j++;
+                                }
+                            }
+                            if (j == 0) {
+                                Toast.makeText(ChallengeCreationActivity.this, "Nothing found", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            Log.d(TAG, "Found : " + items3);
+                            media_sel.setItems(items3, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int item) {
+                                    locField.setText(items3[item]);
+                                    for (com.purduecs.kiwi.oneup.models.Location s : locations) {
+                                        if (strStr(s.name, items3[item].toString()) > 0) {
+                                            locID = s.id;
+                                        }
+                                    }
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+                    });
+                    LinearLayout layout = new LinearLayout(ChallengeCreationActivity.this);
+                    layout.setOrientation(LinearLayout.VERTICAL);
+                    layout.addView(input);
+                    layout.addView(button);
+                    media_sel.setView(layout);
                     media_sel.setItems(items2, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int item) {
@@ -722,6 +767,62 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                     .setTextColor(getResources().getColor(R.color.transparentWhite));
 
         return title;
+    }
+
+    public int strStr(String haystack, String needle) {
+        if(haystack==null || needle==null)
+            return 0;
+
+        int h = haystack.length();
+        int n = needle.length();
+
+        if (n > h)
+            return -1;
+        if (n == 0)
+            return 0;
+
+        int[] next = getNext(needle);
+        int i = 0;
+
+        while (i <= h - n) {
+            int success = 1;
+            for (int j = 0; j < n; j++) {
+                if (needle.charAt(0) != haystack.charAt(i)) {
+                    success = 0;
+                    i++;
+                    break;
+                } else if (needle.charAt(j) != haystack.charAt(i + j)) {
+                    success = 0;
+                    i = i + j - next[j - 1];
+                    break;
+                }
+            }
+            if (success == 1)
+                return i;
+        }
+
+        return -1;
+    }
+
+    //calculate KMP array
+    public int[] getNext(String needle) {
+        int[] next = new int[needle.length()];
+        next[0] = 0;
+
+        for (int i = 1; i < needle.length(); i++) {
+            int index = next[i - 1];
+            while (index > 0 && needle.charAt(index) != needle.charAt(i)) {
+                index = next[index - 1];
+            }
+
+            if (needle.charAt(index) == needle.charAt(i)) {
+                next[i] = next[i - 1] + 1;
+            } else {
+                next[i] = 0;
+            }
+        }
+
+        return next;
     }
 
     private View dialoglayout;
