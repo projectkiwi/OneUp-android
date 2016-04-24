@@ -57,8 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "What's happening?");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        setContentView(R.layout.activity_login);
 
         ////////////////////////SHARED PREFS/////////////////////////////
         preferences = PreferenceManager.getDefaultSharedPreferences(this);

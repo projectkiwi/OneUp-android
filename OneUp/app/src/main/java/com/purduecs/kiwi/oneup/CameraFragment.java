@@ -202,6 +202,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
         Log.d("HEY", "closing camera");
         if (mCamera != null) {
             mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
             mCamera.release();
             mCamera = null;
             Log.d("HEY", "closing camera");
