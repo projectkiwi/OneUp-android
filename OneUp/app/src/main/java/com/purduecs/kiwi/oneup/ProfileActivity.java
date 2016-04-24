@@ -7,6 +7,7 @@ package com.purduecs.kiwi.oneup;
 import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,16 +18,29 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import com.purduecs.kiwi.oneup.views.ChallengeListLayout;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView recyclerView;
+    private int lastTab;
+    Animation rightTabAnimation, leftTabAnimation;
+
+    ChallengeListLayout profileLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        profileLayout = (ChallengeListLayout) findViewById(R.id.profile_layout);
+
 
         ////////////////////////SETUP TOOLBAR/////////////////////////////////
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_profile);
@@ -42,6 +56,71 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         ////////////////////////SETUP NAV VIEW/////////////////////////////////
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_profile);
         navigationView.setNavigationItemSelectedListener(this);
+
+        ////////////////////////SETUP TABS/////////////////////////////////
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_profile);
+        tabLayout.addTab(tabLayout.newTab().setText("Challenges"));
+        tabLayout.addTab(tabLayout.newTab().setText("Liked"));
+        tabLayout.addTab(tabLayout.newTab().setText("Watching"));
+
+        lastTab = 0;
+
+        leftTabAnimation = AnimationUtils.loadAnimation(this, R.anim.tab_animation_left);
+        leftTabAnimation.setAnimationListener(tabAnimationListener);
+        rightTabAnimation = AnimationUtils.loadAnimation(this, R.anim.tab_animation_right);
+        rightTabAnimation.setAnimationListener(tabAnimationListener);
+
+        //TODO: Actually add functionality
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tabLayout.getSelectedTabPosition() == 0) {
+                    profileLayout.setChallengeType("popular");
+
+                } else if (tabLayout.getSelectedTabPosition() == 1) {
+                    profileLayout.setChallengeType("new");
+
+                } else if (tabLayout.getSelectedTabPosition() == 2) {
+                    profileLayout.setChallengeType("global");
+                }
+
+                if (lastTab > tabLayout.getSelectedTabPosition()) {
+                    profileLayout.startAnimation(rightTabAnimation);
+                } else {
+                    profileLayout.startAnimation(leftTabAnimation);
+                }
+
+                lastTab = tabLayout.getSelectedTabPosition();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        ////////////////////////CLEAN TOOLBAR SCROLL/////////////////////////////
+        final View toolbarContainer = findViewById(R.id.toolbar_container_profile);
+        profileLayout.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (dy > 0) {
+                    if (toolbarContainer.getTranslationY() == 0) {
+                        tabLayout.setVisibility(View.INVISIBLE);
+                    }
+                } else {
+                    tabLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -85,9 +164,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         if (id == R.id.nav_newsfeed) {
             Intent intent = new Intent(this, NewsfeedActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_bookmarks) {
-            Intent intent = new Intent(this, BookmarksActivity.class);
-            startActivity(intent);
         } else if (id == R.id.nav_notifs) {
             Intent intent = new Intent(this, NotificationsActivity.class);
             startActivity(intent);
@@ -102,4 +178,17 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private Animation.AnimationListener tabAnimationListener = new Animation.AnimationListener() {
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            profileLayout.refreshContent();
+        }
+
+        @Override
+        public void onAnimationStart(Animation animation) {}
+        @Override
+        public void onAnimationRepeat(Animation animation) {}
+    };
 }

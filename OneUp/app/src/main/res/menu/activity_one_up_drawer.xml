@@ -7,10 +7,6 @@
             android:icon="@drawable/ic_whatshot_black_24dp"
             android:title="Newsfeed" />
         <item
-            android:id="@+id/nav_bookmarks"
-            android:icon="@drawable/ic_bookmark_black_24dp"
-            android:title="Bookmarks" />
-        <item
             android:id="@+id/nav_notifs"
             android:icon="@drawable/ic_notifications_black_24dp"
             android:title="Notifications" />

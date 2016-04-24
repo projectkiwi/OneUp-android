@@ -57,6 +57,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
 
@@ -188,7 +190,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             //locField.setText(String.format("" + lastLocation.getLatitude() + " , " + lastLocation.getLongitude()));
-            Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, String.format("" + lastLocation.getLatitude() + "," + lastLocation.getLongitude()), Toast.LENGTH_LONG).show();
         } catch (SecurityException e) {
             Toast.makeText(this, "No permission for Location", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error : No permission for Location detected.");
@@ -334,7 +336,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
                 }
             });
 
-            Log.d(TAG, "Trying attempy");
+            Log.d(TAG, "Trying attempt");
 
         }
     }
@@ -485,44 +487,56 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
     //listener for location
     public void selectLocation(View v) {
         try {
-            final ArrayList<String> items = new ArrayList<>();
-            final ArrayList<String> ids = new ArrayList<>();
+            final ArrayList<com.purduecs.kiwi.oneup.models.Location> locations = new ArrayList<>();
 
             OneUpWebRequest oneUpWebRequest = new LocationGetWebRequest(String.format("" + lastLocation.getLatitude())
                     , String.format("" + lastLocation.getLongitude()), new RequestHandler<ArrayList<ArrayList<String>>>() {
                 @Override
                 public void onSuccess(ArrayList<ArrayList<String>> response) {
                     int i = 0;
+                    com.purduecs.kiwi.oneup.models.Location location;
                     for (ArrayList<String> a : response) {
-                        items.add(i, a.get(0));
-                        ids.add(i, a.get(1));
+                        location = new com.purduecs.kiwi.oneup.models.Location(a.get(0), a.get(1));
+                        locations.add(location);
                     }
+
+                    //sort the locations
+                    Collections.sort(locations, new Comparator<com.purduecs.kiwi.oneup.models.Location>() {
+                        @Override
+                        public int compare(com.purduecs.kiwi.oneup.models.Location lhs, com.purduecs.kiwi.oneup.models.Location rhs) {
+                            return lhs.name.compareToIgnoreCase(rhs.name);
+                        }
+                    });
+
+                    AlertDialog.Builder media_sel = new AlertDialog.Builder(ChallengeCreationActivity.this);
+                    media_sel.setTitle("Select Location");
+                    final CharSequence[] items2 = new CharSequence[locations.size()];
+                    i = 0;
+
+                    for (com.purduecs.kiwi.oneup.models.Location s : locations) {
+                        items2[i] = s.name;
+                        i++;
+                    }
+
+                    media_sel.setItems(items2, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int item) {
+                            locField.setText(locations.get(item).name);
+                            locID = locations.get(item).id;
+                            dialog.dismiss();
+                        }
+                    });
+                    media_sel.show();
+                    Log.d(TAG, "Getting locations successful!");
                 }
 
                 @Override
                 public void onFailure() {
-                    Log.e(TAG, "Something went wrong in populating our location editText");
+                    Log.e(TAG, "Something went wrong in populating our location view");
                 }
             });
 
-            AlertDialog.Builder media_sel = new AlertDialog.Builder(ChallengeCreationActivity.this);
-            media_sel.setTitle("Select Location");
-            final CharSequence[] items2 = new CharSequence[items.size()];
-            int i = 0;
 
-            for (String s : items) {
-                items2[i] = s;
-                i++;
-            }
-
-            media_sel.setItems(items2, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    locField.setText(items.get(item));
-                    locID = ids.get(item);
-                    dialog.dismiss();
-                }
-            });
         } catch (Exception e) {
             Log.e(TAG, "Exception in setting location. " + e.getMessage());
             locField.setText(String.format("" + lastLocation.getLatitude() + " , " + lastLocation.getLongitude()));

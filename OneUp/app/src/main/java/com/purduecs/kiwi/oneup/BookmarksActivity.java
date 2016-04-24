@@ -103,9 +103,6 @@ public class BookmarksActivity extends AppCompatActivity implements NavigationVi
 
         if (id == R.id.nav_newsfeed) {
             this.onBackPressed();
-        } else if (id == R.id.nav_bookmarks) {
-            Intent intent = new Intent(this, BookmarksActivity.class);
-            startActivity(intent);
         } else if (id == R.id.nav_notifs) {
             Intent intent = new Intent(this, NotificationsActivity.class);
             startActivity(intent);

@@ -80,9 +80,6 @@ public class OneUpActivity extends AppCompatActivity
         if (id == R.id.nav_newsfeed) {
             Intent intent = new Intent(this, NewsfeedActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_bookmarks) {
-            Intent intent = new Intent(this, BookmarksActivity.class);
-            startActivity(intent);
         } else if (id == R.id.nav_notifs) {
             Intent intent = new Intent(this, NotificationsActivity.class);
             startActivity(intent);

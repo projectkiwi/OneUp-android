@@ -98,11 +98,12 @@
             android:id="@+id/challenge_loc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="Location"
+            android:inputType="none"
+            android:hint="Click here to select Location"
             android:layout_below="@+id/challenge_categories"
             style="@style/TextField"
-            android:onClick="selectLocation"/>
+            android:focusable="false"
+            android:onClick="selectLocation" />
 
     </RelativeLayout>
 </ScrollView>
