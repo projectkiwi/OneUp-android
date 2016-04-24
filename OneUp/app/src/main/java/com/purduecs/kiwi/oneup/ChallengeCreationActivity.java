@@ -590,7 +590,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
     //OnClick Listener for imagebutton
     public void selectMedia(View v) {
-        final CharSequence[] items = { "Take Photo", "Take Video", "Photo from Gallery","Video from Gallery", "Cancel" };
+        final CharSequence[] items = { "Take Photo/Video", "Photo from Gallery","Video from Gallery", "Cancel" };
 
         //Storage permissions
         if(ContextCompat.checkSelfPermission(this,
@@ -616,7 +616,7 @@ public class ChallengeCreationActivity extends AppCompatActivity implements Goog
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Take Photo")) {
+                if (items[item].equals("Take Photo/Video")) {
 
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 

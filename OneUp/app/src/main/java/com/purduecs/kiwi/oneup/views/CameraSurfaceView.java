@@ -33,6 +33,7 @@ public class CameraSurfaceView extends SurfaceView {
     boolean takingVideo;
     AnimatedGifEncoder videoMaker;
     int skip;
+    long videoStart;
 
     // Timer stuff
     long startTime = 0;
@@ -88,7 +89,7 @@ public class CameraSurfaceView extends SurfaceView {
                     Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(),Bitmap.Config.ARGB_8888);
                     Canvas canvas2 = new Canvas(bitmap);
                     draw(canvas2, size);
-                    videoMaker.addFrame(bitmap);
+                    videoMaker.add(Bitmap.createScaledBitmap(bitmap, getWidth()/3, getHeight()/3, false));
 
                     skip = 0;
                 } else { skip++; }
@@ -121,9 +122,10 @@ public class CameraSurfaceView extends SurfaceView {
     public void startVideo(File file) {
         takingVideo = true;
         skip = 0;
+        videoStart = System.currentTimeMillis();
         try {
             videoMaker = new AnimatedGifEncoder();
-            videoMaker.setFrameRate(30);
+            videoMaker.setFrameRate(10);
             videoMaker.start(new FileOutputStream(file));
         } catch (Exception e) {
             Log.e("HEY", "problem starting video");
@@ -133,10 +135,18 @@ public class CameraSurfaceView extends SurfaceView {
         }
     }
 
-    public void endVideo() {
-        videoMaker.finish();
+    public void cancelVideo() {
+        videoMaker.cancel();
         takingVideo = false;
-        videoMaker = null;
+    }
+
+    public long elapsedVideo() {
+        return System.currentTimeMillis() - videoStart;
+    }
+
+    public void endVideo(AnimatedGifEncoder.OnFinishListener listener) {
+        videoMaker.finish(listener);
+        takingVideo = false;
     }
 
     private void draw(Canvas c, Camera.Size size) {

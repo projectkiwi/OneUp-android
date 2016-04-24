@@ -27,6 +27,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.purduecs.kiwi.oneup.helpers.AnimatedGifEncoder;
 import com.purduecs.kiwi.oneup.views.AutoFitTextureView;
 import com.purduecs.kiwi.oneup.views.CameraSurfaceView;
 
@@ -93,7 +95,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        view.findViewById(R.id.picture).setOnClickListener(this);
+        view.findViewById(R.id.picture).setOnTouchListener(onTouchPictureButton);
         view.findViewById(R.id.cancel).setOnClickListener(this);
         view.findViewById(R.id.stopwatch).setOnClickListener(this);
         //mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
@@ -231,20 +233,55 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
         }
     }
 
+    private View.OnTouchListener onTouchPictureButton = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch(event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mSurfaceView.startVideo(mFile);
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (mSurfaceView.elapsedVideo() > 1000) {
+                        mSurfaceView.endVideo(new AnimatedGifEncoder.OnFinishListener() {
+
+                            @Override
+                            public void onFinish() {
+                                Log.d("HEY", "called on finish");
+                                CameraFragment.this.getActivity().setResult(Activity.RESULT_OK);
+                                getActivity().finish();
+                            }
+                        });
+                    } else {
+                        mSurfaceView.cancelVideo();
+                        mCamera.takePicture(null, null, jpegCallback);
+                    }
+                    return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.picture:
+            /*case R.id.picture:
                 if (mPictureState == STATE_PREVIEW) {
                     //mCamera.takePicture(null, null, jpegCallback);
                     mSurfaceView.startVideo(mFile);
                     mPictureState = STATE_TAKEN;
                 }
                 else if (mPictureState == STATE_TAKEN) {
-                    mSurfaceView.endVideo();
-                    getActivity().finish();
+                    mSurfaceView.endVideo(new AnimatedGifEncoder.OnFinishListener() {
+
+                        @Override
+                        public void onFinish() {
+                            Log.d("HEY", "called on finish");
+                            CameraFragment.this.getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                        }
+                    });
                 }
-                break;
+                break;*/
             case R.id.cancel:
                 if (mPictureState == STATE_TAKEN) {
                     mCamera.startPreview();

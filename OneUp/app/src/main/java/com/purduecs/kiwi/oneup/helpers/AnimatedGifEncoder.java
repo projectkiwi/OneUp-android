@@ -2,11 +2,19 @@ package com.purduecs.kiwi.oneup.helpers;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 // This guy is the best:
 // https://github.com/nbadal/android-gif-encoder/blob/master/GifEncoder.java
@@ -111,6 +119,23 @@ public class AnimatedGifEncoder {
         transparent = c;
     }
 
+    LinkedList<Bitmap> buffer;
+    WriteFrames writing;
+    boolean writingRunning;
+    boolean isFinished;
+    OnFinishListener finishListener;
+
+    public boolean add(Bitmap im) {
+        writingRunning = true;
+        buffer.add(im);
+        Log.d("HEY", "adding frame: " + buffer.size());
+        if (buffer.size() == 1) {
+            writing = new WriteFrames();
+            writing.execute(buffer);
+        }
+        return true;
+    }
+
     /**
      * Adds next GIF frame. The frame is not written immediately, but is actually
      * deferred until the next frame is received so that timing data can be
@@ -122,7 +147,7 @@ public class AnimatedGifEncoder {
      *          BufferedImage containing frame to write.
      * @return true if successful.
      */
-    public boolean addFrame(Bitmap im) {
+    private boolean addFrame(Bitmap im) {
         if ((im == null) || !started) {
             return false;
         }
@@ -161,7 +186,15 @@ public class AnimatedGifEncoder {
      * Flushes any pending data and closes output file. If writing to an
      * OutputStream, the stream is not closed.
      */
-    public boolean finish() {
+    public boolean finish(OnFinishListener listener) {
+
+        if (writingRunning) {
+            isFinished = true;
+            finishListener = listener;
+            Log.d("HEY", "finishing in thread");
+            return true;
+        }
+
         if (!started)
             return false;
         boolean ok = true;
@@ -186,8 +219,47 @@ public class AnimatedGifEncoder {
         closeStream = false;
         firstFrame = true;
 
+        listener.onFinish();
+
         return ok;
     }
+
+    public void cancel() {
+        buffer.clear();
+        finish(new OnFinishListener() {
+            @Override
+            public void onFinish() {
+
+            }
+        });
+    }
+
+    public static abstract class OnFinishListener {
+        public abstract void onFinish();
+    }
+
+    private class WriteFrames extends AsyncTask<LinkedList<Bitmap>, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(LinkedList<Bitmap>... params) {
+            LinkedList<Bitmap> list = params[0];
+
+            while(list.size() > 0) {
+                Bitmap bitmap = list.remove(0);
+                Log.d("HEY", "removing: " + list.size());
+                addFrame(bitmap);
+            }
+
+            writingRunning = false;
+            if (isFinished) {
+                finish(finishListener);
+                finishListener = null;
+            }
+            return true;
+        }
+    }
+
+    // TODO: race conditions with the bools in the async task ****************************************************************************
 
     /**
      * Sets frame rate in frames per second. Equivalent to
@@ -266,6 +338,9 @@ public class AnimatedGifEncoder {
         boolean ok = true;
         closeStream = false;
         out = os;
+        buffer = new LinkedList<Bitmap>();
+        isFinished = false;
+        writingRunning = false;
         try {
             writeString("GIF89a"); // header
         } catch (IOException e) {
