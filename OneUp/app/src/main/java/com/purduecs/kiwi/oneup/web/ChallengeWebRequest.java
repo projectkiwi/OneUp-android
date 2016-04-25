@@ -60,7 +60,7 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
         Challenge c = new Challenge();
         String temp = "x";
         try {
-            Log.d("HEY", response.toString());
+            Log.d(TAG, response.toString());
             c.id = response.getString("_id");
             temp = c.id;
 
@@ -71,7 +71,8 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
             if (attempts.length() > 0) {
                 c.image = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
                 c.previewImage = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length()-1).getString("gif_img");
-                c.owner = attempts.getJSONObject(attempts.length()-1).getJSONObject("user").getString("email").split("@")[0];
+                c.owner = attempts.getJSONObject(attempts.length()-1).getJSONObject("user").getString("username").split("@")[0];
+                //c.owner = attempts.getJSONObject(attempts.length()-1).getJSONObject("user").getString("email").split("@")[0];
                 if (attempts.getJSONObject(attempts.length()-1).has("orig_video")) {
                     //c.video = OneUpWebRequest.BASE_URL + "/" + attempts.getJSONObject(attempts.length() - 1).getString("orig_video");
                 }
@@ -98,6 +99,10 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                         + (response.getBoolean("liked_previous_attempt") ? 2 : 0);
             c.bookmarked = response.getBoolean("bookmarked_challenge");
 
+            //LOCATION UNCOMMENT HERE
+            //c.latitude = response.getJSONArray("location").getJSONObject(0).toString();
+            //c.longitude = response.getJSONArray("location").getJSONObject(1).toString();
+
             // now add attempts
             c.attempts = new Attempt[attempts.length()];
             for (int i = 0; i < attempts.length(); i++) {
@@ -120,7 +125,8 @@ public class ChallengeWebRequest implements OneUpWebRequest<JSONObject, Challeng
                 c.attempts[i].desc = a.getString("description");
                 c.attempts[i].likes_num = a.getInt("like_total");
                 c.attempts[i].has_liked = a.getBoolean("liked_attempt");
-                c.attempts[i].owner = a.getJSONObject("user").getString("email").split("@")[0];
+                c.attempts[i].owner = a.getJSONObject("user").getString("username");
+                //c.attempts[i].owner = a.getJSONObject("user").getString("email").split("@")[0];
                 c.attempts[i].place = i+1;
             }
             if (c.attempts.length > 0)

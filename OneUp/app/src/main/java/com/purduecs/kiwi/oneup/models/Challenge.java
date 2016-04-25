@@ -30,6 +30,8 @@ public class Challenge {
     public Attempt[] attempts;
 
     public String location;
+    public String latitude;
+    public String longitude;
     public int debug_flag = 0;
 
         /*public String getName() { return name; }

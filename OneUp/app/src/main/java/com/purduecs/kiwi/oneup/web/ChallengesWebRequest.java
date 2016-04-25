@@ -81,7 +81,7 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
         try {
             response = response2.getJSONArray("docs");
         } catch (Exception e) {
-            ;
+            Log.e(TAG, "Error in parsing docs " + e.getMessage() + " " + e.toString());
         }
 
         ArrayList<Challenge> c = new ArrayList<Challenge>();
@@ -126,8 +126,8 @@ public class ChallengesWebRequest implements OneUpWebRequest<JSONObject, ArrayLi
                 format.setTimeZone(TimeZone.getTimeZone("UTC"));
                 try {
                     challe.time = format.parse(chall.getString("updated_on"));
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception in parsing time " + e.toString() + " " + e.getMessage());
                     challe.time = new Date();
                 }
                 challe.desc = chall.getString("description");//"lots of placeholder text yo so this looks like a pretty high quality description";

@@ -133,7 +133,7 @@ public class NewsfeedActivity extends AppCompatActivity implements NavigationVie
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-//          super.onBackPressed();
+           super.onBackPressed();
            //Do nothing. Can't go back from here
         }
     }
