@@ -10,19 +10,24 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.purduecs.kiwi.oneup.R;
+import com.purduecs.kiwi.oneup.helpers.TimeFormatHelper;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.models.Notification;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 /**
  * Created by Adam on 4/7/16.
  */
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.ViewHolder> {
 
-    Notification[] data;
+    ArrayList<Notification> data;
     Activity mActivity;
     View.OnClickListener mListener;
 
-    public NotificationsAdapter(Activity act, Notification[] data, View.OnClickListener listener) {
+    public NotificationsAdapter(Activity act, ArrayList<Notification> data, View.OnClickListener listener) {
         this.data = data;
         mActivity = act;
         mListener = listener;
@@ -38,20 +43,22 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Glide.with(mActivity)
-                .load(data[position].image)
+                .load(data.get(position).image)
                 .error(R.drawable.doge_with_sunglasses)
                 .into(holder.img);
 
-        holder.desc.setText(data[position].desc);
+        holder.desc.setText(data.get(position).desc);
+        holder.user.setText(data.get(position).user);
+        holder.time.setText(TimeFormatHelper.timeSince(data.get(position).time));
 
-        holder.img.setTag(data[position].challenge_id);
+        holder.img.setTag(data.get(position).challenge_id);
 
         holder.notifView.setOnClickListener(mListener);
     }
 
     @Override
     public int getItemCount() {
-        return data.length;
+        return data.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -59,6 +66,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         View notifView;
         TextView desc;
         ImageView img;
+        TextView user;
+        TextView time;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -67,6 +76,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
             desc = (TextView) itemView.findViewById(R.id.notif_desc);
             img = (ImageView) itemView.findViewById(R.id.notif_image);
+            user = (TextView) itemView.findViewById(R.id.notif_user);
+            time = (TextView) itemView.findViewById(R.id.notif_time);
         }
     }
 }

@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.purduecs.kiwi.oneup.models.Notification;
 import com.purduecs.kiwi.oneup.views.ChallengesAdapter;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.views.NotificationsAdapter;
+import com.purduecs.kiwi.oneup.web.NotificationsWebRequest;
+import com.purduecs.kiwi.oneup.web.RequestHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,7 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     NotificationsAdapter adapter;
-    Notification[] notifications;
+    ArrayList<Notification> notifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +97,22 @@ public class NotificationsActivity extends AppCompatActivity implements Navigati
     //TODO: Special Card for Notifications
     private void initializeData() {
 
-        notifications = new Notification[] { new Notification("http://imgs.xkcd.com/comics/mycology.png", "5703fbcffab47e0837d94498", "You have a notification!"),
-                new Notification("http://imgs.xkcd.com/comics/jack_and_jill.png", "5703f996fab47e0837d94495", "You have a notification!"),
-                new Notification("http://imgs.xkcd.com/comics/podium.png", "5703f988fab47e0837d94492", "You have a notification!"),};
+        notifications = new ArrayList<Notification>();
+
+        new NotificationsWebRequest(new RequestHandler<ArrayList<Notification>>() {
+            @Override
+            public void onSuccess(ArrayList<Notification> response) {
+                for (int i = 0; i < response.size(); i++) {
+                    notifications.add(response.get(i));
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("HEY", "failed to get notifications");
+            }
+        });
 
         adapter = new NotificationsAdapter(this, notifications, notificationClick);
         recyclerView.setAdapter(adapter);

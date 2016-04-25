@@ -8,17 +8,39 @@
         android:id="@+id/notif_image"
         android:layout_width="75dp"
         android:layout_height="75dp"
+        android:src="@drawable/doge_with_sunglasses"
         android:layout_margin="@dimen/text_margin" />
 
-    <TextView
-        android:id="@+id/notif_desc"
+    <LinearLayout android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
         android:layout_toRightOf="@id/notif_image"
         android:layout_toEndOf="@id/notif_image"
-        android:layout_centerVertical="true"
-        style="@style/MediumSmallText" />
+        android:orientation="vertical"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/notif_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            style="@style/MediumLargeText" />
+
+        <TextView
+            android:id="@+id/notif_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MediumSmallText" />
+
+        <TextView
+            android:id="@+id/notif_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/text_margin_small"
+            style="@style/SmallText" />
+    </LinearLayout>
+
+
 
     <TextView
         android:layout_width="wrap_content"

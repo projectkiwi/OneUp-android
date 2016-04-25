@@ -23,6 +23,7 @@ import android.widget.ToggleButton;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
+import com.purduecs.kiwi.oneup.helpers.TimeFormatHelper;
 import com.purduecs.kiwi.oneup.models.Attempt;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.views.CenterIconButton;
@@ -394,33 +395,8 @@ public class ChallengeDetailActivity extends AppCompatActivity {
             holder.mRecord.setText(a.desc);
             holder.mWinner.setText(a.owner);
 
-            long time = (new Date()).getTime() - a.time.getTime();
-            String tim = "seconds";
-            time /= 1000; // At seconds
-            if (time >= 60) {
-                time /= 60;
-                tim = "minutes";
-                if (time >= 60) {
-                    time /= 60;
-                    tim = "hours";
-                    if (time >= 24) {
-                        time /= 24;
-                        tim = "days";
-                        if (time >= 365) {
-                            time /= 365;
-                            tim = "years";
-                        }// At years
-                        else if (time >= 12) {
-                            time /= 12;
-                            tim = "months";
-                        }// Else do months
-                    } // At days
-                }// At hours
-            }// At minutes
 
-
-
-            holder.mTime.setText(time + " " + tim);
+            holder.mTime.setText(TimeFormatHelper.timeSince(a.time));
 
             holder.mLikeButton.setTag(a.id);
             holder.mLikeButton.setText(Integer.toString(a.likes_num));

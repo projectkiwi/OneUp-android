@@ -21,6 +21,7 @@ import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.purduecs.kiwi.oneup.R;
+import com.purduecs.kiwi.oneup.helpers.TimeFormatHelper;
 import com.purduecs.kiwi.oneup.models.Challenge;
 import com.purduecs.kiwi.oneup.web.LikeWebRequest;
 import com.purduecs.kiwi.oneup.web.RequestHandler;
@@ -161,30 +162,8 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             h.cardlikes.setOnClickListener(likeListener);
 
             //h.cardtime.setText(list.get(position).time);
-            long time = (new Date()).getTime() - list.get(position).time.getTime();
-            String tim = "s";
-            time /= 1000; // At seconds
-            if (time >= 60) {
-                time /= 60;
-                tim = "m";
-                if (time >= 60) {
-                    time /= 60;
-                    tim = "h";
-                    if (time >= 24) {
-                        time /= 24;
-                        tim = "d";
-                        if (time >= 365) {
-                            time /= 365;
-                            tim = "y";
-                        }// At years
-                        else if (time >= 12) {
-                            time /= 12;
-                            tim = "mo";
-                        }// Else do months
-                    } // At days
-                }// At hours
-            }// At minutes
-            h.cardtime.setText(time + " " + tim);
+
+            h.cardtime.setText(TimeFormatHelper.timeSinceShort(list.get(position).time));
 
             h.carddesc.setText(list.get(position).desc);
 
