@@ -132,6 +132,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             h.wedgeView.setColor(list.get(position).holds);
             Glide.with(mActivity)
                     .load(list.get(position).previewImage)
+                    .centerCrop()
                     .error(R.drawable.doge_with_sunglasses)
                     .into(h.cardimage);
             h.cardowner.setText("by " + list.get(position).owner);
